@@ -41,7 +41,7 @@
                         <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
                             <el-dropdown-item>项目仓库</el-dropdown-item>
                         </a>
-                        <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
+                        <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -50,6 +50,7 @@
 </template>
 <script>
 import bus from '../common/bus';
+import { logout } from '../../api/index';
 export default {
     data() {
         return {
@@ -68,9 +69,12 @@ export default {
     methods: {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
-            if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
-                this.$router.push('/login');
+            if (command == 'logout') {
+                logout().then(res => {
+                    console.log(res);
+                    // localStorage.removeItem('ms_username');
+                    // this.$router.push('/login');
+                });
             }
         },
         // 侧边栏折叠

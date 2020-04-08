@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {Message, Loading} from 'element-ui';
+import store from './../store';
 
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
@@ -60,7 +61,7 @@ service.interceptors.response.use(
         tryHideFullScreenLoading();
         if (response.status === 200) {
             if(response.data.code === 200){
-                return response.data.data;
+                return response.data;
             }else{
                 Message({
                     'message':response.data.message,

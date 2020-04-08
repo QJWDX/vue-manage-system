@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import {mapState,mapGetters,mapActions} from 'vuex';
+import {login} from './../../api/index';
 export default {
     data: function() {
         return {
@@ -42,12 +44,16 @@ export default {
         };
     },
     methods: {
+        ...mapActions('premission',['storeToken']),
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
+                    login(this.param).then(res => {
+                        this.$store.dispatch('storeToken', res.data.token)
+                        this.$message.success(res.message);
+                        localStorage.setItem('ms_username', this.param.username);
+                        this.$router.push('/');
+                    });
                 } else {
                     this.$message.error('请输入账号和密码');
                     console.log('error submit!!');
