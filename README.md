@@ -9,19 +9,11 @@
   <a href="https://github.com/lin-xin/vue-manage-system/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="license">
   </a>
-  <a href="https://github.com/lin-xin/vue-manage-system/releases">
-    <img src="https://img.shields.io/github/release/lin-xin/vue-manage-system.svg" alt="GitHub release">
-  </a>
   <a href="https://lin-xin.gitee.io/example/work/#/donate">
     <img src="https://img.shields.io/badge/%24-donate-ff69b4.svg" alt="donate">
   </a>
 
-基于 Vue + Element UI 的后台管理系统解决方案。[线上地址](https://lin-xin.gitee.io/example/work/)
-
-> React + Ant Design 的版本正在开发中，仓库地址：[react-manage-system](https://github.com/lin-xin/react-manage-system)
-
-[English document](https://github.com/lin-xin/manage-system/blob/master/README_EN.md)
-
+基于 Vue + Element UI 的后台管理系统解决方案。[线上地址]()
 ## 项目截图
 
 ### 登录
@@ -35,12 +27,6 @@
 ### 浅绿色皮肤
 
 ![Image text](https://github.com/lin-xin/manage-system/raw/master/screenshots/wms2.png)
-
-## 赞赏
-
-请作者喝杯咖啡吧！(微信号：linxin_20)
-
-![微信扫一扫](https://lin-xin.gitee.io/images/weixin.jpg)
 
 ## 特别鸣谢
 
@@ -74,7 +60,7 @@
 ## 安装步骤
 
 ```
-git clone https://github.com/lin-xin/vue-manage-system.git      // 把模板下载到本地
+git clone https://github.com/QJWDX/vue-manage-system.git      // 把模板下载到本地
 cd vue-manage-system    // 进入模板目录
 npm install         // 安装项目依赖，等待安装完成之后，安装失败可用 cnpm 或 yarn
 
@@ -86,10 +72,6 @@ npm run build
 ```
 
 ## 组件使用说明与演示
-
-### vue-schart
-
-vue.js 封装 sChart.js 的图表组件。访问地址：[vue-schart](https://github.com/linxin/vue-schart)
 
 <p><a href="https://www.npmjs.com/package/vue-schart"><img src="https://img.shields.io/npm/dm/vue-schart.svg" alt="Downloads"></a></p>
 
@@ -191,7 +173,3 @@ import 'element-ui/lib/theme-default/index.css'; // 默认主题
 ```
 
 第三步：打开 src/components/common/Sidebar.vue 文件，找到 el-menu 标签，把 background-color/text-color/active-text-color 属性去掉即可。
-
-## License
-
-[MIT](https://github.com/lin-xin/vue-manage-system/blob/master/LICENSE)
