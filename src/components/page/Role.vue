@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
+                    <i class="el-icon-lx-cascades"></i> 角色管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -15,11 +15,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="角色名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -32,29 +28,8 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                            class="table-td-thumb"
-                            :src="scope.row.thumb"
-                            :preview-src-list="[scope.row.thumb]"
-                        ></el-image>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
-                    </template>
-                </el-table-column>
-
-                <el-table-column prop="date" label="注册时间"></el-table-column>
+                <el-table-column prop="name" label="角色名称"></el-table-column>
+                <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -86,11 +61,8 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
+                <el-form-item label="角色名">
                     <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -102,7 +74,7 @@
 </template>
 
 <script>
-import { getTableData } from '../../api/index';
+import { getRole } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -129,9 +101,10 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            getTableData(this.query).then(res => {
-                this.tableData = res.data.list || [];
-                this.pageTotal = res.data.pageTotal || 0;
+            getRole(this.query).then(res => {
+                console.log(res);
+                this.tableData = res.data || [];
+                this.pageTotal = res.pageTotal || 0;
             });
         },
         // 触发搜索按钮

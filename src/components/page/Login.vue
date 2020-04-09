@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import {mapState,mapGetters,mapActions} from 'vuex';
+import {mapActions} from 'vuex';
 import {login} from './../../api/index';
 export default {
     data: function() {

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {Message, Loading} from 'element-ui';
 import store from './../store';
-
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     // easy-mock服务挂了，暂时不使用了
@@ -47,7 +46,9 @@ export function tryHideFullScreenLoading() {
 
 service.interceptors.request.use(
     config => {
-        showFullScreenLoading();
+        // showFullScreenLoading();
+        console.log(store.getters.token);
+        config.headers['Authorization'] = 'Bearer '+store.getters.token;
         return config;
     },
     error => {
@@ -58,22 +59,53 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     response => {
-        tryHideFullScreenLoading();
-        if (response.status === 200) {
-            if(response.data.code === 200){
-                return response.data;
-            }else{
-                Message({
-                    'message':response.data.message,
-                    'type':'error'
-                });
-            }
-        } else {
-            return Promise.reject();
+        // tryHideFullScreenLoading();
+        switch(response.status){
+            case 200:
+                if(response.data.code === 200){
+                    return response.data;
+                }else{
+                    Message({
+                        'message':response.data.message,
+                        'type':'error'
+                    });
+                }
+                break;
+            default:
+                return Promise.reject();
+                break;
         }
+        // if (response.status === 200) {
+        //     if(response.data.code === 200){
+        //         return response.data;
+        //     }else{
+        //         Message({
+        //             'message':response.data.message,
+        //             'type':'error'
+        //         });
+        //     }
+        // } else {
+        //     return Promise.reject();
+        // }
     },
     error => {
-        console.log(error);
+        if (error && error.response && error.response.status) {
+            switch (error.response.status) {
+                case 500:
+                    // do something...
+                    break
+                case 401:
+                    // token黑名单 移除本地token
+                    store.dispatch('delToken');
+                    break;
+                case 404:
+                    // do something...
+                    break
+                default:
+                    // do something...
+                    break
+            }
+}
         return Promise.reject();
     }
 );

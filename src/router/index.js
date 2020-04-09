@@ -30,6 +30,11 @@ export default new Router({
                     meta: { title: '基础表格' }
                 },
                 {
+                    path: '/role',
+                    component: () => import(/* webpackChunkName: "role" */ '../components/page/Role.vue'),
+                    meta: { title: '角色管理' }
+                },
+                {
                     path: '/tabs',
                     component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
                     meta: { title: 'tab选项卡' }

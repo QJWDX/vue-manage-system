@@ -1,10 +1,10 @@
 
 const state = {
-    token : localStorage.getItem('token') || null,
+    token : localStorage.getItem('token') || '',
 };
 
 const getters = {
-    getToken(state){
+    token:(state) => {
         return state.token;
     }
 };
@@ -13,12 +13,19 @@ const mutations = {
     setToken(state, newToken){
         state.token = newToken;
         localStorage.setItem('token', newToken);
+    },
+    removeToken(state){
+        localStorage.removeItem('token');
+        state.token = '';
     }
 };
 
 const actions = {
     storeToken(context, token){
         context.commit('setToken', token);
+    },
+    delToken(context){
+        context.commit('removeToken');
     }
 };
 

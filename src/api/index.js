@@ -15,12 +15,19 @@ export const logout = () => {
     });
 };
 
-export const fetchData = query => {
+export const getTableData = query => {
     return request({
-        url: 'example/baseTable',
+        url: 'api/example/baseTable',
         method: 'get',
         params: query
     });
 };
 
+export const getRole = query => {
+    return request({
+        url: 'api/example/getRoleList',
+        method: 'get',
+        params: query
+    });
+};
 

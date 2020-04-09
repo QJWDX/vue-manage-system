@@ -51,6 +51,7 @@
 <script>
 import bus from '../common/bus';
 import { logout } from '../../api/index';
+import {mapActions} from 'vuex';
 export default {
     data() {
         return {
@@ -61,6 +62,7 @@ export default {
         };
     },
     computed: {
+        ...mapActions('premisssion', ['delToken']),
         username() {
             let username = localStorage.getItem('ms_username');
             return username ? username : this.name;
@@ -72,8 +74,9 @@ export default {
             if (command == 'logout') {
                 logout().then(res => {
                     console.log(res);
-                    // localStorage.removeItem('ms_username');
-                    // this.$router.push('/login');
+                    this.$store.dispatch('delToken');
+                    localStorage.removeItem('ms_username');
+                    this.$router.push('/login');
                 });
             }
         },
