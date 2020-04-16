@@ -38,9 +38,9 @@ export const getTableData = query => {
     });
 };
 
-export const getRole = query => {
+export const getRoleList = query => {
     return request({
-        url: 'api/example/getRoleList',
+        url: 'api/role/getRoleList',
         method: 'get',
         params: query
     });

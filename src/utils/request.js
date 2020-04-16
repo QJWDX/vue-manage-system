@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {Message, Loading} from 'element-ui';
 import store from './../store';
+import route from './../router';
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     // easy-mock服务挂了，暂时不使用了
@@ -88,14 +89,26 @@ service.interceptors.response.use(
                     // token黑名单 移除本地token
                     store.dispatch('delToken');
                     break;
+                case 403:
+                    route.push('/403');
+                    // do something...
+                    break
                 case 404:
+                    route.push('/404');
+                    // do something...
+                    break
+                case 429:
                     // do something...
                     break
                 default:
                     // do something...
                     break
             }
-}
+        }
+        // Message({
+        //     'message':error.response.message,
+        //     'type':'error'
+        // });
         return Promise.reject();
     }
 );

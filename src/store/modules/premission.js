@@ -44,6 +44,7 @@ const mutations = {
         constantRoutes[1].children.splice(0);
         constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
         const routes = constantRoutes.concat(lastRoute);
+        console.log(routes);
         localStorage.setItem('routes', JSON.stringify(routes));
         state.routes = routes;
     },
@@ -68,9 +69,9 @@ const actions = {
     delUserInfo(context){
         context.commit('removeUserInfo');
     },
-    createAsnyRoutes(context, anyncRouter){
-        context.commit('createRoutes', anyncRouter);
-        context.commit('createMenus', anyncRouter);
+    createAsnyRoutes(context, data){
+        context.commit('createRoutes', data.routes);
+        context.commit('createMenus', data.menus);
     }
 };
 
@@ -84,9 +85,6 @@ function createAsynRoutes(anyncRouter){
         data.component = getViews(anyncRouter[i].component);
         data.meta = {};
         data.meta.title = anyncRouter[i].name
-        if(anyncRouter[i].subs){
-            data.children = createAsynRoutes(anyncRouter[i]['subs']);
-        }
         dataRouter.push(data);
     }
     return dataRouter;
@@ -114,7 +112,10 @@ function getViews(componentName) {
     //     resolve(require('@/components/page/' + componentName + '.vue'))
     //   })
     // }
-    return  () => import(/* webpackChunkName: "dashboard" */ '../../components/page/' + componentName + '.vue');
+    if(componentName){
+        return  () => import(/* webpackChunkName: "dashboard" */ '../../components/page/' + componentName + '.vue');
+    }
+    return '';
 }
 
 export default {

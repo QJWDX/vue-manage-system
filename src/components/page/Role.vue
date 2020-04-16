@@ -8,7 +8,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.name" placeholder="角色名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.role_name" placeholder="角色名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -17,12 +17,18 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
+                :cell-style="cellStyle"
+                :header-cell-style="rowClass"
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="角色名称"></el-table-column>
+                <el-table-column prop="role_name" label="角色名称"></el-table-column>
+                <el-table-column prop="description" label="描述"></el-table-column>
+                <el-table-column prop="is_super" label="是否超级角色"></el-table-column>
+                 <el-table-column prop="parent_name" label="父级角色"></el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
+                <el-table-column prop="updated_at" label="更新时间"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -54,8 +60,13 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="角色名">
-                    <el-input v-model="form.name"></el-input>
+                <el-form-item label="角色">
+                    <el-input v-model="form.role_name"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form ref="form" :model="form" label-width="70px">
+                <el-form-item label="描述">
+                    <el-input type="textarea" v-model="form.description"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -67,14 +78,13 @@
 </template>
 
 <script>
-import { getRole } from '../../api/index';
+import { getRoleList } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
         return {
             query: {
-                address: '',
-                name: '',
+                role_name: '',
                 pageIndex: 1,
                 pageSize: 10
             },
@@ -92,12 +102,20 @@ export default {
         this.getData();
     },
     methods: {
+        cellStyle({row, column, rowIndex, columnIndex}){
+            return 'text-align:center';
+        },
+        rowClass({row, rowIndex}){
+             return 'text-align:center';
+        },
         // 获取 easy-mock 的模拟数据
         getData() {
-            getRole(this.query).then(res => {
+            getRoleList(this.query).then(res => {
                 console.log(res);
-                this.tableData = res.data || [];
-                this.pageTotal = res.pageTotal || 0;
+                this.tableData = res.data.items || [];
+                this.pageTotal = res.data.totalPage || 0;
+                this.pageSize = res.data.perPage || 0;
+                this.pageIndex = res.data.currentPage || 1;
             });
         },
         // 触发搜索按钮
@@ -133,6 +151,7 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
+            console.log(row);
             this.idx = index;
             this.form = row;
             this.editVisible = true;

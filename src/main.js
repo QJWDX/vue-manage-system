@@ -21,15 +21,13 @@ const i18n = new VueI18n({
     locale: 'zh',
     messages
 });
-
+const whiteList = ['/login', '/403', '/404'];
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | vue-manage-system`;
-    const token = store.getters.token;
+    const hasToken = store.getters.token ? true : false;
     const role = store.getters.user.role;
-    if (!token && to.path !== '/login') {
-        next('/login');
-    } else {
+    if(hasToken){
         if(role){
             getMenus({'role':role}).then(res => {
                 store.dispatch('createAsnyRoutes', res.data);
@@ -38,16 +36,42 @@ router.beforeEach((to, from, next) => {
                 //动态添加路由信息
                 router.addRoutes(dataRouter);
             });
-        }
-        // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
-        if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
-            Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
-                confirmButtonText: '确定'
-            });
-        } else {
             next();
+        }else{
+            if(whiteList.indexOf(to.path) !== -1){
+                next();
+            }
+        }
+    }else{
+        if (whiteList.indexOf(to.path) !== -1) {
+            // in the free login whitelist, go directly
+            next()
+        }else{
+            next('/login');
         }
     }
+
+    // if (!token && to.path !== '/login') {
+    //     next('/login');
+    // } else {
+    //     if(role){
+    //         getMenus({'role':role}).then(res => {
+    //             store.dispatch('createAsnyRoutes', res.data);
+    //             let dataRouter = store.getters.routes;
+    //             // console.log(dataRouter);
+    //             //动态添加路由信息
+    //             router.addRoutes(dataRouter);
+    //         });
+    //     }
+    //     // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
+    //     if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
+    //         Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
+    //             confirmButtonText: '确定'
+    //         });
+    //     } else {
+    //         next();
+    //     }
+    // }
 });
 
 new Vue({
