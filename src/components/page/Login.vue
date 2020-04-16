@@ -29,7 +29,7 @@
 
 <script>
 import {mapActions} from 'vuex';
-import {login} from './../../api/index';
+import {login, getUserInfo} from './../../api/index';
 export default {
     data: function() {
         return {
@@ -44,14 +44,16 @@ export default {
         };
     },
     methods: {
-        ...mapActions('premission',['storeToken']),
+        ...mapActions('premission',['storeToken', 'storeUserInfo']),
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
                     login(this.param).then(res => {
                         this.$store.dispatch('storeToken', res.data.token)
+                        getUserInfo().then(result => {
+                            this.$store.dispatch('storeUserInfo', result.data.user)
+                        });
                         this.$message.success(res.message);
-                        localStorage.setItem('ms_username', this.param.username);
                         this.$router.push('/');
                     });
                 } else {

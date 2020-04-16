@@ -46,8 +46,9 @@ export function tryHideFullScreenLoading() {
 
 service.interceptors.request.use(
     config => {
+        // 开启屏幕遮罩
         // showFullScreenLoading();
-        console.log(store.getters.token);
+        // console.log(store.getters.token);
         config.headers['Authorization'] = 'Bearer '+store.getters.token;
         return config;
     },
@@ -59,6 +60,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     response => {
+        // 数据加载成功关闭遮罩层
         // tryHideFullScreenLoading();
         switch(response.status){
             case 200:
@@ -75,18 +77,6 @@ service.interceptors.response.use(
                 return Promise.reject();
                 break;
         }
-        // if (response.status === 200) {
-        //     if(response.data.code === 200){
-        //         return response.data;
-        //     }else{
-        //         Message({
-        //             'message':response.data.message,
-        //             'type':'error'
-        //         });
-        //     }
-        // } else {
-        //     return Promise.reject();
-        // }
     },
     error => {
         if (error && error.response && error.response.status) {

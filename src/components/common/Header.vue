@@ -51,20 +51,21 @@
 <script>
 import bus from '../common/bus';
 import { logout } from '../../api/index';
-import {mapActions} from 'vuex';
+import {mapState, mapActions} from 'vuex';
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
-            name: 'linxin',
+            name: '管理员',
             message: 2
         };
     },
     computed: {
-        ...mapActions('premisssion', ['delToken']),
+        ...mapActions('premisssion', ['delToken', 'delUserInfo']),
         username() {
-            let username = localStorage.getItem('ms_username');
+            let user = this.$store.getters.user;
+            let username = user.username;
             return username ? username : this.name;
         }
     },
@@ -75,7 +76,7 @@ export default {
                 logout().then(res => {
                     console.log(res);
                     this.$store.dispatch('delToken');
-                    localStorage.removeItem('ms_username');
+                    this.$store.dispatch('delUserInfo');
                     this.$router.push('/login');
                 });
             }
