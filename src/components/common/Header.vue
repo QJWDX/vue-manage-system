@@ -74,7 +74,7 @@ export default {
         handleCommand(command) {
             if (command == 'logout') {
                 logout().then(res => {
-                    console.log(res);
+                    console.log(res.message);
                     this.$store.dispatch('delToken');
                     this.$store.dispatch('delUserInfo');
                     this.$router.push('/login');

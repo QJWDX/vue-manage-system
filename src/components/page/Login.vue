@@ -19,7 +19,7 @@
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm()">登录</el-button>
+                    <el-button type="primary" @click="submitForm()" :disabled="disable">登录</el-button>
                 </div>
                 <p class="login-tips">Tips : 用户名和密码随便填。</p>
             </el-form>
@@ -29,10 +29,11 @@
 
 <script>
 import {mapActions} from 'vuex';
-import {login, getUserInfo} from './../../api/index';
+import {login} from './../../api/index';
 export default {
     data: function() {
         return {
+            disable: false,
             param: {
                 username: '',
                 password: '',
@@ -49,12 +50,14 @@ export default {
             this.$refs.login.validate(valid => {
                 if (valid) {
                     login(this.param).then(res => {
-                        this.$store.dispatch('storeToken', res.data.token)
-                        getUserInfo().then(result => {
-                            this.$store.dispatch('storeUserInfo', result.data.user)
+                        this.$store.dispatch('storeToken', res.data.token);
+                        this.$store.dispatch('storeUserInfo').then(res => {
+                            console.log(res)
+                            this.disable = false;
+                            this.$router.push('/');
+                        }).catch(err => {
+                            console.log(err);
                         });
-                        this.$message.success(res.message);
-                        this.$router.push('/');
                     });
                 } else {
                     this.$message.error('请输入账号和密码');

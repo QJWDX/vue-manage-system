@@ -22,9 +22,9 @@ export const getUserInfo = () => {
     });
 };
 
-export const getMenus = query => {
+export const getMenusAndRoute = query => {
     return request({
-        url: 'api/role/getMenus',
+        url: 'api/role/getMenusAndRoute',
         method: 'get',
         params: query
     });

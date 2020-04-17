@@ -120,7 +120,7 @@ export default {
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
+            // this.$set(this.query, 'pageIndex', 1);
             this.getData();
         },
         // 删除操作

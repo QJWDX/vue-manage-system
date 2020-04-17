@@ -10,7 +10,7 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
-import {getMenus} from './api/index';
+import {getMenusAndRoute} from './api/index';
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
     const role = store.getters.user.role;
     if(hasToken){
         if(role){
-            getMenus({'role':role}).then(res => {
+            getMenusAndRoute({'role':role}).then(res => {
                 store.dispatch('createAsnyRoutes', res.data);
                 let dataRouter = store.getters.routes;
                 // console.log(dataRouter);

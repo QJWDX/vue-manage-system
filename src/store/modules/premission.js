@@ -1,4 +1,5 @@
 import {constantRoutes, lastRoute} from './../../router';
+import {getUserInfo} from './../../api/index';
 const state = {
     token : localStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
@@ -44,13 +45,13 @@ const mutations = {
         constantRoutes[1].children.splice(0);
         constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
         const routes = constantRoutes.concat(lastRoute);
-        console.log(routes);
+        // console.log(routes);
         localStorage.setItem('routes', JSON.stringify(routes));
         state.routes = routes;
     },
     createMenus(state, anyncMenu){
         const menus = createAsynMenus(anyncMenu);
-        console.log(menus);
+        // console.log(menus);
         localStorage.setItem('menus', JSON.stringify(menus));
         state.menus = menus;
     }
@@ -63,8 +64,15 @@ const actions = {
     delToken(context){
         context.commit('removeToken');
     },
-    storeUserInfo(context, userInfo){
-        context.commit('setUserInfo', userInfo);
+    storeUserInfo(context){
+        return new Promise(function(resolve, reject){
+            getUserInfo().then(res => {
+                context.commit('setUserInfo', res.data.user);
+                resolve(res.message);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     },
     delUserInfo(context){
         context.commit('removeUserInfo');
