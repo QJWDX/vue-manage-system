@@ -49,6 +49,8 @@
     </div>
 </template>
 <script>
+import Echo from 'laravel-echo'
+import io from 'socket.io-client'
 import bus from '../common/bus';
 import { logout } from '../../api/index';
 import {mapState, mapActions} from 'vuex';
@@ -58,7 +60,7 @@ export default {
             collapse: false,
             fullscreen: false,
             name: '管理员',
-            message: 2
+            message: 0
         };
     },
     computed: {
@@ -118,6 +120,33 @@ export default {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
+        const token = this.$store.getters.token;
+        const userId = this.$store.getters.user.id;
+        console.log(userId);
+        console.log(token);
+        window.io = io
+        window.Echo = new Echo({
+        broadcaster: 'socket.io',
+        host: 'http://localhost:6001',
+        auth: {
+            headers: {
+            Authorization: 'Bearer ' + token
+            }
+        }
+        })
+        // 公共频道
+        // window.Echo.channel('news').listen('News', (e) => {
+        //   console.log('广播消息接收成功：')
+        //   console.log(e)
+        // })
+        // 私有频道
+        // window.Echo.private('news').listen('News', (res) => {
+        //   console.log(res)
+        // })
+        window.Echo.private('App.User.' + userId).notification((notification) => {
+        console.log('接收的消息如下：')
+        console.log(notification)
+        })
     }
 };
 </script>
