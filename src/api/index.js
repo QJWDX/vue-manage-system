@@ -46,3 +46,27 @@ export const getRoleList = query => {
     });
 };
 
+
+export const getNotifications = query => {
+    return request({
+        url: 'api/notifications/getNotifications',
+        method: 'get',
+        params: query
+    });
+};
+
+export const delNotifications = query => {
+    return request({
+        url: 'api/notifications/delNotifications',
+        method: 'delete',
+        params: query
+    });
+};
+
+export const makeRead = query => {
+    return request({
+        url: 'api/notifications/makeRead',
+        method: 'get',
+        params: query
+    });
+};

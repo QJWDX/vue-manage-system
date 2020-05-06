@@ -21,7 +21,7 @@
                         :content="message?`有${message}条未读消息`:`消息中心`"
                         placement="bottom"
                     >
-                        <router-link to="/tabs">
+                        <router-link to="/Notification">
                             <i class="el-icon-bell"></i>
                         </router-link>
                     </el-tooltip>
@@ -143,9 +143,16 @@ export default {
         // window.Echo.private('news').listen('News', (res) => {
         //   console.log(res)
         // })
-        window.Echo.private('App.User.' + userId).notification((notification) => {
-        console.log('接收的消息如下：')
-        console.log(notification)
+        window.Echo.private('App.Models.User.' + userId).notification((notification) => {
+            console.log('接收的消息如下：')
+            // console.log(notification)
+            this.$notify({
+                title: notification.title,
+                message: notification.content,
+                type: 'warning',
+                // offset: 100,
+                showClose: false
+            });
         })
     }
 };
