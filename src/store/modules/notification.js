@@ -1,24 +1,46 @@
 const state = {
-    notificationNumber : localStorage.getItem('notificationNumber') || 0
+    unread : JSON.parse(localStorage.getItem('unread')) || {},
+    read : JSON.parse(localStorage.getItem('read')) || {},
+    unreadNumber : localStorage.getItem('unreadNumber') || 0
 };
 
 const getters = {
-    notificationNumber:(state) => {
-        return state.notificationNumber;
-    }
+    unreadNumber:(state) => {
+        return state.unreadNumber;
+    },
+    read:(state) => {
+        return state.unread;
+    },
+    unread:(state) => {
+        return state.read;
+    },
 };
 
 const mutations = {
-    setNotificationNumber(state, newNotificationNumber){
-        state.notificationNumber = newNotificationNumber;
-        localStorage.setItem('notificationNumber', newNotificationNumber);
+    setUnreadNumber(state, unreadNumber){
+        state.unreadNumber = unreadNumber;
+        localStorage.setItem('unreadNumber', unreadNumber);
+    },
+    setUnread(state, unread){
+        state.unread = unread;
+        localStorage.setItem('unread', JSON.stringify(unread));
+    },
+    setRead(state, read){
+        state.read = read;
+        localStorage.setItem('read', JSON.stringify(read));
     }
 };
 
 const actions = {
-    storeNotificationNumber(context, notificationNumber){
-        context.commit('setNotificationNumber', notificationNumber);
-    }
+    storeUnreadNumber(context, unreadNumber){
+        context.commit('setUnreadNumber', unreadNumber);
+    },
+    storeUnread(context, unread){
+        context.commit('setUnread', unread);
+    },
+    storeRead(context, read){
+        context.commit('setRead', read);
+    },
 };
 
 export default {

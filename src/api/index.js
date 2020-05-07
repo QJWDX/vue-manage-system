@@ -70,3 +70,11 @@ export const makeRead = query => {
         params: query
     });
 };
+
+export const getUnreadNumber = query => {
+    return request({
+        url: 'api/notifications/getUnreadNumber',
+        method: 'get',
+        params: query
+    });
+};

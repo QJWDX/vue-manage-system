@@ -86,8 +86,8 @@ service.interceptors.response.use(
                     // do something...
                     break
                 case 401:
-                    // token黑名单 移除本地token
-                    store.dispatch('delToken');
+                    // token黑名单 移除本地token，用户信息
+                    store.dispatch('delUserInfo');
                     break;
                 case 403:
                     route.push('/403');

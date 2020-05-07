@@ -18,14 +18,14 @@
                 <div class="btn-bell">
                     <el-tooltip
                         effect="dark"
-                        :content="message?`有${message}条未读消息`:`消息中心`"
+                        :content="unread?`有${unread}条未读消息`:`消息中心`"
                         placement="bottom"
                     >
                         <router-link to="/Notification">
                             <i class="el-icon-bell"></i>
                         </router-link>
                     </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
+                    <span class="btn-bell-badge" v-if="unread"></span>
                 </div>
                 <!-- 用户头像 -->
                 <div class="user-avator">
@@ -52,23 +52,27 @@
 import Echo from 'laravel-echo'
 import io from 'socket.io-client'
 import bus from '../common/bus';
-import { logout } from '../../api/index';
+import {logout, getUnreadNumber} from '../../api/index';
 import {mapState, mapActions} from 'vuex';
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
-            name: '管理员',
-            message: 0
+            name: '管理员'
         };
     },
     computed: {
-        ...mapActions('premisssion', ['delToken', 'delUserInfo']),
+        ...mapActions('premisssion', ['delUserInfo']),
+        ...mapActions('notification', ['storeUnreadNumber']),
         username() {
             let user = this.$store.getters.user;
             let username = user.username;
             return username ? username : this.name;
+        },
+        unread() {
+            let number = this.$store.getters.unreadNumber;
+            return number;
         }
     },
     methods: {
@@ -77,7 +81,6 @@ export default {
             if (command == 'logout') {
                 logout().then(res => {
                     console.log(res.message);
-                    this.$store.dispatch('delToken');
                     this.$store.dispatch('delUserInfo');
                     this.$router.push('/login');
                 });
@@ -116,14 +119,19 @@ export default {
             this.fullscreen = !this.fullscreen;
         }
     },
+    created(){
+        getUnreadNumber({uid:this.$store.getters.user.id}).then(res => {
+            this.$store.dispatch('storeUnreadNumber', res.data.unreadNumber);
+        });
+    },
     mounted() {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
         const token = this.$store.getters.token;
         const userId = this.$store.getters.user.id;
-        console.log(userId);
-        console.log(token);
+        // console.log(userId);
+        // console.log(token);
         window.io = io
         window.Echo = new Echo({
         broadcaster: 'socket.io',
@@ -143,6 +151,7 @@ export default {
         // window.Echo.private('news').listen('News', (res) => {
         //   console.log(res)
         // })
+        // 消息通知
         window.Echo.private('App.Models.User.' + userId).notification((notification) => {
             console.log('接收的消息如下：')
             // console.log(notification)
@@ -153,6 +162,14 @@ export default {
                 // offset: 100,
                 showClose: false
             });
+            getUnreadNumber({uid:this.$store.getters.user.id}).then(res => {
+                this.$store.dispatch('storeUnreadNumber', res.data.unreadNumber);
+            });
+            if(this.$route.path == '/notification'){
+                // location.reload();
+                console.log(notification);
+                this.$store.getters.unread = Object.assign(notification, this.$store.getters.unread);
+            }
         })
     }
 };

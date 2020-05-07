@@ -1,5 +1,5 @@
 import {constantRoutes, lastRoute} from './../../router';
-import {getUserInfo} from './../../api/index';
+import {login} from './../../api/index';
 const state = {
     token : localStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
@@ -58,16 +58,11 @@ const mutations = {
 };
 
 const actions = {
-    storeToken(context, token){
-        context.commit('setToken', token);
-    },
-    delToken(context){
-        context.commit('removeToken');
-    },
-    storeUserInfo(context){
+    userLogin(context, query){
         return new Promise(function(resolve, reject){
-            getUserInfo().then(res => {
+            login(query).then(res => {
                 context.commit('setUserInfo', res.data.user);
+                context.commit('setToken', res.data.token);
                 resolve(res.message);
             }).catch((err) => {
                 reject(err);
@@ -75,6 +70,7 @@ const actions = {
         });
     },
     delUserInfo(context){
+        context.commit('removeToken');
         context.commit('removeUserInfo');
     },
     createAsnyRoutes(context, data){

@@ -46,7 +46,8 @@
 </template>
 
 <script>
-    import { getNotifications, makeRead, delNotifications} from '../../api/index';
+    import {mapState, mapActions} from 'vuex';
+    import { getNotifications, makeRead, delNotifications, getUnreadNumber} from '../../api/index';
     export default {
         name: 'tabs',
         data() {
@@ -57,23 +58,25 @@
                     uid: this.$store.getters.user.id,
                     type: 1
                 },
-                notification: [],
-                read: [],
-                unread: [],
+                notification: []
             }
         },
         activated() {
             this.getReadData();
             this.getUnreadData();
         },
+        mounted() {
+            this.getReadData();
+            this.getUnreadData();
+        }, 
         methods: {
+            ...mapActions('notification', ['storeUnreadNumber', 'storeUnread', 'storeRead']),
             getReadData() {
                 getNotifications({
                     uid: this.$store.getters.user.id,
                     type: 1
                 }).then(res => {
-                    console.log(res)
-                    this.read = res.data || [];
+                    this.$store.dispatch('storeRead', res.data || []);
                 });
             },
             getUnreadData() {
@@ -81,8 +84,7 @@
                     uid: this.$store.getters.user.id,
                     type: 2
                 }).then(res => {
-                    console.log(res)
-                    this.unread = res.data || [];
+                    this.$store.dispatch('storeUnread', res.data || []);
                 });
             },
             handleRead(index, id) {
@@ -92,6 +94,7 @@
                 }).then(res => {
                     this.getReadData();
                     this.getUnreadData();
+                    this.$store.dispatch('storeUnreadNumber', this.$store.getters.unreadNumber-1);
                 })
             },
             handleAllRead(){
@@ -101,6 +104,7 @@
                     }).then(res => {
                         this.getReadData();
                         this.getUnreadData();
+                        this.$store.dispatch('storeUnreadNumber', 0);
                     })
                 }
             },
@@ -146,6 +150,12 @@
         computed: {
             unreadNum(){
                 return this.unread.length;
+            },
+            read(){
+                return this.$store.getters.read; 
+            },
+            unread(){
+               return this.$store.getters.unread;
             }
         }
     }
