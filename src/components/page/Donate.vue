@@ -1,24 +1,58 @@
 <template>
-    <div>
-        <!-- <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-redpacket_fill"></i> 支持作者
-                </el-breadcrumb-item>
-            </el-breadcrumb>
-        </div> -->
-        <div class="container">
-            <div class="plugins-tips">如果该框架对你有帮助，那就请作者喝杯饮料吧！加微信号linxin_20探讨问题。</div>
-            <div>
-                <img src="https://lin-xin.gitee.io/images/weixin.jpg" />
-            </div>
-        </div>
-    </div>
+  <div id="app">
+    <p>mqtt收到的数据：</p>
+    <p>{{this.msg}}</p>
+  </div>
 </template>
 
 <script>
-export default {};
-</script>
 
-<style>
+  import mqtt from 'mqtt'
+
+  var client
+  const options = {
+    connectTimeout: 40000,
+    clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
+    username: 'test',
+    password: 'test123',
+    clean: true
+  }
+  client = mqtt.connect('ws://192.168.1.185:15675/ws', options)
+  export default {
+    data() {
+      return {
+        msg: '--'
+      }
+    },
+
+    created() {
+      this.mqttMsg()
+    },
+
+    methods: {
+      mqttMsg() {
+        client.on('connect', (e) => {
+          console.log("连接成功！！！")
+          client.subscribe('test_mqtt', { qos: 1 }, (error) => {
+            if (!error) {
+              console.log('订阅成功')
+            } else {
+              console.log('订阅失败')
+            }
+          })
+
+        })
+        // 接收消息处理
+        client.on('message', (topic, message) => {
+          console.log(1111); 
+          console.log('收到来自', topic, '的消息', message.toString())
+          this.msg = message.toString()
+        })
+      }
+    }
+
+
+  }
+</script>
+<style scoped>
 </style>

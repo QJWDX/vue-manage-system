@@ -61,6 +61,7 @@ const actions = {
     userLogin(context, query){
         return new Promise(function(resolve, reject){
             login(query).then(res => {
+                console.log(res);
                 context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);
                 resolve(res.message);
