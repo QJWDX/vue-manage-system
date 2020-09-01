@@ -46,6 +46,40 @@ export const getRoleList = query => {
     });
 };
 
+export const addRole = query => {
+    return request({
+        url: 'api/role/addRole',
+        method: 'post',
+        params: query
+    });
+};
+
+export const getRoleInfo = id => {
+    return request({
+        url: 'api/role/getRoleInfo/' + id,
+        method: 'get',
+        params: []
+    });
+};
+
+export const modRole = id => {
+    return request({
+        url: 'api/role/modRole/' + id,
+        method: 'put',
+        params: []
+    });
+};
+
+export const delRole = query => {
+    return request({
+        url: 'api/role/delRole',
+        method: 'delete',
+        params: query
+    });
+};
+
+
+
 
 export const getNotifications = query => {
     return request({

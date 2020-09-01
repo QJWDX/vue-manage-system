@@ -104,11 +104,7 @@ service.interceptors.response.use(
                     // do something...
                     break
             }
-        }
-        // Message({
-        //     'message':error.response.message,
-        //     'type':'error'
-        // });
+        };
         return Promise.reject();
     }
 );
