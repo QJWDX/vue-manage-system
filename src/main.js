@@ -10,7 +10,7 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
-import {getMenusAndRoute} from './api/index';
+import {getVueRoute} from './api/index';
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
@@ -27,21 +27,15 @@ router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | vue-manage-system`;
     const hasToken = store.getters.token ? true : false;
     const role = store.getters.user.role;
-    if(hasToken){
-        if(role){
-            getMenusAndRoute({'role':role}).then(res => {
-                store.dispatch('createAsnyRoutes', res.data);
-                let dataRouter = store.getters.routes;
-                // console.log(dataRouter);
-                //动态添加路由信息
-                router.addRoutes(dataRouter);
-            });
-            next();
-        }else{
-            if(whiteList.indexOf(to.path) !== -1){
-                next();
-            }
-        }
+    if(hasToken && role){
+        getVueRoute({'role':role}).then(res => {
+            store.dispatch('createAsnyRoutes', res.data);
+            let dataRouter = store.getters.routes;
+            // console.log(dataRouter);
+            //动态添加路由信息
+            router.addRoutes(dataRouter);
+        });
+        next();
     }else{
         if (whiteList.indexOf(to.path) !== -1) {
             // in the free login whitelist, go directly

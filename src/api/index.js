@@ -22,10 +22,34 @@ export const getUserInfo = () => {
     });
 };
 
-export const getMenusAndRoute = query => {
+export const getVueRoute = query => {
     return request({
-        url: 'api/role/getMenusAndRoute',
+        url: 'api/menus/getVueRoute',
         method: 'get',
+        params: query
+    });
+};
+
+export const getMenuTree = query => {
+    return request({
+        url: 'api/menus/getMenuTree',
+        method: 'get',
+        params: query
+    });
+};
+
+export const getRoleMenus = query => {
+    return request({
+        url: 'api/menus/getRoleMenus',
+        method: 'get',
+        params: query
+    });
+};
+
+export const setRoleMenus = query => {
+    return request({
+        url: 'api/menus/setRoleMenus',
+        method: 'post',
         params: query
     });
 };
@@ -62,11 +86,11 @@ export const getRoleInfo = id => {
     });
 };
 
-export const modRole = id => {
+export const modRole = (id, query) => {
     return request({
         url: 'api/role/modRole/' + id,
         method: 'put',
-        params: []
+        params: query
     });
 };
 

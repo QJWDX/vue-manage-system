@@ -35,8 +35,13 @@
                  <el-table-column prop="parent_name" label="父级角色"></el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column prop="updated_at" label="更新时间"></el-table-column>
-                <el-table-column label="操作" width="180" align="center">
+                <el-table-column label="操作" width="220" align="center">
                     <template slot-scope="scope">
+                        <el-button
+                            type="text"
+                            icon="el-icon-edit"
+                            @click="handleAuth(scope.$index, scope.row)"
+                        >权限分配</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-edit"
@@ -89,6 +94,7 @@
             </span>
         </el-dialog>
 
+        <!-- 新增弹出框 -->
         <el-dialog title="新增" :visible.sync="addVisible" width="30%">
             <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="角色名称">
@@ -113,12 +119,32 @@
                 <el-button type="primary" @click="saveAdd">确 定</el-button>
             </span>
         </el-dialog>
+
+        <!-- 权限分配 -->
+        <el-dialog title="权限分配" :visible.sync="authVisible" width="30%" @close='closeDialog'>
+            <el-tree
+            :props="props"
+            :data="menus"
+            :default-expand-all="defaultExpand"
+            node-key="id"
+            show-checkbox
+            :default-checked-keys="checkMenus"
+            @node-click="handleNodeClick"
+            @check-change="handleCheckChange"
+            >
+            </el-tree>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeDialog">取 消</el-button>
+                <el-button type="primary" @click="authEdit">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { getRoleList, addRole, delRole, modRole, getRoleInfo } from '../../api/index';
+import { getRoleList, addRole, delRole, modRole, getRoleInfo, getMenuTree, getRoleMenus, setRoleMenus} from '../../api/index';
 import DragDialogVue from './DragDialog.vue';
+import { Row } from 'element-ui';
 export default {
     name: 'basetable',
     data() {
@@ -126,13 +152,14 @@ export default {
             query: {
                 role_name: '',
                 page: 1,
-                perPage: 1
+                perPage: 10
             },
             tableData: [],
             multipleSelection: [],
             delList: [],
             editVisible: false,
             addVisible: false,
+            authVisible: false,
             pageTotal: 0,
             form: {
                 role_name:'',
@@ -140,9 +167,18 @@ export default {
                 is_super: 0
             },
             idx: -1,
-            id: -1
+            id: 0,
+            is_super: 0,
+            props: {
+                label: 'label',
+                children: 'children'
+            },
+            menus: [],
+            defaultExpand: true,
+            checkMenus:[]
         };
     },
+    inject: ['reload'],
     created() {
         this.getData();
     },
@@ -160,6 +196,13 @@ export default {
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
                 this.page = res.data.currentPage || 1;
+            });
+        },
+        getMenus(query){
+            getMenuTree(query).then(res => {
+                if(res){
+                    this.menus = res.data;
+                }
             });
         },
         // 触发搜索按钮
@@ -181,19 +224,20 @@ export default {
                     };
                     this.addVisible = false;
                     this.getData();
+                    this.reload();
                 }
             });
         },
         // 删除操作
         handleDelete(index, row) {
-            // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                delRole({ids:this.multipleSelection.join(',')}).then(res => {
+                delRole({ids:row.id}).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.tableData.splice(index, 1);
+                        this.reload();
                     }
                 });
             }).catch(() => {});
@@ -204,22 +248,32 @@ export default {
             for (let index = 0; index < val.length; index++) {
                 this.multipleSelection.push(val[index].id);
             }
-        },
-        delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
             this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
+        },
+        // 批量删除
+        delAllSelection() {
+            if(this.delList.length == 0){
+                this.$message.error('删除项还未选择');
+                return;
             }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
+            this.$confirm('确定要删除吗？', '提示', {
+                type: 'warning'
+            }).then(() => {
+                delRole({ids:this.delList.join(',')}).then(res => {
+                    if(res){
+                        this.$message.success(res.message);
+                        this.delList = [];
+                        this.multipleSelection = [];
+                        this.reload();
+                    }
+                });
+            }).catch(() => {});
         },
         // 编辑操作
         handleEdit(index, row) {
             getRoleInfo(row.id).then(res => {
-                console.log(res);
                 if(res){
+                    this.id = res.data.id;
                     this.form = {
                         role_name: res.data.role_name,
                         description: res.data.description,
@@ -231,19 +285,72 @@ export default {
         },
         // 保存编辑
         saveEdit() {
-            modRole(this.form).then(res => {
-                if(res){
-                    this.editVisible = false;
-                    this.$message.success(res.message);
-                    this.getData();
-                }
-            });
+            if(this.id){
+                modRole(this.id, this.form).then(res => {
+                    if(res){
+                        this.editVisible = false;
+                        this.$message.success(res.message);
+                        this.getData();
+                    }
+                    this.id = 0;
+                });
+            }
         },
         // 分页导航
         handlePageChange(val) {
             this.query.page = val;
             // this.$set(this.query, 'pageIndex', val);
             this.getData();
+        },
+        handleAuth(index, row){
+            this.is_super = row.is_super == '是' ? 1 : 0;
+            this.getMenus({role:row.id});
+            getRoleMenus({role:row.id}).then(res => {
+                if(res){
+                    this.id = row.id;
+                    this.checkMenus = res.data;
+                    this.authVisible = true;
+                    console.log(this.checkMenus);
+                }
+            });
+        },
+        authEdit(){
+            if(this.is_super){
+                 this.$message.success('超级管理员拥有所有权限,不允许修改');
+                 return;
+            }
+            setRoleMenus({role:this.id, menus:this.checkMenus}).then(res => {
+                if(res){
+                    this.$message.success(res.message);
+                    this.id = 0;
+                    this.is_super = 0;
+                    this.checkMenus = [];
+                    this.authVisible = false;
+                }
+            });
+            
+        },
+        handleCheckChange(data, checked, indeterminate) {
+            if(checked){
+                this.checkMenus = this.checkMenus.concat([data.id]);
+            }else{
+                const index = this.checkMenus.indexOf(data.id);
+                if (index > -1) {
+                    this.checkMenus.splice(index, 1);
+                }
+            }
+            console.log(this.checkMenus);
+            // console.log(data, checked, indeterminate);
+        },
+        handleNodeClick(data) {
+            // console.log(data);
+        },
+        loadNode(node, resolve) {
+           
+        },
+        closeDialog(){
+            this.checkMenus = [];
+            this.authVisible = false;
         }
     }
 };
