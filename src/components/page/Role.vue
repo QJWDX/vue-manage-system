@@ -5,17 +5,17 @@
                 <el-input v-model="query.role_name" placeholder="角色名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button
-                    type="primary"
+                    type="danger"
                     icon="el-icon-delete"
                     class="handle-del ml5"
                     @click="delAllSelection"
-                >批量删除</el-button>
+                >删除</el-button>
                 <el-button
                     type="primary"
                     icon="el-icon-plus"
                     class="handle-del ml5"
                     @click="handAdd"
-                >新增角色</el-button>
+                >新增</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -69,18 +69,14 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
+        <el-dialog title="编辑" :visible.sync="editVisible" width="30%" @close='closeDialog'>
             <el-form ref="form" :model="form" label-width="70px">
                 <el-form-item label="角色">
                     <el-input v-model="form.role_name"></el-input>
                 </el-form-item>
-            </el-form>
-            <el-form ref="form" :model="form" label-width="70px">
                 <el-form-item label="描述">
                     <el-input type="textarea" v-model="form.description"></el-input>
                 </el-form-item>
-            </el-form>
-            <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="超级角色">
                     <el-radio-group v-model="form.is_super">
                         <el-radio :label="1">是</el-radio>
@@ -89,24 +85,20 @@
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="closeDialog">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
 
         <!-- 新增弹出框 -->
-        <el-dialog title="新增" :visible.sync="addVisible" width="30%">
+        <el-dialog title="新增" :visible.sync="addVisible" width="30%" @close='closeDialog'>
             <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="角色名称">
                     <el-input v-model="form.role_name"></el-input>
                 </el-form-item>
-            </el-form>
-            <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="角色描述">
                     <el-input type="textarea" v-model="form.description"></el-input>
                 </el-form-item>
-            </el-form>
-            <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="超级角色">
                     <el-radio-group v-model="form.is_super">
                         <el-radio :label="1">是</el-radio>
@@ -115,7 +107,7 @@
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="addVisible = false">取 消</el-button>
+                <el-button @click="closeDialog">取 消</el-button>
                 <el-button type="primary" @click="saveAdd">确 定</el-button>
             </span>
         </el-dialog>
@@ -135,14 +127,14 @@
             </el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="authEdit">确 定</el-button>
+                <el-button type="primary" @click="saveAuthEdit">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-import { getRoleList, addRole, delRole, modRole, getRoleInfo, getMenuTree, getRoleMenus, setRoleMenus} from '../../api/index';
+import { getRoleList, addRole, delRole, modRole, getRoleInfo, getMenuTree, getRoleMenus, setRoleMenus} from '../../api/role';
 import DragDialogVue from './DragDialog.vue';
 import { Row } from 'element-ui';
 export default {
@@ -154,28 +146,27 @@ export default {
                 page: 1,
                 perPage: 10
             },
+            pageTotal: 0,
             tableData: [],
+            id: 0,
+            is_super: 0,
             multipleSelection: [],
             delList: [],
             editVisible: false,
             addVisible: false,
             authVisible: false,
-            pageTotal: 0,
             form: {
                 role_name:'',
                 description:'',
                 is_super: 0
             },
-            idx: -1,
-            id: 0,
-            is_super: 0,
+            menus: [],
+            defaultExpand: true,
+            checkMenus:[],
             props: {
                 label: 'label',
                 children: 'children'
-            },
-            menus: [],
-            defaultExpand: true,
-            checkMenus:[]
+            }
         };
     },
     inject: ['reload'],
@@ -189,7 +180,7 @@ export default {
         rowClass({row, rowIndex}){
              return 'text-align:center';
         },
-        // 获取 easy-mock 的模拟数据
+        //获取列表数据
         getData() {
             getRoleList(this.query).then(res => {
                 this.tableData = res.data.items || [];
@@ -198,6 +189,7 @@ export default {
                 this.page = res.data.currentPage || 1;
             });
         },
+        // 获取权限菜单
         getMenus(query){
             getMenuTree(query).then(res => {
                 if(res){
@@ -207,12 +199,13 @@ export default {
         },
         // 触发搜索按钮
         handleSearch() {
-            // this.$set(this.query, 'pageIndex', 1);
             this.getData();
         },
+        // 新增弹窗
         handAdd(){
             this.addVisible = true;
         },
+        // 新增保存
         saveAdd(){
             addRole(this.form).then(res => {
                 if(res){
@@ -299,9 +292,9 @@ export default {
         // 分页导航
         handlePageChange(val) {
             this.query.page = val;
-            // this.$set(this.query, 'pageIndex', val);
             this.getData();
         },
+        // 权限分配
         handleAuth(index, row){
             this.is_super = row.is_super == '是' ? 1 : 0;
             this.getMenus({role:row.id});
@@ -310,15 +303,11 @@ export default {
                     this.id = row.id;
                     this.checkMenus = res.data;
                     this.authVisible = true;
-                    console.log(this.checkMenus);
                 }
             });
         },
-        authEdit(){
-            if(this.is_super){
-                 this.$message.success('超级管理员拥有所有权限,不允许修改');
-                 return;
-            }
+        // 保存权限
+        saveAuthEdit(){
             setRoleMenus({role:this.id, menus:this.checkMenus}).then(res => {
                 if(res){
                     this.$message.success(res.message);
@@ -330,6 +319,7 @@ export default {
             });
             
         },
+        // 权限多选改变事件
         handleCheckChange(data, checked, indeterminate) {
             if(checked){
                 this.checkMenus = this.checkMenus.concat([data.id]);
@@ -342,15 +332,28 @@ export default {
             console.log(this.checkMenus);
             // console.log(data, checked, indeterminate);
         },
+        // 树形节点点击触发事件
         handleNodeClick(data) {
             // console.log(data);
         },
         loadNode(node, resolve) {
            
         },
+        // 关闭弹窗后页面数据初始化
         closeDialog(){
-            this.checkMenus = [];
+            this.addVisible = false;
+            this.editVisible = false;
             this.authVisible = false;
+            this.checkMenus = [];
+            this.form =  {
+                role_name:'',
+                description:'',
+                is_super: 0
+            };
+            this.id = 0;
+            this.is_super = 0;
+            this.multipleSelection = [],
+            this.delList = [];
         }
     }
 };

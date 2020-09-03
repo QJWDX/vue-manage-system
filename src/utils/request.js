@@ -72,6 +72,7 @@ service.interceptors.response.use(
                         'message':response.data.message,
                         'type':'error'
                     });
+                    return false;
                 }
                 break;
             default:
@@ -83,7 +84,12 @@ service.interceptors.response.use(
         if (error && error.response && error.response.status) {
             switch (error.response.status) {
                 case 500:
-                    // do something...
+                    if(error.response.data.code === 500){
+                        Message({
+                            'message':error.response.data.message,
+                            'type':'error'
+                        });
+                    }
                     break
                 case 401:
                     // token黑名单 移除本地token，用户信息
