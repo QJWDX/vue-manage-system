@@ -93,18 +93,6 @@
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="form.email"></el-input>
                 </el-form-item>
-                <el-form-item label="头像">
-                    <el-input type="hidden" v-model="form.head_img_url"></el-input>
-                    <el-upload
-                        class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload">
-                        <img v-if="form.head_img_url" :src="form.head_img_url" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                 </el-form-item>
                 <el-form-item label="手机号" prop="tel">
                     <el-input v-model="form.tel" ></el-input>
                 </el-form-item>
@@ -227,7 +215,7 @@ export default {
                 ],
                 username: [
                     { required: true, message: '用户名不能为空', trigger: 'blur' },
-                    { min:4 , max:16, message: '用户名长度为4-16个字符', trigger: 'blur'}
+                    { min:2 , max:16, message: '用户名长度为2-16个字符', trigger: 'blur'}
                 ],
                 tel: [
                     { validator: checkPhone, trigger: 'blur' }
@@ -412,21 +400,6 @@ export default {
                 status: 0,
             };
             this.id = 0;
-        },
-        handleAvatarSuccess(res, file) {
-            this.form.head_img_url = URL.createObjectURL(file.raw);
-        },
-        beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
-            const isLt2M = file.size / 1024 / 1024 < 2;
-
-            if (!isJPG) {
-            this.$message.error('上传头像图片只能是 JPG 格式!');
-            }
-            if (!isLt2M) {
-            this.$message.error('上传头像图片大小不能超过 2MB!');
-            }
-            return isJPG && isLt2M;
         }
     }
 };
@@ -461,27 +434,4 @@ export default {
     width: 40px;
     height: 40px;
 }
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 120px;
-    height: 120px;
-    line-height: 120px;
-    text-align: center;
-  }
-  .avatar {
-    width: 120px;
-    height: 120px;
-    display: block;
-  }
 </style>

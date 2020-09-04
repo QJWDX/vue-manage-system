@@ -49,7 +49,6 @@ service.interceptors.request.use(
     config => {
         // 开启屏幕遮罩
         // showFullScreenLoading();
-        // console.log(store.getters.token);
         config.headers['Authorization'] = 'Bearer '+store.getters.token;
         return config;
     },
@@ -75,6 +74,12 @@ service.interceptors.response.use(
                     return false;
                 }
                 break;
+            case 201:
+                if(response.data.code === 201){
+                    store.dispatch('storeToken', response.data.data.token);
+                    return service.request(response.config);
+                }
+                break;
             default:
                 return Promise.reject();
                 break;
@@ -82,6 +87,7 @@ service.interceptors.response.use(
     },
     error => {
         if (error && error.response && error.response.status) {
+            console.log(error.response.status);
             switch (error.response.status) {
                 case 500:
                     if(error.response.data.code === 500){
@@ -94,6 +100,7 @@ service.interceptors.response.use(
                 case 401:
                     // token黑名单 移除本地token，用户信息
                     store.dispatch('delUserInfo');
+                    route.push('/login');
                     break;
                 case 403:
                     route.push('/403');
@@ -106,6 +113,9 @@ service.interceptors.response.use(
                 case 429:
                     // do something...
                     break
+                case 201:
+                    console.log('错误201');
+                    break;
                 default:
                     // do something...
                     break

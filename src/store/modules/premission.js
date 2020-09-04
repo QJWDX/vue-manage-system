@@ -77,6 +77,9 @@ const actions = {
     createAsnyRoutes(context, data){
         context.commit('createRoutes', data.routes);
         context.commit('createMenus', data.menus);
+    },
+    storeToken(context, token){
+        context.commit('setToken', token);
     }
 };
 
