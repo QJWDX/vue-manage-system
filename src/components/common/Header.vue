@@ -41,6 +41,9 @@
                         <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
                             <el-dropdown-item>项目仓库</el-dropdown-item>
                         </a>
+                        <el-dropdown-item>
+                            <router-link to="role">个人中心 </router-link>
+                        </el-dropdown-item>
                         <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>

@@ -61,3 +61,12 @@ export const getUnreadNumber = query => {
         params: query
     });
 };
+
+
+export const baseTable = query => {
+    return request({
+        url: '/example/baseTable',
+        method: 'get',
+        params: query
+    });
+}

@@ -23,7 +23,10 @@
                                 :index="subItem.index"
                                 :key="subItem.index"
                             >
-                                <template slot="title">{{ subItem.title }}</template>
+                                <template slot="title">
+                                    <i :class="subItem.icon"></i>
+                                    <span>{{ subItem.title }}</span>
+                                </template>
                                 <el-menu-item
                                     v-for="(threeItem,i) in subItem.subs"
                                     :key="i"
@@ -34,7 +37,10 @@
                                 v-else
                                 :index="subItem.index"
                                 :key="subItem.index"
-                            >{{ subItem.title }}</el-menu-item>
+                            >
+                                <i :class="subItem.icon"></i>
+                                <span>{{ subItem.title }}</span>
+                            </el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
