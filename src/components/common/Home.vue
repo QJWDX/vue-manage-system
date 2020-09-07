@@ -48,3 +48,37 @@ export default {
     }
 };
 </script>
+<style>
+.el-table--border:after,.el-table--group:after,.el-table:before {
+    background-color: #999999;
+}
+.el-table--border,.el-table--group {
+    border-color: #999999;
+}
+.el-table td,.el-table th.is-leaf {
+    border-bottom: 1px solid #999999;
+}
+.el-table--border th,.el-table--border th.gutter:last-of-type {
+    border-bottom: 1px solid #999999;
+}
+.el-table--border td,.el-table--border th {
+    border-right: 1px solid #999999;
+}
+.table {
+    width: 100%;
+    font-size: 14px;
+    color: #444444;
+}
+.red {
+    color: #ff0000;
+}
+.mr10 {
+    margin-right: 10px;
+}
+.table-td-thumb {
+    display: block;
+    margin: auto;
+    width: 40px;
+    height: 40px;
+}
+</style>

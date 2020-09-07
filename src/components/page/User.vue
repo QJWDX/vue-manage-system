@@ -25,17 +25,17 @@
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="姓名"></el-table-column>
                 <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="email" label="邮箱"></el-table-column>
                 <el-table-column prop="tel" label="手机号"></el-table-column>
-                <el-table-column prop="sex" label="性别">
-                     <template slot-scope="scope">
+                <!-- <el-table-column prop="email" label="邮箱"></el-table-column> -->
+                <!-- <el-table-column prop="sex" label="性别"> -->
+                     <!-- <template slot-scope="scope">
                           <span style="font-size:20px;">
                             <i v-if="scope.row.sex === 0" class="el-icon-s-custom" style="color:#409EFF"></i>
                             <i v-else-if="scope.row.sex === 1" class="el-icon-s-custom" style="color:#67C23A"></i>
                             <i v-else class="el-icon-s-custom" style="color:#F56C6C"></i>
                          </span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column prop="login_time" label="登陆时间"></el-table-column>
                 <el-table-column prop="login_ip" label="登陆ip"></el-table-column>
                 <el-table-column prop="login_count" label="登陆次数"></el-table-column>
@@ -43,8 +43,8 @@
                 <el-table-column prop="status" label="状态">
                      <template slot-scope="scope">
                          <span style="font-size:20px;">
-                            <i v-if="scope.row.status === 1" class="el-icon-circle-check" style="color:#67C23A"></i>
-                            <i v-else class="el-icon-circle-close" style="color:#F56C6C"></i>
+                            <i v-if="scope.row.status === 1" class="el-icon-open" style="color:#67C23A"></i>
+                            <i v-else class="el-icon-turn-off" style="color:#F56C6C"></i>
                          </span>
                     </template>
                 </el-table-column>
@@ -404,34 +404,17 @@ export default {
     }
 };
 </script>
-
 <style scoped>
 .handle-box {
     margin-bottom: 20px;
 }
 
 .handle-select {
-    width: 120px;
+    width: 80px;
 }
 
 .handle-input {
-    width: 300px;
+    width: 200px;
     display: inline-block;
-}
-.table {
-    width: 100%;
-    font-size: 14px;
-}
-.red {
-    color: #ff0000;
-}
-.mr10 {
-    margin-right: 10px;
-}
-.table-td-thumb {
-    display: block;
-    margin: auto;
-    width: 40px;
-    height: 40px;
 }
 </style>
