@@ -11,7 +11,6 @@ import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
 import {getVueRoute} from './api/index';
-
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
@@ -24,7 +23,7 @@ const i18n = new VueI18n({
 const whiteList = ['/login', '/403', '/404'];
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
+    document.title = `${to.meta.title} | 后台管理系统`;
     const hasToken = store.getters.token ? true : false;
     const role = store.getters.user.role;
     if(hasToken && role){
