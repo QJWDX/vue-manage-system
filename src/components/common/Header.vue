@@ -133,28 +133,26 @@ export default {
         }
         const token = this.$store.getters.token;
         const userId = this.$store.getters.user.id;
-        // console.log(userId);
-        // console.log(token);
         // window.io = io
         // window.Echo = new Echo({
-        // broadcaster: 'socket.io',
-        // host: 'http://localhost:6001',
-        // auth: {
-        //     headers: {
-        //     Authorization: 'Bearer ' + token
+        //     broadcaster: 'socket.io',
+        //     host: 'http://localhost:6001',
+        //     auth: {
+        //         headers: {
+        //         Authorization: 'Bearer ' + token
+        //         }
         //     }
-        // }
-        // })
-        // 公共频道
+        // });
+        // // 公共频道
         // window.Echo.channel('news').listen('News', (e) => {
         //   console.log('广播消息接收成功：')
         //   console.log(e)
         // })
-        // 私有频道
+        // // 私有频道
         // window.Echo.private('news').listen('News', (res) => {
         //   console.log(res)
         // })
-        // 消息通知
+        // // 消息通知
         // window.Echo.private('App.Models.User.' + userId).notification((notification) => {
         //     console.log('接收的消息如下：')
         //     // console.log(notification)

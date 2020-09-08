@@ -18,9 +18,7 @@
                         </el-form>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="其他设置1" name="second">其他设置1</el-tab-pane>
-                <el-tab-pane label="其他设置2" name="third">其他设置2</el-tab-pane>
-                <el-tab-pane label="其他设置3" name="fourth">其他设置3</el-tab-pane>
+                <el-tab-pane label="其他设置" name="second">其他设置</el-tab-pane>
             </el-tabs>
         </div>
     </div>
@@ -31,70 +29,11 @@ export default {
     name: 'baseform',
     data() {
         return {
-            options: [
-                {
-                    value: 'guangdong',
-                    label: '广东省',
-                    children: [
-                        {
-                            value: 'guangzhou',
-                            label: '广州市',
-                            children: [
-                                {
-                                    value: 'tianhe',
-                                    label: '天河区'
-                                },
-                                {
-                                    value: 'haizhu',
-                                    label: '海珠区'
-                                }
-                            ]
-                        },
-                        {
-                            value: 'dongguan',
-                            label: '东莞市',
-                            children: [
-                                {
-                                    value: 'changan',
-                                    label: '长安镇'
-                                },
-                                {
-                                    value: 'humen',
-                                    label: '虎门镇'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    value: 'hunan',
-                    label: '湖南省',
-                    children: [
-                        {
-                            value: 'changsha',
-                            label: '长沙市',
-                            children: [
-                                {
-                                    value: 'yuelu',
-                                    label: '岳麓区'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
             form: {
                 name: '',
                 region: '',
-                date1: '',
-                date2: '',
-                delivery: true,
-                type: ['步步高'],
-                resource: '小天才',
-                desc: '',
-                options: []
             },
-            activeName: 'second'
+            activeName: 'first'
         };
     },
     methods: {

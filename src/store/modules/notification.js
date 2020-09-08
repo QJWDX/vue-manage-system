@@ -9,10 +9,10 @@ const getters = {
         return state.unreadNumber;
     },
     read:(state) => {
-        return state.unread;
+        return state.read;
     },
     unread:(state) => {
-        return state.read;
+        return state.unread;
     },
 };
 
