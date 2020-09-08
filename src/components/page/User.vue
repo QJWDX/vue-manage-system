@@ -140,8 +140,6 @@
 <script>
 import { userList, userStore, userInfo, saveUser, delUser, getUserRole, setUserRole} from '../../api/user';
 import { getRoleTree } from '../../api/role';
-import DragDialogVue from './DragDialog.vue';
-import { Row } from 'element-ui';
 export default {
     name: 'basetable',
     data() {

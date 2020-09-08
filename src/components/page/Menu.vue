@@ -24,7 +24,7 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="菜单名称"></el-table-column>
-                <el-table-column prop="component" label="组件名称"></el-table-column>
+                <el-table-column prop="component" label="组件地址"></el-table-column>
                 <el-table-column prop="path" label="路由"></el-table-column>
                 <el-table-column prop="icon" label="图标">
                     <template slot-scope="scope">
@@ -85,37 +85,37 @@
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close='closeDialog'>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" @close='closeDialog'>
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="菜单名称" prop="name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="上级菜单">
-                    <el-select v-model="form.parent_id" placeholder="请选择父级菜单" style="width: 100%;">
-                    <el-option label="菜单一" value="1"></el-option>
-                    <el-option label="菜单二" value="2"></el-option>
+                    <el-select v-model="form.parent_id" placeholder="请选择父级菜单" style="width: 100%;" @change="change()">
+                    <el-option label="一级菜单" value="0" ></el-option>
+                    <el-option v-for="(item, index) in menus" :key="index" :label="item" :value="index" ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="菜单路由" prop="path">
                     <el-input v-model="form.path"></el-input>
                 </el-form-item>
-                <el-form-item label="菜单组件" prop="component">
+                <el-form-item label="组件地址" prop="component">
                     <el-input v-model="form.component"></el-input>
                 </el-form-item>
-                <el-form-item label="菜单图标" prop="icon">
+                <el-form-item label="菜单图标">
                     <el-input v-model="form.icon" ></el-input>
                 </el-form-item>
                 <el-form-item label="是否展示">
-                    <el-switch v-model="form.is_show"></el-switch>
+                    <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
                 <el-form-item label="关联路由">
-                    <el-switch v-model="form.is_related_route"></el-switch>
+                    <el-switch v-model="form.is_related_route" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
                 <el-form-item label="默认路由">
-                    <el-switch v-model="form.is_default"></el-switch>
+                    <el-switch v-model="form.is_default" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
-                 <el-form-item label="排序字段">
-                    <el-input v-model="form.sort_field"></el-input>
+                 <el-form-item label="排序字段" prop="sort_field">
+                    <el-input v-model="form.sort_field" type="number" min="0" max="9999"></el-input>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
@@ -127,44 +127,24 @@
 </template>
 
 <script>
-import { menuList, menuStore, menuInfo, saveMenu, delMenu} from '../../api/menus';
-import DragDialogVue from './DragDialog.vue';
-import { Row } from 'element-ui';
+import { menuList, menuStore, menuInfo, saveMenu, delMenu, menuSelect} from '../../api/menus';
 export default {
-    name: 'basetable',
     data() {
-            var checkPhone = (rule, value, callback) => {
-            const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
-            if (!value) {
-            return callback(new Error('电话号码不能为空'))
-            }
-            setTimeout(() => {
-            // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
-            // 所以我就在前面加了一个+实现隐式转换
-
-            if (!Number.isInteger(+value)) {
-                callback(new Error('请输入数字值'))
-            } else {
-                if (phoneReg.test(value)) {
-                    callback()
-                } else {
-                    callback(new Error('电话号码格式不正确'))
+        var checkPath = (rule, value, callback) => {
+            if (parseInt(this.form.is_related_route)) {
+                if(!value){
+                    return callback(new Error('关联路由选中后路由不能为空'))
                 }
             }
-            }, 100)
+            callback()
         };
-        var checkEmail = (rule, value, callback) => {
-            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
-            if (!value) {
-                return callback(new Error('邮箱不能为空'))
-            }
-            setTimeout(() => {
-                if (mailReg.test(value)) {
-                    callback()
-                } else {
-                    callback(new Error('请输入正确的邮箱格式'))
+        var checkComponent = (rule, value, callback) => {
+            if (parseInt(this.form.is_related_route)) {
+                if(!value){
+                    return callback(new Error('关联路由选中后组件不能为空'))
                 }
-            }, 100)
+            }
+            callback()
         };
         return {
             query: {
@@ -183,7 +163,7 @@ export default {
                 name: '',
                 icon: '',
                 component: '',
-                parent_id: 0,
+                parent_id: '0',
                 path: '',
                 is_show: 0,
                 is_related_route: 0,
@@ -192,27 +172,21 @@ export default {
             },
             dialogType: '',
             id: 0,
-            props: {
-                label: 'label',
-                children: 'children'
-            },
             menus: [],
-            defaultExpand: true,
-            checkRole:[],
             rules: {
                 name: [
-                    { required: true, message: '姓名不能为空', trigger: 'blur' },
-                    { min:2 , max:6, message: '姓名长度为2-6个字符', trigger: 'blur'}
+                    { required: true, message: '菜单名称不能为空', trigger: 'blur' },
+                    { min:2 , max:6, message: '菜单名称长度为2-6个字符', trigger: 'blur'}
                 ],
-                username: [
-                    { required: true, message: '用户名不能为空', trigger: 'blur' },
-                    { min:2 , max:16, message: '用户名长度为2-16个字符', trigger: 'blur'}
+                path: [
+                    { validator: checkPath, trigger: 'blur' }
                 ],
-                tel: [
-                    { validator: checkPhone, trigger: 'blur' }
+                component: [
+                    { validator: checkComponent, trigger: 'blur' }
                 ],
-                email: [
-                    { validator: checkEmail, trigger: 'blur' }
+                sort_field: [
+                    { required: true, message: '排序值不能为空', trigger: 'blur' },
+                    { min:0 , max:4, message: '排序值范围为0-9999', trigger: 'blur'}
                 ],
             }
         }
@@ -220,6 +194,7 @@ export default {
     inject: ['reload'],
     created() {
         this.getData();
+        this.getMenuSelect();
     },
     methods: {
         cellStyle({row, column, rowIndex, columnIndex}){
@@ -234,6 +209,11 @@ export default {
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
                 this.page = res.data.currentPage || 1;
+            });
+        },
+        getMenuSelect(){
+            menuSelect().then(res => {
+                this.menus = res.data;
             });
         },
         // 触发搜索按钮
@@ -253,7 +233,7 @@ export default {
                     this.form = {
                         name: res.data.name,
                         component: res.data.component,
-                        parent_id: res.data.parent_id,
+                        parent_id: '' + res.data.parent_id + '',
                         icon: res.data.icon,
                         path: res.data.path,
                         is_show: res.data.is_show,
@@ -272,8 +252,6 @@ export default {
                 if (valid) {
                     switch(this.dialogType){
                         case 'add':
-                            this.form.status = parseInt(this.form.status);
-                            this.form.sex = parseInt(this.form.sex);
                             menuStore(this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
@@ -349,7 +327,7 @@ export default {
             this.form = {
                 name: '',
                 component: '',
-                parent_id: 0,
+                parent_id: '0',
                 path: '',
                 is_show: 0,
                 is_related_route: 0,
@@ -357,6 +335,9 @@ export default {
                 sort_field: 999,
             };
             this.id = 0;
+        },
+        change(){
+            this.$forceUpdate()
         }
     }
 };

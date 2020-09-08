@@ -87,15 +87,14 @@ service.interceptors.response.use(
     },
     error => {
         if (error && error.response && error.response.status) {
-            console.log(error.response.status);
             switch (error.response.status) {
                 case 500:
-                    if(error.response.data.code === 500){
-                        Message({
-                            'message':error.response.data.message,
-                            'type':'error'
-                        });
-                    }
+                    Message({
+                        'message':error.response.data.message,
+                        'type':'error',
+                        'duration' : 5000,
+                        'showClose' :true
+                    });
                     break
                 case 401:
                     // token黑名单 移除本地token，用户信息

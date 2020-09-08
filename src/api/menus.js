@@ -43,3 +43,11 @@ export const delMenu = id => {
         params: []
     });
 };
+
+
+export const menuSelect = () => {
+    return request({
+        url: 'api/menus/menuSelect',
+        method: 'get'
+    });
+};
