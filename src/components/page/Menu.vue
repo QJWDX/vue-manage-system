@@ -34,26 +34,17 @@
                 </el-table-column>
                 <el-table-column prop="is_related_route" label="关联路由">
                     <template slot-scope="scope">
-                         <span style="font-size:20px;">
-                            <i v-if="scope.row.is_related_route === 1" class="el-icon-open" style="color:#67C23A"></i>
-                            <i v-else class="el-icon-turn-off" style="color:#F56C6C"></i>
-                         </span>
+                        <el-switch v-model="scope.row.is_related_route" :active-value="1" :inactive-value="0" disabled></el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column prop="is_show" label="状态">
-                    <template slot-scope="scope">
-                         <span style="font-size:20px;">
-                            <i v-if="scope.row.is_show === 1" class="el-icon-open" style="color:#67C23A"></i>
-                            <i v-else class="el-icon-turn-off" style="color:#F56C6C"></i>
-                         </span>
+                    <template slot-scope="scope">   
+                        <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column prop="is_default" label="默认路由">
                      <template slot-scope="scope">
-                         <span style="font-size:20px;">
-                            <i v-if="scope.row.is_default === 1" class="el-icon-open" style="color:#67C23A"></i>
-                            <i v-else class="el-icon-turn-off" style="color:#F56C6C"></i>
-                         </span>
+                         <el-switch v-model="scope.row.is_default" :active-value="1" :inactive-value="0" disabled></el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="220" align="center">

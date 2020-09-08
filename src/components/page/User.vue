@@ -23,29 +23,24 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="姓名"></el-table-column>
+                <!-- <el-table-column prop="name" label="姓名"></el-table-column> -->
                 <el-table-column prop="username" label="用户名"></el-table-column>
                 <el-table-column prop="tel" label="手机号"></el-table-column>
                 <!-- <el-table-column prop="email" label="邮箱"></el-table-column> -->
-                <!-- <el-table-column prop="sex" label="性别"> -->
-                     <!-- <template slot-scope="scope">
-                          <span style="font-size:20px;">
-                            <i v-if="scope.row.sex === 0" class="el-icon-s-custom" style="color:#409EFF"></i>
-                            <i v-else-if="scope.row.sex === 1" class="el-icon-s-custom" style="color:#67C23A"></i>
-                            <i v-else class="el-icon-s-custom" style="color:#F56C6C"></i>
-                         </span>
+                <el-table-column prop="sex" label="性别">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.sex === 0">女</span>
+                        <span v-else-if="scope.row.sex === 1">男</span>
+                        <span v-else>未知</span>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
                 <el-table-column prop="login_time" label="登陆时间"></el-table-column>
                 <el-table-column prop="login_ip" label="登陆ip"></el-table-column>
                 <el-table-column prop="login_count" label="登陆次数"></el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column prop="status" label="状态">
                      <template slot-scope="scope">
-                         <span style="font-size:20px;">
-                            <i v-if="scope.row.status === 1" class="el-icon-open" style="color:#67C23A"></i>
-                            <i v-else class="el-icon-turn-off" style="color:#F56C6C"></i>
-                         </span>
+                         <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" disabled></el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="220" align="center">
@@ -82,7 +77,7 @@
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog title="新增" :visible.sync="dialogVisible" width="30%" @close='closeDialog'>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
             <el-form ref="form" :model="form" :rules="rules" label-width="70px">
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="form.name"></el-input>
@@ -104,10 +99,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="状态">
-                    <el-radio-group v-model="form.status">
-                        <el-radio :label="1">启用</el-radio>
-                        <el-radio :label="0">禁用</el-radio>
-                    </el-radio-group>
+                    <el-switch v-model="form.status" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
@@ -117,7 +109,7 @@
         </el-dialog>
 
         <!-- 角色分配 -->
-        <el-dialog title="用户角色分配" :visible.sync="roleVisible" width="30%" @close='closeDialog'>
+        <el-dialog title="角色分配" :visible.sync="roleVisible" width="40%" @close='closeDialog'>
             <el-tree
             :props="props"
             :data="menus"
@@ -186,6 +178,8 @@ export default {
             multipleSelection: [],
             checkList: [],
             dialogVisible: false,
+            dialogType: 'add',
+            dialogTitle: '新增菜单',
             roleVisible: false,
             pageTotal: 0,
             form: {
@@ -197,7 +191,6 @@ export default {
                 status: 0,
                 head_img_url: '',
             },
-            dialogType: '',
             id: 0,
             props: {
                 label: 'label',
@@ -250,6 +243,7 @@ export default {
         handAdd(){
             this.dialogType = 'add';
             this.dialogVisible = true;
+            this.dialogTitle = '新增用户';
         },
         // 编辑操作
         handleEdit(index, row) {
@@ -265,6 +259,7 @@ export default {
                         status: res.data.status,
                     }
                     this.dialogType = 'edit';
+                    this.dialogTitle = '编辑用户';
                     this.dialogVisible = true;
                 }
             });
@@ -387,6 +382,7 @@ export default {
         closeDialog(){
             this.checkRole = [];
             this.dialogVisible = false;
+            this.dialogTitle = '新增用户';
             this.roleVisible = false;
             this.dialogType = '';
             this.form = {

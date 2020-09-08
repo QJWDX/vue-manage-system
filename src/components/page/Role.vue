@@ -9,7 +9,7 @@
                     icon="el-icon-delete"
                     class="handle-del ml5"
                     @click="delAllSelection"
-                >删除</el-button>
+                >批量删除</el-button>
                 <el-button
                     type="primary"
                     icon="el-icon-plus"
@@ -31,8 +31,11 @@
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="role_name" label="角色名称"></el-table-column>
                 <el-table-column prop="description" label="描述"></el-table-column>
-                <el-table-column prop="is_super" label="是否超级角色"></el-table-column>
-                 <el-table-column prop="parent_name" label="父级角色"></el-table-column>
+                <el-table-column prop="is_super" label="是否超级角色">
+                    <template slot-scope="scope">
+                         <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" disabled></el-switch>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column prop="updated_at" label="更新时间"></el-table-column>
                 <el-table-column label="操作" width="220" align="center">
@@ -68,52 +71,26 @@
             </div>
         </div>
 
-        <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%" @close='closeDialog'>
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="角色">
-                    <el-input v-model="form.role_name"></el-input>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input type="textarea" v-model="form.description"></el-input>
-                </el-form-item>
-                <el-form-item label="超级角色">
-                    <el-radio-group v-model="form.is_super">
-                        <el-radio :label="1">是</el-radio>
-                        <el-radio :label="0">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-           </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
-            </span>
-        </el-dialog>
-
-        <!-- 新增弹出框 -->
-        <el-dialog title="新增" :visible.sync="addVisible" width="30%" @close='closeDialog'>
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="角色名称">
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="角色名称" prop="role_name">
                     <el-input v-model="form.role_name"></el-input>
                 </el-form-item>
                 <el-form-item label="角色描述">
                     <el-input type="textarea" v-model="form.description"></el-input>
                 </el-form-item>
                 <el-form-item label="超级角色">
-                    <el-radio-group v-model="form.is_super">
-                        <el-radio :label="1">是</el-radio>
-                        <el-radio :label="0">否</el-radio>
-                    </el-radio-group>
+                   <el-switch v-model="form.is_super" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="saveAdd">确 定</el-button>
+                <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
 
         <!-- 权限分配 -->
-        <el-dialog title="权限分配" :visible.sync="authVisible" width="30%" @close='closeDialog'>
+        <el-dialog title="权限分配" :visible.sync="authVisible" width="40%" @close='closeDialog'>
             <el-tree
             :props="props"
             :data="menus"
@@ -134,7 +111,8 @@
 </template>
 
 <script>
-import { getRoleList, addRole, delRole, modRole, getRoleInfo, getMenuTree, getRoleMenus, setRoleMenus} from '../../api/role';
+import {roleList, storeRole, delRole, saveRole, roleInfo, deleteAll} from '../../api/role';
+import {getMenuTree, getRoleMenus, setRoleMenus} from '../../api/menus';
 export default {
     name: 'basetable',
     data() {
@@ -150,8 +128,9 @@ export default {
             is_super: 0,
             multipleSelection: [],
             delList: [],
-            editVisible: false,
-            addVisible: false,
+            dialogVisible: false,
+            dialogTitle: '新增角色',
+            dialogType: 'add',
             authVisible: false,
             form: {
                 role_name:'',
@@ -164,6 +143,12 @@ export default {
             props: {
                 label: 'label',
                 children: 'children'
+            },
+             rules: {
+                role_name: [
+                    {required: true, message: '角色名称不能为空', trigger: 'blur' },
+                    { min:2 , max:6, message: '角色名称长度为2-6个字符', trigger: 'blur'}
+                ]
             }
         };
     },
@@ -180,7 +165,7 @@ export default {
         },
         //获取列表数据
         getData() {
-            getRoleList(this.query).then(res => {
+            roleList(this.query).then(res => {
                 this.tableData = res.data.items || [];
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
@@ -190,9 +175,7 @@ export default {
         // 获取权限菜单
         getMenus(query){
             getMenuTree(query).then(res => {
-                if(res){
-                    this.menus = res.data;
-                }
+                this.menus = res.data;
             });
         },
         // 触发搜索按钮
@@ -201,21 +184,57 @@ export default {
         },
         // 新增弹窗
         handAdd(){
-            this.addVisible = true;
+            this.dialogVisible =  true;
+            this.dialogTitle =  '新增角色';
+            this.dialogType = 'add';
         },
-        // 新增保存
-        saveAdd(){
-            addRole(this.form).then(res => {
-                if(res){
-                    this.$message.success(res.message);
+        // 编辑操作
+        handleEdit(index, row) {
+            roleInfo(row.id).then(res => {
+                    this.id = res.data.id;
                     this.form = {
-                        role_name:'',
-                        description:'',
-                        is_super: 0
+                        role_name: res.data.role_name,
+                        description: res.data.description,
+                        is_super: res.data.is_super
+                    }
+                    this.dialogVisible = true;
+                    this.dialogType = 'edit';
+                    this.dialogTitle = '编辑角色';
+            });
+        },
+        // 新增编辑
+        submitForm(){
+            this.$refs['form'].validate((valid) => {
+                if (valid) {
+                    switch(this.dialogType){
+                        case 'add':
+                            this.form.status = parseInt(this.form.status);
+                            this.form.sex = parseInt(this.form.sex);
+                            storeRole(this.form).then(res => {
+                                if(res){
+                                    this.$message.success(res.message);
+                                    this.closeDialog();
+                                    this.getData();
+                                    this.reload();
+                                }
+                            });
+                            break;
+                        case 'edit':
+                             saveRole(this.id, this.form).then(res => {
+                                if(res){
+                                    this.$message.success(res.message);
+                                    this.closeDialog();
+                                    this.getData();
+                                    this.reload();
+                                }
+                            });
+                            break;
+                        default:
+                            return false;
+                            break;
                     };
-                    this.addVisible = false;
-                    this.getData();
-                    this.reload();
+                } else {
+                    return false;
                 }
             });
         },
@@ -224,7 +243,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                delRole({ids:row.id}).then(res => {
+                delRole(row.id).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.tableData.splice(index, 1);
@@ -250,42 +269,16 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                delRole({ids:this.delList.join(',')}).then(res => {
+                deleteAll({ids:this.delList}).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.delList = [];
                         this.multipleSelection = [];
+                        this.getData();
                         this.reload();
                     }
                 });
             }).catch(() => {});
-        },
-        // 编辑操作
-        handleEdit(index, row) {
-            getRoleInfo(row.id).then(res => {
-                if(res){
-                    this.id = res.data.id;
-                    this.form = {
-                        role_name: res.data.role_name,
-                        description: res.data.description,
-                        is_super: res.data.is_super
-                    }
-                    this.editVisible = true;
-                }
-            });
-        },
-        // 保存编辑
-        saveEdit() {
-            if(this.id){
-                modRole(this.id, this.form).then(res => {
-                    if(res){
-                        this.editVisible = false;
-                        this.$message.success(res.message);
-                        this.getData();
-                    }
-                    this.id = 0;
-                });
-            }
         },
         // 分页导航
         handlePageChange(val) {
@@ -339,8 +332,9 @@ export default {
         },
         // 关闭弹窗后页面数据初始化
         closeDialog(){
-            this.addVisible = false;
-            this.editVisible = false;
+            this.dialogTitle =  '新增角色';
+            this.dialogType = 'add';
+            this.dialogVisible = false;
             this.authVisible = false;
             this.checkMenus = [];
             this.form =  {

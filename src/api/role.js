@@ -1,72 +1,48 @@
 import request from '../utils/request';
 
-export const getMenuTree = query => {
+export const roleList = query => {
     return request({
-        url: 'api/menus/getMenuTree',
+        url: 'api/role',
         method: 'get',
         params: query
     });
 };
 
-export const getRoleMenus = query => {
+export const storeRole = query => {
     return request({
-        url: 'api/menus/getRoleMenus',
-        method: 'get',
-        params: query
-    });
-};
-
-export const setRoleMenus = query => {
-    return request({
-        url: 'api/menus/setRoleMenus',
+        url: 'api/role',
         method: 'post',
         params: query
     });
 };
 
-export const getTableData = query => {
+export const roleInfo = id => {
     return request({
-        url: 'api/example/baseTable',
-        method: 'get',
-        params: query
-    });
-};
-
-export const getRoleList = query => {
-    return request({
-        url: 'api/role/getRoleList',
-        method: 'get',
-        params: query
-    });
-};
-
-export const addRole = query => {
-    return request({
-        url: 'api/role/addRole',
-        method: 'post',
-        params: query
-    });
-};
-
-export const getRoleInfo = id => {
-    return request({
-        url: 'api/role/getRoleInfo/' + id,
+        url: 'api/role/' + id,
         method: 'get',
         params: []
     });
 };
 
-export const modRole = (id, query) => {
+export const saveRole = (id, query) => {
     return request({
-        url: 'api/role/modRole/' + id,
+        url: 'api/role/' + id,
         method: 'put',
         params: query
     });
 };
 
-export const delRole = query => {
+export const delRole = id => {
     return request({
-        url: 'api/role/delRole',
+        url: 'api/role/' + id,
+        method: 'delete',
+        params: []
+    });
+};
+
+export const deleteAll = query => {
+    return request({
+        url: 'api/role/deleteAll',
         method: 'delete',
         params: query
     });

@@ -51,3 +51,28 @@ export const menuSelect = () => {
         method: 'get'
     });
 };
+
+
+export const getMenuTree = query => {
+    return request({
+        url: 'api/menus/getMenuTree',
+        method: 'get',
+        params: query
+    });
+};
+
+export const getRoleMenus = query => {
+    return request({
+        url: 'api/menus/getRoleMenus',
+        method: 'get',
+        params: query
+    });
+};
+
+export const setRoleMenus = query => {
+    return request({
+        url: 'api/menus/setRoleMenus',
+        method: 'post',
+        params: query
+    });
+};
