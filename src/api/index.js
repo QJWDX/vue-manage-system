@@ -15,6 +15,13 @@ export const logout = () => {
     });
 };
 
+export const getCaptcha = () => {
+    return request({
+        url: 'api/auth/getCaptcha',
+        method: 'post'
+    });
+};
+
 export const getUserInfo = () => {
     return request({
         url: 'api/auth/user',

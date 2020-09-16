@@ -30,7 +30,7 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="role_name" label="角色名称"></el-table-column>
-                <el-table-column prop="description" label="描述"></el-table-column>
+                <el-table-column prop="description" label="描述" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="is_super" label="是否超级角色">
                     <template slot-scope="scope">
                          <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" disabled></el-switch>
@@ -77,7 +77,7 @@
                     <el-input v-model="form.role_name"></el-input>
                 </el-form-item>
                 <el-form-item label="角色描述">
-                    <el-input type="textarea" v-model="form.description"></el-input>
+                    <el-input type="textarea" v-model="form.description" :rows="4"></el-input>
                 </el-form-item>
                 <el-form-item label="超级角色">
                    <el-switch v-model="form.is_super" :active-value="1" :inactive-value="0"></el-switch>
@@ -320,7 +320,6 @@ export default {
                     this.checkMenus.splice(index, 1);
                 }
             }
-            console.log(this.checkMenus);
             // console.log(data, checked, indeterminate);
         },
         // 树形节点点击触发事件

@@ -4,7 +4,7 @@
             <div class="ms-title">后台管理系统</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
+                    <el-input v-model="param.username" placeholder="username" class="login-input">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -14,40 +14,70 @@
                         placeholder="password"
                         v-model="param.password"
                         @keyup.enter.native="submitForm()"
+                        class="login-input"
                     >
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
+                <el-form-item prop="captcha_code">
+                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:200px;" class="login-input">
+                        <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
+                    </el-input>
+                    <img :src="catcha_img" alt="" style="margin-left:16px;" @click="getCaptchaInfo">
+                </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()" :disabled="disable">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+                <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
-// import {mapActions} from 'vuex';
+import { getCaptcha } from '../../api/index';
+import DragDialogVue from './DragDialog.vue';
 export default {
     data: function() {
         return {
             disable: false,
+            catcha_img:'',
             param: {
                 username: '',
                 password: '',
+                captcha_code: '',
+                captcha_key: '',
             },
             rules: {
-                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-                password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { min:2 , max:8, message: '用户名长度为2-8个字符', trigger: 'blur'}
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                    { min:4 , max:16, message: '密码长度为4-16字符', trigger: 'blur'}
+                ],
+                captcha_code: [
+                    { required: true, message: '请输入验证码', trigger: 'blur' },
+                    { min:6 , max:6, message: '验证码长度为6字符', trigger: 'blur'}
+                ]
             },
         };
     },
+    created(){
+        this.getCaptchaInfo();
+    },
     methods: {
-        // ...mapActions('premission',['storeToken', 'storeUserInfo']),
+        getCaptchaInfo(){
+            getCaptcha().then(res => {
+                this.catcha_img = res.data.img;
+                this.param.captcha_key = res.data.key;
+            })
+        },
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
+                    console.log(this.param);
                      this.$store.dispatch('userLogin', this.param).then(res => {
                             this.disable = false;
                             this.$router.push('/');
@@ -55,8 +85,6 @@ export default {
                             console.log(err);
                         });
                 } else {
-                    this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
                     return false;
                 }
             });
@@ -70,7 +98,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    /* background-image: url(../../assets/img/login-bg.jpg); */
+    background-image: url(../../assets/img/login-bg1.png);
     background-size: 100%;
 }
 .ms-title {
@@ -85,14 +113,14 @@ export default {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 350px;
-    margin: -190px 0 0 -175px;
-    border-radius: 5px;
+    width: 400px;
+    margin: -260px 0 0 -200px;
+    border-radius: 2px;
     background: rgba(255, 255, 255, 0.3);
     overflow: hidden;
 }
 .ms-content {
-    padding: 30px 30px;
+    padding: 15px 30px;
 }
 .login-btn {
     text-align: center;
@@ -106,5 +134,10 @@ export default {
     font-size: 12px;
     line-height: 30px;
     color: #fff;
+}
+.login-input >>> .el-input__inner{
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
 }
 </style>
