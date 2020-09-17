@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getCaptcha } from '../../api/index';
+import { getCaptcha, getRsaPublicKey } from '../../api/index';
 import DragDialogVue from './DragDialog.vue';
 export default {
     data: function() {
@@ -43,8 +43,8 @@ export default {
             disable: false,
             catcha_img:'',
             param: {
-                username: '',
-                password: '',
+                username: 'admin',
+                password: 'admin',
                 captcha_code: '',
                 captcha_key: '',
             },
@@ -77,13 +77,28 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    console.log(this.param);
-                     this.$store.dispatch('userLogin', this.param).then(res => {
+                   getRsaPublicKey().then(res => {
+                        console.log(res.data);
+                        let encryptKey = res.data.key;
+                        let publicKey = res.data.public_key;
+                        var crypt = new this.$jsEncrypt({
+                            default_key_size: 1024
+                        });
+                        crypt.setPublicKey(publicKey);
+                        let params = {encrypt_data: crypt.encrypt(JSON.stringify(this.param))};
+                        let headers = {
+                            encryptKey: encryptKey
+                        };
+                         console.log(JSON.stringify(this.param));
+                        console.log(encryptKey);
+                        console.log(params);
+                        this.$store.dispatch('userLogin', params, headers).then(res => {
                             this.disable = false;
                             this.$router.push('/');
                         }).catch(err => {
                             console.log(err);
                         });
+                    });
                 } else {
                     return false;
                 }
@@ -138,6 +153,6 @@ export default {
 .login-input >>> .el-input__inner{
     height: 40px;
     line-height: 40px;
-    font-size: 16px;
+    font-size: 14px;
 }
 </style>

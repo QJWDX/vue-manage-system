@@ -58,9 +58,9 @@ const mutations = {
 };
 
 const actions = {
-    userLogin(context, query){
+    userLogin(context, query, headers){
         return new Promise(function(resolve, reject){
-            login(query).then(res => {
+            login(query, headers).then(res => {
                 console.log(res);
                 context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);

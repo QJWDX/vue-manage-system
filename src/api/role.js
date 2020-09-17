@@ -12,15 +12,14 @@ export const storeRole = query => {
     return request({
         url: 'api/role',
         method: 'post',
-        params: query
+        data: query
     });
 };
 
 export const roleInfo = id => {
     return request({
         url: 'api/role/' + id,
-        method: 'get',
-        params: []
+        method: 'get'
     });
 };
 
@@ -28,7 +27,7 @@ export const saveRole = (id, query) => {
     return request({
         url: 'api/role/' + id,
         method: 'put',
-        params: query
+        data: query
     });
 };
 

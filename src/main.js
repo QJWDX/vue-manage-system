@@ -11,7 +11,10 @@ import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
 import {getVueRoute} from './api/index';
+import {JSEncrypt} from 'jsencrypt';
+const Base64 = require('js-base64').Base64;
 Vue.config.productionTip = false;
+Vue.prototype.$jsEncrypt = JSEncrypt;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
@@ -71,5 +74,6 @@ new Vue({
     router,
     store,
     i18n,
+    Base64,
     render: h => h(App)
 }).$mount('#app');

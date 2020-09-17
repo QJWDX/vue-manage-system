@@ -12,7 +12,7 @@ export const userStore = query => {
     return request({
         url: 'api/user',
         method: 'post',
-        params: query
+        data: query
     });
 };
 
@@ -32,15 +32,14 @@ export const saveUser = (id, query) => {
     return request({
         url: 'api/user/' + id,
         method: 'put',
-        params: query
+        data: query
     });
 };
 
 export const delUser = id => {
     return request({
         url: 'api/user/' + id,
-        method: 'delete',
-        params: []
+        method: 'delete'
     });
 };
 
@@ -56,7 +55,7 @@ export const setUserRole = (id, query) => {
     return request({
         url: 'api/user/setUserRole/' + id,
         method: 'post',
-        params: query
+        data: query
     });
 };
 

@@ -1,10 +1,11 @@
 import request from '../utils/request';
 
-export const login = query => {
+export const login = (query, headers) => {
     return request({
         url: 'api/auth/login',
         method: 'post',
-        params: query
+        data: query,
+        headers: headers
     });
 };
 
@@ -18,6 +19,13 @@ export const logout = () => {
 export const getCaptcha = () => {
     return request({
         url: 'api/auth/getCaptcha',
+        method: 'post'
+    });
+};
+
+export const getRsaPublicKey = () => {
+    return request({
+        url: 'api/auth/getRsaPublicKey',
         method: 'post'
     });
 };

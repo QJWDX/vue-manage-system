@@ -12,7 +12,7 @@ export const menuStore = query => {
     return request({
         url: 'api/menus',
         method: 'post',
-        params: query
+        data: query
     });
 };
 
@@ -20,8 +20,7 @@ export const menuStore = query => {
 export const menuInfo = id => {
     return request({
         url: 'api/menus/' + id,
-        method: 'get',
-        params: []
+        method: 'get'
     });
 };
 
@@ -32,7 +31,7 @@ export const saveMenu = (id, query) => {
     return request({
         url: 'api/menus/' + id,
         method: 'put',
-        params: query
+        data: query
     });
 };
 
@@ -73,6 +72,6 @@ export const setRoleMenus = query => {
     return request({
         url: 'api/menus/setRoleMenus',
         method: 'post',
-        params: query
+        data: query
     });
 };
