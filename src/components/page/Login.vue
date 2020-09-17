@@ -89,7 +89,7 @@ export default {
                         let headers = {
                             encryptKey: encryptKey
                         };
-                         console.log(JSON.stringify(this.param));
+                        console.log(JSON.stringify(this.param));
                         console.log(encryptKey);
                         console.log(params);
                         this.$store.dispatch('userLogin', params, headers).then(res => {
