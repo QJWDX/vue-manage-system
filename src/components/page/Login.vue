@@ -92,6 +92,7 @@ export default {
                                 this.disable = false;
                                 this.$router.push('/');
                             }).catch(err => {
+                                this.disable = false;
                                 console.log(err);
                             });
                         });
