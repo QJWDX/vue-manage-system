@@ -4,7 +4,7 @@ export const login = (query, headers) => {
     return request({
         url: 'api/auth/login',
         method: 'post',
-        data: query,
+        params: query,
         headers: headers
     });
 };

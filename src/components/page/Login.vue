@@ -59,7 +59,7 @@ export default {
                 ],
                 captcha_code: [
                     { required: true, message: '请输入验证码', trigger: 'blur' },
-                    { min:6 , max:6, message: '验证码长度为6字符', trigger: 'blur'}
+                    { min:4 , max:4, message: '验证码长度为4字符', trigger: 'blur'}
                 ]
             },
         };
@@ -77,28 +77,24 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                   getRsaPublicKey().then(res => {
-                        console.log(res.data);
-                        let encryptKey = res.data.key;
-                        let publicKey = res.data.public_key;
-                        var crypt = new this.$jsEncrypt({
-                            default_key_size: 1024
+                    this.disable = true;
+                    getRsaPublicKey().then(res => {
+                            let key = res.data.key; 
+                            let publicKey = res.data.public_key;
+                            var crypt = new this.$jsEncrypt({
+                                default_key_size: 1024
+                            });
+                            crypt.setPublicKey(publicKey);
+                            let params = { encrypt_data: crypt.encrypt(JSON.stringify(this.param)) };
+                            let headers = {encryptKey: key};
+                            console.log(headers);
+                            this.$store.dispatch('userLogin', {query:params, headers:headers}).then(res => {
+                                this.disable = false;
+                                this.$router.push('/');
+                            }).catch(err => {
+                                console.log(err);
+                            });
                         });
-                        crypt.setPublicKey(publicKey);
-                        let params = {encrypt_data: crypt.encrypt(JSON.stringify(this.param))};
-                        let headers = {
-                            encryptKey: encryptKey
-                        };
-                        console.log(JSON.stringify(this.param));
-                        console.log(encryptKey);
-                        console.log(params);
-                        this.$store.dispatch('userLogin', params, headers).then(res => {
-                            this.disable = false;
-                            this.$router.push('/');
-                        }).catch(err => {
-                            console.log(err);
-                        });
-                    });
                 } else {
                     return false;
                 }
