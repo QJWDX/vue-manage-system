@@ -53,11 +53,10 @@ export const getNotifications = query => {
     });
 };
 
-export const delNotifications = query => {
+export const delNotifications = $id => {
     return request({
-        url: 'api/notifications/delNotifications',
-        method: 'delete',
-        params: query
+        url: 'api/notifications/del/'. $id,
+        method: 'delete'
     });
 };
 

@@ -4,7 +4,7 @@ const state = {
     token : localStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
     routes : JSON.parse(localStorage.getItem('routes')) || [],
-    menus : JSON.parse(localStorage.getItem('menus')) || []
+    menus : JSON.parse(localStorage.getItem('menus')) || [],
 };
 
 const getters = {
@@ -54,6 +54,14 @@ const mutations = {
         // console.log(menus);
         localStorage.setItem('menus', JSON.stringify(menus));
         state.menus = menus;
+    },
+    // 记住密码
+    rememberPassword(state, remember){
+        if(remember.status){
+            localStorage.setItem('remember', JSON.stringify(remember.data));
+        }else{
+            localStorage.removeItem('remember');
+        }
     }
 };
 
@@ -79,6 +87,10 @@ const actions = {
     },
     storeToken(context, token){
         context.commit('setToken', token);
+    },
+    storeRememberPassword(context, data){
+        console.log(data);
+        context.commit('rememberPassword', data);
     }
 };
 
