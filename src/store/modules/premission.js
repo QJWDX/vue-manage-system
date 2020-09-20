@@ -1,5 +1,4 @@
 import {constantRoutes, lastRoute} from './../../router';
-import {login} from './../../api/index';
 const state = {
     token : localStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
@@ -68,7 +67,7 @@ const mutations = {
 const actions = {
     userLogin(context, params){
         return new Promise(function(resolve, reject){
-            login(params.query, params.headers).then(res => {
+            this.$apiList.login.login(params.query, params.headers).then(res => {
                 context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);
                 resolve(res.message);
@@ -94,6 +93,11 @@ const actions = {
     }
 };
 
+/**
+ * 创建动态路由
+ * @param {*} anyncRouter 
+ */
+
 function createAsynRoutes(anyncRouter){
     let dataRouter = [];
     //循环遍历动态路由表的每一个路由
@@ -109,6 +113,10 @@ function createAsynRoutes(anyncRouter){
     return dataRouter;
 }
 
+/**
+ * 创建vue菜单
+ * @param {*} anyncMenu 
+ */
 function createAsynMenus(anyncMenu){
     let dataMenu = [];
     //循环遍历动态路由表的每一个路由
@@ -125,6 +133,10 @@ function createAsynMenus(anyncMenu){
     return dataMenu;
 }
 
+/**
+ * 根据组件名称引入vue页面
+ * @param {*} componentName 
+ */
 function getViews(componentName) {
     // return resolve => {
     //   require.ensure([], (require) => {

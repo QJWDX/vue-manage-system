@@ -95,7 +95,6 @@
 </template>
 
 <script>
-import { baseTable } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -122,7 +121,7 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            baseTable(this.query).then(res => {
+            this.$apiList.example.baseTable(this.query).then(res => {
                 this.tableData = res.data.list || [];
                 this.pageTotal = res.data.pageTotal || 0;
             });

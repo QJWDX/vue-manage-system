@@ -111,8 +111,6 @@
 </template>
 
 <script>
-import {roleList, storeRole, delRole, saveRole, roleInfo, deleteAll} from '../../api/role';
-import {getMenuTree, getRoleMenus, setRoleMenus} from '../../api/menus';
 export default {
     name: 'basetable',
     data() {
@@ -165,7 +163,7 @@ export default {
         },
         //获取列表数据
         getData() {
-            roleList(this.query).then(res => {
+            this.$apiList.role.roleList(this.query).then(res => {
                 this.tableData = res.data.items || [];
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
@@ -174,7 +172,7 @@ export default {
         },
         // 获取权限菜单
         getMenus(query){
-            getMenuTree(query).then(res => {
+            this.$apiList.menus.getMenuTree(query).then(res => {
                 this.menus = res.data;
             });
         },
@@ -190,7 +188,7 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            roleInfo(row.id).then(res => {
+            this.$apiList.role.roleInfo(row.id).then(res => {
                     this.id = res.data.id;
                     this.form = {
                         role_name: res.data.role_name,
@@ -210,7 +208,7 @@ export default {
                         case 'add':
                             this.form.status = parseInt(this.form.status);
                             this.form.sex = parseInt(this.form.sex);
-                            storeRole(this.form).then(res => {
+                            this.$apiList.role.storeRole(this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -220,7 +218,7 @@ export default {
                             });
                             break;
                         case 'edit':
-                             saveRole(this.id, this.form).then(res => {
+                             this.$apiList.role.saveRole(this.id, this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -243,7 +241,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                delRole(row.id).then(res => {
+                this.$apiList.role.delRole(row.id).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.tableData.splice(index, 1);
@@ -269,7 +267,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                deleteAll({ids:this.delList}).then(res => {
+                this.$apiList.role.deleteAll({ids:this.delList}).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.delList = [];
@@ -289,7 +287,7 @@ export default {
         handleAuth(index, row){
             this.is_super = row.is_super == '是' ? 1 : 0;
             this.getMenus({role:row.id});
-            getRoleMenus({role:row.id}).then(res => {
+            this.$apiList.menus.getRoleMenus({role:row.id}).then(res => {
                 if(res){
                     this.id = row.id;
                     this.checkMenus = res.data;
@@ -299,7 +297,7 @@ export default {
         },
         // 保存权限
         saveAuthEdit(){
-            setRoleMenus({role:this.id, menus:this.checkMenus}).then(res => {
+            this.$apiList.menus.setRoleMenus({role:this.id, menus:this.checkMenus}).then(res => {
                 if(res){
                     this.$message.success(res.message);
                     this.id = 0;

@@ -130,15 +130,12 @@
 </template>
 
 <script>
-import { userList, userStore, userInfo, saveUser, delUser, getUserRole, setUserRole} from '../../api/user';
-import { getRoleTree } from '../../api/role';
 export default {
     name: 'basetable',
     data() {
             var checkPhone = (rule, value, callback) => {
-            const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
             if (!value) {
-            return callback(new Error('电话号码不能为空'))
+                return callback(new Error('电话号码不能为空'))
             }
             setTimeout(() => {
             // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
@@ -147,7 +144,7 @@ export default {
             if (!Number.isInteger(+value)) {
                 callback(new Error('请输入数字值'))
             } else {
-                if (phoneReg.test(value)) {
+                if (this.$commonFunction.checkPhone(value)) {
                     callback()
                 } else {
                     callback(new Error('电话号码格式不正确'))
@@ -156,12 +153,11 @@ export default {
             }, 100)
         };
         var checkEmail = (rule, value, callback) => {
-            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
             if (!value) {
                 return callback(new Error('邮箱不能为空'))
             }
             setTimeout(() => {
-                if (mailReg.test(value)) {
+                if (this.$commonFunction.checkPhone(value)) {
                     callback()
                 } else {
                     callback(new Error('请输入正确的邮箱格式'))
@@ -229,7 +225,7 @@ export default {
              return 'text-align:center';
         },
         getData() {
-            userList(this.query).then(res => {
+            this.$apiList.user.userList(this.query).then(res => {
                 this.tableData = res.data.items || [];
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
@@ -247,7 +243,7 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            userInfo(row.id).then(res => {
+            this.$apiList.user.userInfo(row.id).then(res => {
                 if(res){
                     this.id = res.data.id;
                     this.form = {
@@ -271,7 +267,7 @@ export default {
                         case 'add':
                             this.form.status = parseInt(this.form.status);
                             this.form.sex = parseInt(this.form.sex);
-                            userStore(this.form).then(res => {
+                            this.$apiList.user.userStore(this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -281,7 +277,7 @@ export default {
                             });
                             break;
                         case 'edit':
-                             saveUser(this.id, this.form).then(res => {
+                             this.$apiList.user.saveUser(this.id, this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -304,7 +300,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                delUser(row.id).then(res => {
+                this.$apiList.user.delUser(row.id).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.tableData.splice(index, 1);
@@ -340,13 +336,13 @@ export default {
             this.getData();
         },
         handleRole(index, row){
-            getRoleTree().then(res => {
+            this.$apiList.role.getRoleTree().then(res => {
                 if(res){
                     this.menus = res.data;
                     this.roleVisible = true;
                 }
             });
-            getUserRole(row.id).then(res => {
+            this.$apiList.user.getUserRole(row.id).then(res => {
                 if(res){
                     this.id = row.id;
                     this.checkRole = res.data;
@@ -354,7 +350,7 @@ export default {
             });
         },
         roleEdit(){
-          setUserRole(this.id, {'role': this.checkRole}).then(res => {
+          this.$apiList.user.setUserRole(this.id, {'role': this.checkRole}).then(res => {
              if(res){
                  this.$message.success(res.message);
                  this.closeDialog();

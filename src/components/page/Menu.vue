@@ -118,7 +118,6 @@
 </template>
 
 <script>
-import { menuList, menuStore, menuInfo, saveMenu, delMenu, menuSelect} from '../../api/menus';
 export default {
     data() {
         var checkPath = (rule, value, callback) => {
@@ -195,7 +194,7 @@ export default {
              return 'text-align:center';
         },
         getData() {
-            menuList(this.query).then(res => {
+            this.$apiList.menus.menuList(this.query).then(res => {
                 this.tableData = res.data.items || [];
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
@@ -203,7 +202,7 @@ export default {
             });
         },
         getMenuSelect(){
-            menuSelect().then(res => {
+            this.$apiList.menus.menuSelect().then(res => {
                 this.menus = res.data;
             });
         },
@@ -218,7 +217,7 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            menuInfo(row.id).then(res => {
+            this.$apiList.menus.menuInfo(row.id).then(res => {
                 if(res){
                     this.id = res.data.id;
                     this.form = {
@@ -243,7 +242,7 @@ export default {
                 if (valid) {
                     switch(this.dialogType){
                         case 'add':
-                            menuStore(this.form).then(res => {
+                            this.$apiList.menus.menuStore(this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -253,7 +252,7 @@ export default {
                             });
                             break;
                         case 'edit':
-                             saveMenu(this.id, this.form).then(res => {
+                             this.$apiList.menus.saveMenu(this.id, this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -276,7 +275,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                delMenu(row.id).then(res => {
+                this.$apiList.menus.delMenu(row.id).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.tableData.splice(index, 1);

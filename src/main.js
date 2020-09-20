@@ -10,11 +10,15 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
-import {getVueRoute} from './api/index';
+import {getVueRoute} from './api/login';
 import {JSEncrypt} from 'jsencrypt';
+import commonFunction from './utils/commonFunction';
+import * as apiList from './utils/apiList';
 const Base64 = require('js-base64').Base64;
 Vue.config.productionTip = false;
 Vue.prototype.$jsEncrypt = JSEncrypt;
+Vue.prototype.$apiList = apiList;
+Vue.prototype.$commonFunction = commonFunction;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
@@ -24,12 +28,15 @@ const i18n = new VueI18n({
     messages
 });
 const whiteList = ['/login', '/403', '/404'];
-//使用钩子函数对路由进行权限跳转
+// 使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | 后台管理系统`;
     const hasToken = store.getters.token ? true : false;
     const role = store.getters.user.role;
     if(hasToken && role){
+        /**
+         * 从后台获取vue所需路由和菜单基础数据
+         */
         getVueRoute({'role':role}).then(res => {
             store.dispatch('createAsnyRoutes', res.data);
             let dataRouter = store.getters.routes;

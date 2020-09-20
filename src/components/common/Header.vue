@@ -55,7 +55,6 @@
 import Echo from 'laravel-echo'
 import io from 'socket.io-client'
 import bus from '../common/bus';
-import {logout, getUnreadNumber} from '../../api/index';
 import {mapState, mapActions} from 'vuex';
 export default {
     data() {
@@ -82,7 +81,7 @@ export default {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'logout') {
-                logout().then(res => {
+                this.$apiList.login.logout().then(res => {
                     console.log(res.message);
                     this.$store.dispatch('delUserInfo');
                     this.$router.push('/login');
@@ -123,16 +122,21 @@ export default {
         }
     },
     created(){
-        getUnreadNumber({uid:this.$store.getters.user.id}).then(res => {
-            this.$store.dispatch('storeUnreadNumber', res.data.unreadNumber);
+        let params = {
+            notifiable_id: this.$store.getters.user.id,
+            type:0,
+            notifiable_type:0
+        };
+        this.$apiList.notifications.getNotificationCountStatistics(params).then(res => {
+            this.$store.dispatch('setUnreadNumber', res.data.unread_count);
         });
     },
     mounted() {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
-        const token = this.$store.getters.token;
-        const userId = this.$store.getters.user.id;
+        // const token = this.$store.getters.token;
+        // const userId = this.$store.getters.user.id;
         // window.io = io
         // window.Echo = new Echo({
         //     broadcaster: 'socket.io',
@@ -163,13 +167,16 @@ export default {
         //         // offset: 100,
         //         showClose: false
         //     });
-        //     getUnreadNumber({uid:this.$store.getters.user.id}).then(res => {
-        //         this.$store.dispatch('storeUnreadNumber', res.data.unreadNumber);
+        //      let params = {
+        //         notifiable_id: this.$store.getters.user.id,
+        //         type:0,
+        //         notifiable_type:0
+        //     };
+        //     getNotificationCountStatistics(params).then(res => {
+        //         this.$store.dispatch('setUnreadNumber', res.data.unread_count);
         //     });
         //     if(this.$route.path == '/notification'){
-        //         // location.reload();
-        //         console.log(notification);
-        //         this.$store.getters.unread = Object.assign(notification, this.$store.getters.unread);
+        //         location.reload();
         //     }
         // })
     }

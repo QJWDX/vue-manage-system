@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { getCaptcha, getRsaPublicKey } from '../../api/index';
+// import { getCaptcha, getRsaPublicKey } from '../../api/index';
 import DragDialogVue from './DragDialog.vue';
 export default {
     data: function() {
@@ -74,7 +74,7 @@ export default {
     },
     methods: {
         getCaptchaInfo(){
-            getCaptcha().then(res => {
+            this.$apiList.login.getCaptcha().then(res => {
                 this.catcha_img = res.data.img;
                 this.param.captcha_key = res.data.key;
             })
@@ -83,7 +83,7 @@ export default {
             this.$refs.login.validate(valid => {
                 if (valid) {
                     this.disable = true;
-                    getRsaPublicKey().then(res => {
+                    this.$apiList.login.getRsaPublicKey().then(res => {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
                             var crypt = new this.$jsEncrypt({
