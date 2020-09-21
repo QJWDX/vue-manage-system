@@ -161,7 +161,7 @@ export default {
                 return callback(new Error('邮箱不能为空'))
             }
             setTimeout(() => {
-                if (this.$commonFunction.checkPhone(value)) {
+                if (this.$commonFunction.checkEmail(value)) {
                     callback()
                 } else {
                     callback(new Error('请输入正确的邮箱格式'))

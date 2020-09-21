@@ -24,10 +24,7 @@ export default {
      * @param {*} tel 
      */
     checkPhone(tel) {
-        if(tel.length == 0){
-            return false;
-        }
-        const reg = "/^1[3|4|5|6|7|8|9][0-9]{9}$/";
+        const reg = /^1[3|4|5|6|7|8|9][0-9]{9}$/;
         if (reg.test(tel)) {
             return true;
         }
@@ -39,9 +36,6 @@ export default {
      * @param {*} email 
      */
     checkEmail(email){
-        if(email.length == 0){
-            return false;
-        }
         const reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
         if (reg.test(email)) {
             return true;

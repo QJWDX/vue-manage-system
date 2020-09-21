@@ -1,8 +1,20 @@
 <template>
-  <div id="app">
-    <p>mqtt收到的数据：</p>
-    <p>{{this.msg}}</p>
-  </div>
+    <div>
+        <div class="container">
+             <el-table
+                :data="tableData"
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+                :cell-style="cellStyle"
+                :header-cell-style="rowClass"
+                @selection-change="handleSelectionChange"
+            >
+                <el-table-column prop="content" align="center" label="消息内容"></el-table-column>
+            </el-table>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -21,14 +33,14 @@
   export default {
     data() {
       return {
-        msg: '--'
+        tableData: [
+          {content : '这是一条mqtt消息！'}
+        ]
       }
     },
-
     created() {
       this.mqttMsg()
     },
-
     methods: {
       mqttMsg() {
         client.on('connect', (e) => {
@@ -44,15 +56,10 @@
         })
         // 接收消息处理
         client.on('message', (topic, message) => {
-          console.log(1111); 
           console.log('收到来自', topic, '的消息', message.toString())
-          this.msg = message.toString()
+          this.tableData.push = {content : message.toString()};
         })
       }
     }
-
-
   }
 </script>
-<style scoped>
-</style>

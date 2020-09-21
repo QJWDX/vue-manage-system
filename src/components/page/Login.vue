@@ -53,11 +53,11 @@ export default {
             rules: {
                 username: [
                     { required: true, message: '请输入用户名', trigger: 'blur' },
-                    { min:2 , max:8, message: '用户名长度为2-8个字符', trigger: 'blur'}
+                    { min:2 , max:16, message: '用户名长度为2-16个字符', trigger: 'blur'}
                 ],
                 password: [
                     { required: true, message: '请输入密码', trigger: 'blur' },
-                    { min:4 , max:16, message: '密码长度为4-16字符', trigger: 'blur'}
+                    { min:4 , max:20, message: '密码长度为4-20字符', trigger: 'blur'}
                 ],
                 captcha_code: [
                     { required: true, message: '请输入验证码', trigger: 'blur' },
