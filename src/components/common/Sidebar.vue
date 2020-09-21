@@ -18,27 +18,17 @@
                             <span slot="title">{{ item.title }}</span>
                         </template>
                         <template v-for="subItem in item.subs">
-                            <el-submenu
-                                v-if="subItem.subs"
-                                :index="subItem.index"
-                                :key="subItem.index"
-                            >
+                            <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
                                 <template slot="title">
-                                    <i :class="subItem.icon"></i>
+                                    <!-- <i :class="subItem.icon"></i> -->
                                     <span>{{ subItem.title }}</span>
                                 </template>
-                                <el-menu-item
-                                    v-for="(threeItem,i) in subItem.subs"
-                                    :key="i"
-                                    :index="threeItem.index"
-                                >{{ threeItem.title }}</el-menu-item>
+                                <el-menu-item v-for="(threeItem,i) in subItem.subs" :key="i" :index="threeItem.index">
+                                    {{ threeItem.title }}
+                                </el-menu-item>
                             </el-submenu>
-                            <el-menu-item
-                                v-else
-                                :index="subItem.index"
-                                :key="subItem.index"
-                            >
-                                <i :class="subItem.icon"></i>
+                            <el-menu-item v-else :index="subItem.index" :key="subItem.index">
+                                <!-- <i :class="subItem.icon"></i> -->
                                 <span>{{ subItem.title }}</span>
                             </el-menu-item>
                         </template>

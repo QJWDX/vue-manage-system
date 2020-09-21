@@ -1,16 +1,20 @@
 <template>
     <div>
         <div class="container">
-            <div class="handle-box">
-                <el-input v-model="query.name" placeholder="菜单名称" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button
-                    type="primary"
-                    icon="el-icon-plus"
-                    class="handle-del ml5"
-                    @click="handAdd"
-                >新增</el-button>
-            </div>
+             <el-form :inline="true" :model="query" class="demo-form-inline">
+                <el-form-item>
+                    <el-input v-model="query.username" placeholder="菜单名"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                </el-form-item>
+                <el-form-item class="">
+                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+                </el-form-item>
+                <!-- <el-form-item class="">
+                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
+                </el-form-item> -->
+            </el-form>
             <el-table
                 :data="tableData"
                 border
@@ -58,7 +62,7 @@
                             type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="handleDel(scope.$index, scope.row)"
                         >删除</el-button>
                     </template>
                 </el-table-column>
@@ -271,7 +275,7 @@ export default {
             });
         },
         // 删除操作
-        handleDelete(index, row) {
+        handleDel(index, row) {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
@@ -293,7 +297,7 @@ export default {
             this.checkList = this.checkList.concat(this.multipleSelection);
         },
         // 批量删除
-        delAllSelection() {
+        handleAllDel() {
             if(this.checkList.length == 0){
                 this.$message.error('删除项还未选择');
                 return;
@@ -332,17 +336,3 @@ export default {
     }
 };
 </script>
-<style scoped>
-.handle-box {
-    margin-bottom: 20px;
-}
-
-.handle-select {
-    width: 80px;
-}
-
-.handle-input {
-    width: 200px;
-    display: inline-block;
-}
-</style>

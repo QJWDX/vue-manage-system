@@ -31,17 +31,9 @@ export const saveRole = (id, query) => {
     });
 };
 
-export const delRole = id => {
+export const delRole = query => {
     return request({
-        url: 'api/role/' + id,
-        method: 'delete',
-        params: []
-    });
-};
-
-export const deleteAll = query => {
-    return request({
-        url: 'api/role/deleteAll',
+        url: 'api/role/delRole',
         method: 'delete',
         params: query
     });

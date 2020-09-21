@@ -1,22 +1,20 @@
 <template>
     <div>
         <div class="container">
-            <div class="handle-box">
-                <el-input v-model="query.role_name" placeholder="角色名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    class="handle-del ml5"
-                    @click="delAllSelection"
-                >批量删除</el-button>
-                <el-button
-                    type="primary"
-                    icon="el-icon-plus"
-                    class="handle-del ml5"
-                    @click="handAdd"
-                >新增</el-button>
-            </div>
+            <el-form :inline="true" :model="query" class="demo-form-inline">
+                <el-form-item>
+                    <el-input v-model="query.role_name" placeholder="角色名"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                </el-form-item>
+                <el-form-item class="">
+                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+                </el-form-item>
+                <el-form-item class="">
+                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
+                </el-form-item>
+            </el-form>
             <el-table
                 :data="tableData"
                 border
@@ -54,7 +52,7 @@
                             type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="handleDel(scope.$index, scope.row)"
                         >删除</el-button>
                     </template>
                 </el-table-column>
@@ -71,6 +69,7 @@
             </div>
         </div>
 
+        <!-- 新增编辑弹出框 -->
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="角色名称" prop="role_name">
@@ -89,7 +88,7 @@
             </span>
         </el-dialog>
 
-        <!-- 权限分配 -->
+        <!-- 权限分配弹出框 -->
         <el-dialog title="权限分配" :visible.sync="authVisible" width="40%" @close='closeDialog'>
             <el-tree
             :props="props"
@@ -200,6 +199,16 @@ export default {
                     this.dialogTitle = '编辑角色';
             });
         },
+        del(){
+            let params = {ids: this.checkList};
+            this.$apiList.role.delRole(params).then(res => {
+                if(res){
+                    this.$message.success(res.message);
+                    this.checkList = [];
+                    this.getData();
+                }
+            });
+        },
         // 新增编辑
         submitForm(){
             this.$refs['form'].validate((valid) => {
@@ -237,17 +246,12 @@ export default {
             });
         },
         // 删除操作
-        handleDelete(index, row) {
+        handleDel(index, row) {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                this.$apiList.role.delRole(row.id).then(res => {
-                    if(res){
-                        this.$message.success(res.message);
-                        this.tableData.splice(index, 1);
-                        this.reload();
-                    }
-                });
+                this.checkList = [row.id];
+                this.del();
             }).catch(() => {});
         },
         // 多选操作
@@ -259,7 +263,7 @@ export default {
             this.delList = this.delList.concat(this.multipleSelection);
         },
         // 批量删除
-        delAllSelection() {
+        handleAllDel() {
             if(this.delList.length == 0){
                 this.$message.error('删除项还未选择');
                 return;
@@ -267,15 +271,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                this.$apiList.role.deleteAll({ids:this.delList}).then(res => {
-                    if(res){
-                        this.$message.success(res.message);
-                        this.delList = [];
-                        this.multipleSelection = [];
-                        this.getData();
-                        this.reload();
-                    }
-                });
+               this.del();
             }).catch(() => {});
         },
         // 分页导航
@@ -347,17 +343,3 @@ export default {
     }
 };
 </script>
-<style scoped>
-.handle-box {
-    margin-bottom: 20px;
-}
-
-.handle-select {
-    width: 80px;
-}
-
-.handle-input {
-    width: 200px;
-    display: inline-block;
-}
-</style>

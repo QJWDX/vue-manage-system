@@ -1,4 +1,6 @@
+import { Form } from 'element-ui';
 import {constantRoutes, lastRoute} from './../../router';
+import { login } from './../../api/login';
 const state = {
     token : localStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
@@ -67,7 +69,7 @@ const mutations = {
 const actions = {
     userLogin(context, params){
         return new Promise(function(resolve, reject){
-            this.$apiList.login.login(params.query, params.headers).then(res => {
+            login(params.query, params.headers).then(res => {
                 context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);
                 resolve(res.message);
@@ -88,7 +90,6 @@ const actions = {
         context.commit('setToken', token);
     },
     storeRememberPassword(context, data){
-        console.log(data);
         context.commit('rememberPassword', data);
     }
 };

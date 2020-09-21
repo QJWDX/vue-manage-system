@@ -1,8 +1,7 @@
 <template>
     <div class="">
         <div class="container">
-            <div class="handle-box">
-                <el-form :inline="true" :model="query" class="demo-form-inline">
+            <el-form :inline="true" :model="query" class="demo-form-inline">
                     <el-form-item label="发送时间">
                          <el-date-picker
                             @change="dateChange"
@@ -13,8 +12,8 @@
                             end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item label="是否已读">
-                        <el-select v-model="query.read_at" style="width:100px;" @change="handReadChange" class="mr10">
+                    <el-form-item>
+                        <el-select v-model="query.read_at" style="width:100px;" @change="handReadChange">
                             <el-option label="全部" value="0"></el-option>
                             <el-option label="未读" value="1"></el-option>
                             <el-option label="已读" value="2"></el-option>
@@ -23,10 +22,11 @@
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
                     </el-form-item>
-                </el-form>
-            </div>
-
-          <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
+                    <el-form-item class="">
+                        <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
+                    </el-form-item>
+            </el-form>
+            <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column label="ID" align="center" prop="id">
                 </el-table-column>
@@ -50,7 +50,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-             <div class="pagination">
+            <div class="pagination">
                 <el-pagination
                     background
                     layout="total, prev, pager, next, jumper"
@@ -111,40 +111,34 @@
                     this.$store.dispatch('setUnreadNumber', this.$store.getters.unreadNumber-1);
                 })
             },
+            del(){
+                let params = {ids: this.checkList};
+                this.$apiList.notifications.delNotifications(params).then(res => {
+                    if(res){
+                        this.$message.success(res.message);
+                        this.checkList = [];
+                        this.getData();
+                    }
+                });
+            },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.$apiList.notifications.delNotifications(row.id).then(res => {
-                        if(res){
-                            this.$message.success(res.message);
-                            this.tableData.splice(index, 1);
-                            this.reload();
-                        }
-                    });
+                    this.checkList = [row.id];
+                    this.del();
                 }).catch(() => {});
             },
-            handleAllDel(){
-                this.$confirm('此操作将删除所有已读消息, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
+            handleAllDel() {
+                if(this.checkList.length == 0){
+                    this.$message.error('删除项还未选择');
+                    return;
+                }
+                this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                     this.$apiList.notifications.delNotifications({
-                        uid:  this.$store.getters.user.id
-                    }).then(res => {
-                        this.getReadData();
-                         this.$message({
-                            type: 'success',
-                            message: res.message
-                        });
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });          
-                });
+                this.del();
+                }).catch(() => {});
             },
             handleSelectionChange(val) {
                 this.multipleSelection = [];
@@ -165,35 +159,24 @@
                 this.query.page = 1;
             },
             dateChange(val){
-                this.query.startTime = this.$commonFunction.formatDateTime(val[0]);
-                this.query.endTime = this.$commonFunction.formatDateTime(val[1]);
+                if(val == null){
+                    this.query.startTime = '';
+                    this.query.endTime = '';
+                }else{
+                    this.query.startTime = this.$commonFunction.formatDateTime(val[0]);
+                    this.query.endTime = this.$commonFunction.formatDateTime(val[1]);
+                }
             },
         }
     }
 
 </script>
-
 <style>
 .message-title{
     cursor: pointer;
 }
-.handle-row{
-    margin-top: 30px;
-}
 </style>
 <style scoped>
-.handle-box {
-    margin-bottom: 20px;
-}
-
-.handle-select {
-    width: 80px;
-}
-
-.handle-input {
-    width: 200px;
-    display: inline-block;
-}
 .el-range-editor--small.el-input__inner{
     height: 34px;
 }

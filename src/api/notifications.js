@@ -8,10 +8,11 @@ export const getNotifications = query => {
     });
 };
 
-export const delNotifications = $id => {
+export const delNotifications = query => {
     return request({
-        url: 'api/notifications/del/'. $id,
-        method: 'delete'
+        url: 'api/notifications/delNotifications',
+        method: 'delete',
+        params: query
     });
 };
 
