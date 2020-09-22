@@ -1,3 +1,4 @@
+import {JSEncrypt} from 'jsencrypt';
 export default {
     /**
      * 时间格式转换
@@ -41,5 +42,66 @@ export default {
             return true;
         }
         return false;
+    },
+
+     //删除左右两端的空格
+    trim(str){
+        return str.replace(/(^\s*)|(\s*$)/g, "");
+    },
+
+    //获取cookie
+    getCookie(key){
+        if (document.cookie.length > 0) {
+            var start = document.cookie.indexOf(key + '=')
+            if (start !== -1) {
+              start = start + key.length + 1
+              var end = document.cookie.indexOf(';', start)
+              if (end === -1) end = document.cookie.length
+              return unescape(document.cookie.substring(start, end))
+            }
+        }
+        return ''
+    },
+   
+    //设置cookie
+    setCookie(c_name, value, expiredays){
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + expiredays);
+        document.cookie = c_name + "=" + decodeURIComponent(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+    },
+   
+    //删除cookie
+    delCookie(name){
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval = getCookie(name);
+        if (cval != null)
+        document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+    },
+
+    /**
+     * 数据加密
+     * @param {*} jsonData json数据
+     * @param {*} publicKey 公钥
+     */
+    encryptData(jsonData, publicKey){
+        var crypt = new JSEncrypt({
+            default_key_size: 1024
+        });
+        crypt.setPublicKey(publicKey);
+        return crypt.encrypt(JSON.stringify(jsonData))
+    },
+
+    /**
+     * 数据解密
+     * @param {*} jsonStr json字符串
+     * @param {*} privateKey 私钥
+     */
+    decryptData(jsonStr, privateKey){
+        var crypt = new JSEncrypt({
+            default_key_size: 1024
+        });
+        crypt.setPrivateKey(privateKey);
+        return crypt.decrypt(jsonStr);
     }
-  }
+}

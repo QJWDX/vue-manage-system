@@ -24,7 +24,7 @@
                         <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
                     </el-input>
                     <img :src="catcha_img" alt="" style="margin-left:16px;" @click="getCaptchaInfo">
-                     <el-checkbox v-model="remember_password"><span style="color:#ffffff;">记住密码</span></el-checkbox>
+                     <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()" :disabled="disable">登录</el-button>
@@ -36,14 +36,14 @@
 </template>
 
 <script>
-// import { getCaptcha, getRsaPublicKey } from '../../api/index';
 import DragDialogVue from './DragDialog.vue';
+const Base64 = require('js-base64').Base64;
 export default {
     data: function() {
         return {
             disable: false,
             catcha_img:'',
-            remember_password:false,
+            remember: false,
             param: {
                 username: '',
                 password: '',
@@ -64,13 +64,18 @@ export default {
                     { min:4 , max:4, message: '验证码长度为4字符', trigger: 'blur'}
                 ]
             },
-        };
+        };console.log(password);
     },
     created(){
-        let remember = JSON.parse(localStorage.getItem('remember'));
-        this.param.username = remember ? remember.uname : '';
-        this.param.password = remember ? remember.upwd : '';
         this.getCaptchaInfo();
+    },
+    mounted(){
+        let username = this.$commonFunction.getCookie('XXU');
+        if(username){
+            this.param.username = username;
+            this.param.password = Base64.decode(this.$commonFunction.getCookie('XXP'));
+            this.remember = true;
+        }
     },
     methods: {
         getCaptchaInfo(){
@@ -86,18 +91,11 @@ export default {
                     this.$apiList.login.getRsaPublicKey().then(res => {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
-                            var crypt = new this.$jsEncrypt({
-                                default_key_size: 1024
-                            });
-                            crypt.setPublicKey(publicKey);
-                            let params = { encrypt_data: crypt.encrypt(JSON.stringify(this.param)) };
+                            let encrypt_data = this.$commonFunction.encryptData(this.param, publicKey);
+                            let params = { encrypt_data: encrypt_data };
                             let headers = {encryptKey: key};
                             this.$store.dispatch('userLogin', {query:params, headers:headers}).then(res => {
-                                let rememberData = {
-                                    status: this.remember_password,
-                                    data: this.remember_password ? {uname:this.param.username, upwd: this.param.password} : {}
-                                };
-                                this.$store.dispatch('storeRememberPassword', rememberData);
+                                this.rememberPassword();
                                 this.disable = false;
                                 this.$router.push('/');
                             }).catch(err => {
@@ -109,6 +107,16 @@ export default {
                     return false;
                 }
             });
+        },
+        rememberPassword(){
+            if(this.remember){
+                let expireDays = 1000 * 60 * 60;
+                this.$commonFunction.setCookie('XXU', this.param.username, expireDays);
+                this.$commonFunction.setCookie('XXP', Base64.encode(this.param.password), expireDays);
+            }else{
+                this.$commonFunction.setCookie('XXU', '');
+                this.$commonFunction.setCookie('XXP', '');
+            }
         }
     },
 };

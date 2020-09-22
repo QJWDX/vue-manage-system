@@ -11,14 +11,11 @@ import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
 import {getVueRoute} from './api/login';
-import {JSEncrypt} from 'jsencrypt';
 import commonFunction from './utils/commonFunction';
 import * as apiList from './utils/apiList';
-const Base64 = require('js-base64').Base64;
 Vue.config.productionTip = false;
-Vue.prototype.$jsEncrypt = JSEncrypt;
-Vue.prototype.$apiList = apiList;
 Vue.prototype.$commonFunction = commonFunction;
+Vue.prototype.$apiList = apiList;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
@@ -44,7 +41,13 @@ router.beforeEach((to, from, next) => {
             //动态添加路由信息
             router.addRoutes(dataRouter);
         });
-        next();
+        if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
+            Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
+                confirmButtonText: '确定'
+            });
+        }else{
+            next();
+        }
     }else{
         if (whiteList.indexOf(to.path) !== -1) {
             // in the free login whitelist, go directly
@@ -53,34 +56,11 @@ router.beforeEach((to, from, next) => {
             next('/login');
         }
     }
-
-    // if (!token && to.path !== '/login') {
-    //     next('/login');
-    // } else {
-    //     if(role){
-    //         getMenus({'role':role}).then(res => {
-    //             store.dispatch('createAsnyRoutes', res.data);
-    //             let dataRouter = store.getters.routes;
-    //             // console.log(dataRouter);
-    //             //动态添加路由信息
-    //             router.addRoutes(dataRouter);
-    //         });
-    //     }
-    //     // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
-    //     if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
-    //         Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
-    //             confirmButtonText: '确定'
-    //         });
-    //     } else {
-    //         next();
-    //     }
-    // }
 });
 
 new Vue({
     router,
     store,
     i18n,
-    Base64,
     render: h => h(App)
 }).$mount('#app');

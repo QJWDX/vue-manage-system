@@ -3,6 +3,7 @@ import * as menus from './../api/menus';
 import * as role from './../api/role';
 import * as user from './../api/user';
 import * as notifications from './../api/notifications';
+import * as system from './../api/system';
 import * as example from './../api/example';
 export {
     login,
@@ -10,5 +11,6 @@ export {
     role,
     user,
     notifications,
+    system,
     example
 }
