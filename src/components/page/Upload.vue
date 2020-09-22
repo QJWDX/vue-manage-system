@@ -1,11 +1,11 @@
 <template>
     <div>
-        <!-- <div class="crumbs">
+        <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
                 <el-breadcrumb-item>图片上传</el-breadcrumb-item>
             </el-breadcrumb>
-        </div> -->
+        </div>
         <div class="container">
             <div class="content-title">支持拖拽</div>
             <div class="plugins-tips">
@@ -15,7 +15,10 @@
             <el-upload
                 class="upload-demo"
                 drag
-                action="http://jsonplaceholder.typicode.com/api/posts/"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                :action="uploadUrl"
+                :headers="headers"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -50,6 +53,7 @@
         name: 'upload',
         data: function(){
             return {
+                uploadUrl: 'http://localhost:8090/api/user/uploadImg',
                 defaultSrc: require('../../assets/img/img.jpg'),
                 fileList: [],
                 imgSrc: '',
@@ -60,7 +64,30 @@
         components: {
             VueCropper
         },
+        computed: {
+            headers(){
+                return {
+                    Authorization: 'Bearer ' + this.$store.getters.token
+                };
+            }  
+        },
         methods:{
+             handleAvatarSuccess(res, file) {
+                 console.log(res);
+                this.imgSrc = URL.createObjectURL(file.raw);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
             setImage(e){
                 const file = e.target.files[0];
                 if (!file.type.includes('image/')) {

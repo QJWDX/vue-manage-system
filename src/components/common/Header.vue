@@ -61,7 +61,7 @@ export default {
         return {
             collapse: false,
             fullscreen: false,
-            name: '管理员'
+            name: '管理员',
         };
     },
     computed: {

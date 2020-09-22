@@ -49,7 +49,7 @@ service.interceptors.request.use(
     config => {
         // 开启屏幕遮罩
         // showFullScreenLoading();
-        config.headers['Authorization'] = 'Bearer '+store.getters.token;
+        config.headers['Authorization'] = 'Bearer ' + store.getters.token;
         return config;
     },
     error => {

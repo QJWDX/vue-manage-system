@@ -31,13 +31,16 @@ router.beforeEach((to, from, next) => {
     const hasToken = store.getters.token ? true : false;
     const role = store.getters.user.role;
     if(hasToken && role){
+        let dataRouter = store.getters.routes;
+        if(dataRouter){
+            console.log(dataRouter);
+        }
         /**
          * 从后台获取vue所需路由和菜单基础数据
          */
         getVueRoute({'role':role}).then(res => {
             store.dispatch('createAsnyRoutes', res.data);
             let dataRouter = store.getters.routes;
-            // console.log(dataRouter);
             //动态添加路由信息
             router.addRoutes(dataRouter);
         });
