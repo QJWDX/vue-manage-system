@@ -42,6 +42,20 @@
       this.mqttMsg()
     },
     methods: {
+      cellStyle({row, column, rowIndex, columnIndex}){
+          return 'text-align:center';
+      },
+      rowClass({row, rowIndex}){
+            return 'text-align:center';
+      },
+      // 多选操作
+      handleSelectionChange(val) {
+          this.multipleSelection = [];
+          for (let index = 0; index < val.length; index++) {
+              this.multipleSelection.push(val[index].id);
+          }
+          this.delList = this.delList.concat(this.multipleSelection);
+      },
       mqttMsg() {
         client.on('connect', (e) => {
           console.log("连接成功！！！")
