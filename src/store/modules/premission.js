@@ -46,6 +46,7 @@ const mutations = {
         // 保存后台获取的路由数据
         localStorage.setItem('routerData', JSON.stringify(routerData));
         state.routerData = routerData;
+        addRoutes(routerData);
     },
     setMenus(state, menuData){
         const menus = createAsynMenus(menuData);
@@ -84,14 +85,7 @@ const actions = {
     addRoutes(context){
         // 生成vue所需的路由格式数据
         let routerData = JSON.parse(localStorage.getItem('routerData')) || [];
-        const asyncRoutes = createAsynRoutes(routerData);
-        const rootRoutes =  constantRoutes[1].children;
-        constantRoutes[1].children.splice(0);
-        constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
-        const addRoutes = constantRoutes.concat(lastRoute);
-        // console.log(routes);
-        // 动态路由添加
-        router.addRoutes(addRoutes);
+        addRoutes(routerData);
     },
     delUserInfo(context){
         context.commit('removeToken');
@@ -101,6 +95,21 @@ const actions = {
         context.commit('setToken', token);
     }
 };
+
+/**
+ * 动态添加路由
+ */
+function addRoutes(routerData){
+    const asyncRoutes = createAsynRoutes(routerData);
+    const rootRoutes =  constantRoutes[1].children;
+    constantRoutes[1].children.splice(0);
+    constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
+    const addRoutes = constantRoutes.concat(lastRoute);
+    // console.log(routes);
+    // 动态路由添加
+    router.addRoutes(addRoutes);
+}
+
 
 /**
  * 创建动态路由
