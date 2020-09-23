@@ -145,7 +145,7 @@ export default {
     width: 400px;
     margin: -260px 0 0 -200px;
     border-radius: 0px;
-    /* background: rgba(255, 255, 255, 0.3); */
+    background: rgba(255, 255, 255, 0.3);
     overflow: hidden;
 }
 .ms-content {

@@ -53,7 +53,7 @@
         name: 'upload',
         data: function(){
             return {
-                uploadUrl: 'http://localhost:8090/api/user/uploadImg',
+                uploadUrl: 'http://localhost:8090/api/user/uploadAvatar/' + this.$store.getters.user.id,
                 defaultSrc: require('../../assets/img/img.jpg'),
                 fileList: [],
                 imgSrc: '',
@@ -73,7 +73,8 @@
         },
         methods:{
              handleAvatarSuccess(res, file) {
-                 console.log(res);
+                console.log(res);
+                this.$store.dispatch('storeUserAvatar', res.data.url);
                 this.imgSrc = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {

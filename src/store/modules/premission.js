@@ -8,6 +8,7 @@ const state = {
     routerData : JSON.parse(localStorage.getItem('routerData')) || [],
     // 后台原始菜单数据处理后的菜单
     menus : JSON.parse(localStorage.getItem('menus')) || [],
+    userAvatar : localStorage.getItem('userAvatar') || '',
 };
 
 const getters = {
@@ -22,6 +23,9 @@ const getters = {
     },
     menus:(state) => {
         return state.menus;
+    },
+    userAvatar:(state) => {
+        return state.userAvatar;
     }
 };
 
@@ -37,6 +41,10 @@ const mutations = {
     setUserInfo(state, userInfo){
         state.user = userInfo;
         localStorage.setItem('user', JSON.stringify(userInfo));
+    },
+    setUserAvatar(state, userAvatar){
+        state.userAvatar = userAvatar;
+        localStorage.setItem('userAvatar', userAvatar);
     },
     removeUserInfo(state){
         localStorage.removeItem('user');
@@ -62,6 +70,7 @@ const actions = {
             login(params.query, params.headers).then(res => {
                 context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);
+                context.commit('setUserAvatar', res.data.user.setUserAvatar);
                 resolve(res.message);
             }).catch((err) => {
                 reject(err);
@@ -93,6 +102,9 @@ const actions = {
     },
     storeToken(context, token){
         context.commit('setToken', token);
+    },
+    storeUserAvatar(context, avatar){
+        context.commit('setUserAvatar', avatar);
     }
 };
 

@@ -29,7 +29,7 @@
                 </div>
                 <!-- 用户头像 -->
                 <div class="user-avator">
-                    <img src="../../assets/img/img.jpg" />
+                    <img :src="avatar" />
                 </div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
@@ -66,7 +66,7 @@ export default {
     },
     computed: {
         ...mapActions('premisssion', ['delUserInfo']),
-        ...mapActions('notification', ['storeUnreadNumber']),
+        // ...mapActions('notification', ['storeUnreadNumber']),
         username() {
             let user = this.$store.getters.user;
             let username = user.username;
@@ -75,6 +75,9 @@ export default {
         unread() {
             let number = this.$store.getters.unreadNumber;
             return number;
+        },
+        avatar(){
+            return this.$store.getters.userAvatar || '../../assets/img/img.jpg';
         }
     },
     methods: {
