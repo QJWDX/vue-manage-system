@@ -131,7 +131,7 @@ export const lastRoute = [
     }
 ];
 
-export default new Router({
+export const router = new Router({
     routes: constantRoutes
     // [
         // {

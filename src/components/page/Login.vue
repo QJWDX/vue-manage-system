@@ -96,6 +96,7 @@ export default {
                             let headers = {encryptKey: key};
                             this.$store.dispatch('userLogin', {query:params, headers:headers}).then(res => {
                                 this.rememberPassword();
+                                this.$store.dispatch('addMenuData', this.$store.getters.user.role);
                                 this.disable = false;
                                 this.$router.push('/');
                             }).catch(err => {

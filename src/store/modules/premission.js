@@ -1,10 +1,12 @@
 import { Form } from 'element-ui';
-import {constantRoutes, lastRoute} from './../../router';
-import { login } from './../../api/login';
+import {router, constantRoutes, lastRoute} from './../../router';
+import { login, getVueRoute } from './../../api/login';
 const state = {
-    token : localStorage.getItem('token') || '',
+    token : sessionStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
-    routes : JSON.parse(localStorage.getItem('routes')) || [],
+    // 后台原始路由数据处理后的路由
+    routerData : JSON.parse(localStorage.getItem('routerData')) || [],
+    // 后台原始菜单数据处理后的菜单
     menus : JSON.parse(localStorage.getItem('menus')) || [],
 };
 
@@ -15,8 +17,8 @@ const getters = {
     user:(state) => {
         return state.user
     },
-    routes:(state) => {
-        return state.routes;
+    routerData:(state) => {
+        return state.routerData;
     },
     menus:(state) => {
         return state.menus;
@@ -26,7 +28,7 @@ const getters = {
 const mutations = {
     setToken(state, newToken){
         state.token = newToken;
-        localStorage.setItem('token', newToken);
+        sessionStorage.setItem('token', newToken);
     },
     removeToken(state){
         localStorage.removeItem('token');
@@ -40,29 +42,16 @@ const mutations = {
         localStorage.removeItem('user');
         state.user = {};
     },
-    createRoutes(state, anyncRouter){
-        const asyncRoutes = createAsynRoutes(anyncRouter);
-        const rootRoutes =  constantRoutes[1].children;
-        constantRoutes[1].children.splice(0);
-        constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
-        const routes = constantRoutes.concat(lastRoute);
-        // console.log(routes);
-        localStorage.setItem('routes', JSON.stringify(routes));
-        state.routes = routes;
+    setRoutes(state, routerData){
+        // 保存后台获取的路由数据
+        localStorage.setItem('routerData', JSON.stringify(routerData));
+        state.routerData = routerData;
     },
-    createMenus(state, anyncMenu){
-        const menus = createAsynMenus(anyncMenu);
+    setMenus(state, menuData){
+        const menus = createAsynMenus(menuData);
         // console.log(menus);
         localStorage.setItem('menus', JSON.stringify(menus));
         state.menus = menus;
-    },
-    // 记住密码
-    rememberPassword(state, remember){
-        if(remember.status){
-            localStorage.setItem('remember', JSON.stringify(remember.data));
-        }else{
-            localStorage.removeItem('remember');
-        }
     }
 };
 
@@ -78,19 +67,38 @@ const actions = {
             });
         });
     },
+    addMenuData(context, role){
+        return new Promise(function(resolve, reject){
+            /**
+             * 从后台获取vue所需路由和菜单基础数据
+             */
+            getVueRoute({'role': role}).then(res => {
+                context.commit('setRoutes', res.data.routes);
+                context.commit('setMenus', res.data.menus);
+                resolve(res.message);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    },
+    addRoutes(context){
+        // 生成vue所需的路由格式数据
+        let routerData = JSON.parse(localStorage.getItem('routerData')) || [];
+        const asyncRoutes = createAsynRoutes(routerData);
+        const rootRoutes =  constantRoutes[1].children;
+        constantRoutes[1].children.splice(0);
+        constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
+        const addRoutes = constantRoutes.concat(lastRoute);
+        // console.log(routes);
+        // 动态路由添加
+        router.addRoutes(addRoutes);
+    },
     delUserInfo(context){
         context.commit('removeToken');
         context.commit('removeUserInfo');
     },
-    createAsnyRoutes(context, data){
-        context.commit('createRoutes', data.routes);
-        context.commit('createMenus', data.menus);
-    },
     storeToken(context, token){
         context.commit('setToken', token);
-    },
-    storeRememberPassword(context, data){
-        context.commit('rememberPassword', data);
     }
 };
 

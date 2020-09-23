@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import router from './router';
+import {router} from './router';
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
@@ -10,7 +10,6 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
-import {getVueRoute} from './api/login';
 import commonFunction from './utils/commonFunction';
 import * as apiList from './utils/apiList';
 Vue.config.productionTip = false;
@@ -25,25 +24,16 @@ const i18n = new VueI18n({
     messages
 });
 const whiteList = ['/login', '/403', '/404'];
+
+
+if(sessionStorage.getItem('token')){
+    store.dispatch('addRoutes');
+}
+
 // 使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | 后台管理系统`;
-    const hasToken = store.getters.token ? true : false;
-    const role = store.getters.user.role;
-    if(hasToken && role){
-        let dataRouter = store.getters.routes;
-        if(dataRouter){
-            console.log(dataRouter);
-        }
-        /**
-         * 从后台获取vue所需路由和菜单基础数据
-         */
-        getVueRoute({'role':role}).then(res => {
-            store.dispatch('createAsnyRoutes', res.data);
-            let dataRouter = store.getters.routes;
-            //动态添加路由信息
-            router.addRoutes(dataRouter);
-        });
+    if(sessionStorage.getItem('token')){
         if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
             Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
                 confirmButtonText: '确定'
@@ -53,7 +43,7 @@ router.beforeEach((to, from, next) => {
         }
     }else{
         if (whiteList.indexOf(to.path) !== -1) {
-            // in the free login whitelist, go directly
+            // ip白名单路由，直接跳转
             next()
         }else{
             next('/login');
