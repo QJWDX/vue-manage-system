@@ -162,7 +162,7 @@ export default {
                 is_show: 0,
                 is_related_route: 0,
                 is_default: 0,
-                sort_field: 999,
+                sort_field: '0',
             },
             dialogType: '',
             id: 0,
@@ -233,7 +233,7 @@ export default {
                         is_show: res.data.is_show,
                         is_related_route: res.data.is_related_route,
                         is_default: res.data.is_default,
-                        sort_field: res.data.sort_field,
+                        sort_field: this.$fun.nToS(res.data.sort_field),
                     }
                     this.dialogType = 'edit';
                     this.dialogTitle = '编辑菜单';

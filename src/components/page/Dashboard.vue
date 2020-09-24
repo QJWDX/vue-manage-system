@@ -98,27 +98,6 @@
                 </el-card>
             </el-col>
             <el-col :span="24">
-                <el-card shadow="hover" class="mgb20" style="height:300px;">
-                    <div class="user-info">
-                        <img :src="user.avatar" class="user-avator" alt />
-                        <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
-                        </div>
-                    </div>
-                    <div class="user-info-list">
-                        登录时间：
-                        <span>{{user.login_time}}</span>
-                    </div>
-                    <div class="user-info-list">
-                        登录次数：
-                        <span>{{user.login_count}}</span>
-                    </div>
-                    <div class="user-info-list">
-                        登录地址：
-                        <span>{{user.login_ip}}</span>
-                    </div>
-                </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
                         <span>语言详情</span>

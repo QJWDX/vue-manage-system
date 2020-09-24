@@ -44,3 +44,27 @@ export const getVueRoute = query => {
         params: query
     });
 };
+
+
+export const loginLog = query => {
+    return request({
+        url: 'api/loginLog',
+        method: 'get',
+        params: query
+    });
+};
+
+export const loginLogInfo = id => {
+    return request({
+        url: 'api/loginLog/' + id,
+        method: 'get'
+    });
+};
+
+export const delLoginLog = query => {
+    return request({
+        url: 'api/loginLog/delLoginLog',
+        method: 'delete',
+        params: query
+    });
+};

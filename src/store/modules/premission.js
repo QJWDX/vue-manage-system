@@ -1,4 +1,3 @@
-import { Form } from 'element-ui';
 import {router, constantRoutes, lastRoute} from './../../router';
 import { login, getVueRoute } from './../../api/login';
 const state = {

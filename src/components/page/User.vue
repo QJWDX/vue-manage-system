@@ -148,7 +148,7 @@ export default {
             if (!Number.isInteger(+value)) {
                 callback(new Error('请输入数字值'))
             } else {
-                if (this.$commonFunction.checkPhone(value)) {
+                if (this.$fun.checkPhone(value)) {
                     callback()
                 } else {
                     callback(new Error('电话号码格式不正确'))
@@ -161,7 +161,7 @@ export default {
                 return callback(new Error('邮箱不能为空'))
             }
             setTimeout(() => {
-                if (this.$commonFunction.checkEmail(value)) {
+                if (this.$fun.checkEmail(value)) {
                     callback()
                 } else {
                     callback(new Error('请输入正确的邮箱格式'))

@@ -2,7 +2,7 @@
     <div class="">
         <div class="container">
             <el-form :inline="true" :model="query" class="demo-form-inline">
-                    <el-form-item label="发送时间">
+                    <el-form-item>
                          <el-date-picker
                             @change="dateChange"
                             v-model="timeSelect"
@@ -13,13 +13,6 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item>
-                        <el-select v-model="query.read_at" style="width:100px;" @change="handReadChange">
-                            <el-option label="全部" value="0"></el-option>
-                            <el-option label="未读" value="1"></el-option>
-                            <el-option label="已读" value="2"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
                     </el-form-item>
                     <el-form-item class="">
@@ -28,21 +21,19 @@
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="ID" align="center" prop="id">
+                <el-table-column label="ID" align="center" width="120" prop="id">
                 </el-table-column>
-                <el-table-column label="消息内容" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="用户名" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                        <span class="message-title">{{scope.row.data}}</span>
+                        <span>{{scope.row.user.username}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="read_at" label="是否已读" align="center"></el-table-column>
-                <el-table-column prop="created_at" label="发送时间" align="center"></el-table-column>
+                <el-table-column prop="ip" label="登录ip" align="center"></el-table-column>
+                <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button size="small" disabled v-if="scope.row.read_at">标为已读</el-button>
-                        <el-button size="small" @click="handleRead(scope.$index, scope.row.id)" v-else>标为已读</el-button>
-                        <el-button
-                            size="small"
+                      <el-button
+                            type="text"
                             icon="el-icon-delete"
                             class="red"
                             @click="handleDel(scope.$index, scope.row)"
@@ -65,7 +56,6 @@
 </template>
 
 <script>
-    // import { mapState, mapActions } from 'vuex';
     export default {
         name: 'tabs',
         data() {
@@ -76,10 +66,6 @@
                 query: {
                     page: 1,
                     perPage: 10,
-                    type: 0,
-                    notifiable_type: 0,
-                    notifiable_id: this.$store.getters.user.id,
-                    read_at : '1',
                     startTime: '',
                     endTime: '',
                 },
@@ -97,23 +83,17 @@
         methods: {
             // ...mapActions('notification', ['setUnreadNumber']),
             getData() {
-                this.$apiList.notifications.getNotifications(this.query).then(res => {
+                this.$apiList.login.loginLog(this.query).then(res => {
+                    console.log(res);
                     this.tableData = res.data.items || [];
                     this.pageTotal = res.data.totalPage || 0;
                     this.query.perPage = res.data.perPage || 0;
                     this.query.page = res.data.currentPage || 1;
                 });
             },
-            handleRead(index, id) {
-                this.$apiList.notifications.makeRead({id: id}).then(res => {
-                    this.getData();
-                    this.reload();
-                    this.$store.dispatch('setUnreadNumber', this.$store.getters.unreadNumber-1);
-                })
-            },
             del(){
                 let params = {ids: this.checkList};
-                this.$apiList.notifications.delNotifications(params).then(res => {
+                this.$apiList.login.delLoginLog(params).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.checkList = [];
@@ -171,11 +151,6 @@
     }
 
 </script>
-<style>
-.message-title{
-    cursor: pointer;
-}
-</style>
 <style scoped>
 .el-range-editor--small.el-input__inner{
     height: 34px;

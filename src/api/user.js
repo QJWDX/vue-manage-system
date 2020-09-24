@@ -59,3 +59,11 @@ export const setUserRole = (id, query) => {
     });
 };
 
+
+export const modPassword = (id, query) => {
+    return request({
+        url: 'api/user/modPassword/' + id,
+        method: 'post',
+        data: query
+    });
+};

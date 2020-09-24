@@ -13,7 +13,7 @@ import store from './store';
 import commonFunction from './utils/commonFunction';
 import * as apiList from './utils/apiList';
 Vue.config.productionTip = false;
-Vue.prototype.$commonFunction = commonFunction;
+Vue.prototype.$fun = commonFunction;
 Vue.prototype.$apiList = apiList;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {

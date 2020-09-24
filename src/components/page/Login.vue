@@ -70,10 +70,10 @@ export default {
         this.getCaptchaInfo();
     },
     mounted(){
-        let username = this.$commonFunction.getCookie('XXU');
+        let username = this.$fun.getCookie('XXU');
         if(username){
             this.param.username = username;
-            this.param.password = Base64.decode(this.$commonFunction.getCookie('XXP'));
+            this.param.password = Base64.decode(this.$fun.getCookie('XXP'));
             this.remember = true;
         }
     },
@@ -91,7 +91,7 @@ export default {
                     this.$apiList.login.getRsaPublicKey().then(res => {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
-                            let encrypt_data = this.$commonFunction.encryptData(this.param, publicKey);
+                            let encrypt_data = this.$fun.encryptData(this.param, publicKey);
                             let params = { encrypt_data: encrypt_data };
                             let headers = {encryptKey: key};
                             this.$store.dispatch('userLogin', {query:params, headers:headers}).then(res => {
@@ -112,11 +112,11 @@ export default {
         rememberPassword(){
             if(this.remember){
                 let expireDays = 1000 * 60 * 60;
-                this.$commonFunction.setCookie('XXU', this.param.username, expireDays);
-                this.$commonFunction.setCookie('XXP', Base64.encode(this.param.password), expireDays);
+                this.$fun.setCookie('XXU', this.param.username, expireDays);
+                this.$fun.setCookie('XXP', Base64.encode(this.param.password), expireDays);
             }else{
-                this.$commonFunction.setCookie('XXU', '');
-                this.$commonFunction.setCookie('XXP', '');
+                this.$fun.setCookie('XXU', '');
+                this.$fun.setCookie('XXP', '');
             }
         }
     },

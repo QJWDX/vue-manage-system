@@ -38,16 +38,37 @@
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-                            <el-dropdown-item>项目仓库</el-dropdown-item>
-                        </a>
                         <el-dropdown-item>
-                            <router-link to="role">个人中心 </router-link>
+                            <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
+                                <el-dropdown-item>项目仓库</el-dropdown-item>
+                            </a>
+                         </el-dropdown-item>
+                        <el-dropdown-item>
+                            <router-link to="userInfo">个人中心 </router-link>
                         </el-dropdown-item>
-                        <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
+                        <el-dropdown-item command="modPassword">修改密码</el-dropdown-item>
+                        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
+            <!-- 修改密码 -->
+            <el-dialog title="修改密码" :visible.sync="dialogVisible" width="25%" @close="dialogVisible=false;p_form={};">
+                <el-form ref="p_form" :model="p_form" :rules="rules" label-width="100px">
+                    <el-form-item label="旧密码" prop="password">
+                        <el-input type="password" v-model="p_form.password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="新密码" prop="new_password">
+                        <el-input type="password" v-model="p_form.new_password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码" prop="confirm_password">
+                        <el-input type="password" v-model="p_form.confirm_password"></el-input>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible=false;p_form={};">取 消</el-button>
+                    <el-button  type="primary" @click="submitForm">确 定</el-button>
+                </span>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -58,10 +79,56 @@ import bus from '../common/bus';
 import {mapState, mapActions} from 'vuex';
 export default {
     data() {
+        var newPassword = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('密码必填'));
+            }
+            setTimeout(() => {
+                var len = this.p_form.new_password.length;
+                if(len > 18 || len < 4){
+                     callback(new Error('密码长度为4-18个字符'));
+                }
+                if (this.p_form.new_password == this.p_form.password) {
+                    callback(new Error('与旧密码一致,请重新填写'));
+                } else {
+                    callback();
+                }
+            }, 100)
+        }; 
+        var confirmPassword = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('确认密码必填'));
+            }
+            setTimeout(() => {
+                if (this.p_form.new_password !== this.p_form.confirm_password) {
+                    callback(new Error('确认密码与新密码不一致'));
+                } else {
+                    callback();
+                }
+            }, 100)
+        }; 
         return {
             collapse: false,
             fullscreen: false,
             name: '管理员',
+            dialogVisible:false,
+            p_form:{
+                password:'',
+                new_password:'',
+                confirm_password:'',
+            },
+            rules: {
+                password: [
+                    { required: true, message: '密码必填', trigger: 'blur' },
+                    { min:4 , max:18, message: '密码长度为4-18个字符', trigger: 'blur'}
+                ],
+                new_password: [
+                  { validator: newPassword, trigger: 'blur' }
+                ],
+                confirm_password: [
+                  { validator: confirmPassword, trigger: 'blur' }
+                ],
+            }
         };
     },
     computed: {
@@ -83,12 +150,16 @@ export default {
     methods: {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
-            if (command == 'logout') {
-                this.$apiList.login.logout().then(res => {
-                    console.log(res.message);
-                    this.$store.dispatch('delUserInfo');
-                    this.$router.push('/login');
-                });
+            switch(command){
+                case 'modPassword':
+                    this.dialogVisible = true;
+                    break;
+                case 'logout':
+                    this.$apiList.login.logout().then(res => {
+                        this.$store.dispatch('delUserInfo');
+                        this.$router.push('/login');
+                    });
+                    break;
             }
         },
         // 侧边栏折叠
@@ -122,6 +193,19 @@ export default {
                 }
             }
             this.fullscreen = !this.fullscreen;
+        },
+        submitForm(){
+            console.log(this.p_form);
+            this.$refs['p_form'].validate((valid) => {
+                if (valid) {
+                    this.$apiList.user.modPassword(this.$store.getters.user.id, this.p_form).then(res => {
+                        this.p_form = {};
+                        this.dialogVisible = false;
+                        this.$store.dispatch('delUserInfo');
+                        this.$router.push('/login');
+                    });
+                }
+            });
         }
     },
     created(){
@@ -256,6 +340,9 @@ export default {
 .el-dropdown-link {
     color: #fff;
     cursor: pointer;
+}
+.el-dropdown-menu{
+    border-radius: 0;
 }
 .el-dropdown-menu__item {
     text-align: center;
