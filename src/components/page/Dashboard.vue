@@ -1,37 +1,9 @@
 <template>
     <div>
         <el-row :gutter="20">
-            <el-col :span="8">
-                <el-card shadow="hover" class="mgb20" style="height:252px;">
-                    <div class="user-info">
-                        <img src="../../assets/img/img.jpg" class="user-avator" alt />
-                        <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
-                        </div>
-                    </div>
-                    <div class="user-info-list">
-                        上次登录时间：
-                        <span>2019-11-01</span>
-                    </div>
-                    <div class="user-info-list">
-                        上次登录地点：
-                        <span>东莞</span>
-                    </div>
-                </el-card>
-                <el-card shadow="hover" style="height:252px;">
-                    <div slot="header" class="clearfix">
-                        <span>语言详情</span>
-                    </div>Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-                    <el-progress :percentage="13.7"></el-progress>HTML
-                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
-                </el-card>
-            </el-col>
-            <el-col :span="16">
+            <el-col :span="24">
                 <el-row :gutter="20" class="mgb20">
-                    <el-col :span="8">
+                    <el-col :span="4">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
@@ -42,7 +14,7 @@
                             </div>
                         </el-card>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="4">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
@@ -53,13 +25,46 @@
                             </div>
                         </el-card>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="4">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">5000</div>
                                     <div>数量</div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                            <div class="grid-content grid-con-4">
+                                <i class="el-icon-lx-pic grid-con-icon"></i>
+                                <div class="grid-cont-right">
+                                    <div class="grid-num">5000</div>
+                                    <div>图片</div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                            <div class="grid-content grid-con-5">
+                                <i class="el-icon-lx-voice grid-con-icon"></i>
+                                <div class="grid-cont-right">
+                                    <div class="grid-num">5000</div>
+                                    <div>音频</div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                            <div class="grid-content grid-con-6">
+                                <i class="el-icon-lx-record grid-con-icon"></i>
+                                <div class="grid-cont-right">
+                                    <div class="grid-num">5000</div>
+                                    <div>视频</div>
                                 </div>
                             </div>
                         </el-card>
@@ -78,19 +83,50 @@
                         </el-table-column>
                         <el-table-column>
                             <template slot-scope="scope">
-                                <div
-                                    class="todo-item"
-                                    :class="{'todo-item-del': scope.row.status}"
-                                >{{scope.row.title}}</div>
+                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">
+                                    {{scope.row.title}}
+                                </div>
                             </template>
                         </el-table-column>
-                        <el-table-column width="60">
+                        <el-table-column width="80">
                             <template>
                                 <i class="el-icon-edit"></i>
                                 <i class="el-icon-delete"></i>
                             </template>
                         </el-table-column>
                     </el-table>
+                </el-card>
+            </el-col>
+            <el-col :span="24">
+                <el-card shadow="hover" class="mgb20" style="height:300px;">
+                    <div class="user-info">
+                        <img :src="user.avatar" class="user-avator" alt />
+                        <div class="user-info-cont">
+                            <div class="user-info-name">{{name}}</div>
+                            <div>{{role}}</div>
+                        </div>
+                    </div>
+                    <div class="user-info-list">
+                        登录时间：
+                        <span>{{user.login_time}}</span>
+                    </div>
+                    <div class="user-info-list">
+                        登录次数：
+                        <span>{{user.login_count}}</span>
+                    </div>
+                    <div class="user-info-list">
+                        登录地址：
+                        <span>{{user.login_ip}}</span>
+                    </div>
+                </el-card>
+                <el-card shadow="hover" style="height:252px;">
+                    <div slot="header" class="clearfix">
+                        <span>语言详情</span>
+                    </div>Vue
+                    <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
+                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
+                    <el-progress :percentage="13.7"></el-progress>HTML
+                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
                 </el-card>
             </el-col>
         </el-row>
@@ -116,6 +152,7 @@ export default {
     name: 'dashboard',
     data() {
         return {
+            user : {},
             name: localStorage.getItem('ms_username'),
             todoList: [
                 {
@@ -223,13 +260,17 @@ export default {
     },
     computed: {
         role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
+            return this.$store.getters.user.role.indexOf('1') !== -1 ? '超级管理员' : '普通用户';
+        },
+        avatar(){
+            return this.$store.getters.userAvatar;
         }
     },
-    // created() {
-    //     this.handleListener();
-    //     this.changeDate();
-    // },
+    created() {
+        this.user = this.$store.getters.user;
+        // this.handleListener();
+        // this.changeDate();
+    },
     // activated() {
     //     this.handleListener();
     // },
@@ -318,6 +359,30 @@ export default {
 
 .grid-con-3 .grid-num {
     color: rgb(242, 94, 67);
+}
+
+.grid-con-4 .grid-con-icon {
+    background: rgb(41, 116, 187);
+}
+
+.grid-con-4 .grid-num {
+    color: rgb(36, 158, 91);
+}
+
+.grid-con-5 .grid-con-icon {
+    background: rgb(20, 190, 176);
+}
+
+.grid-con-5 .grid-num {
+    color: rgb(86, 173, 28);
+}
+
+.grid-con-6 .grid-con-icon {
+    background: rgb(96, 223, 216);
+}
+
+.grid-con-6 .grid-num {
+    color: rgb(171, 67, 219);
 }
 
 .user-info {

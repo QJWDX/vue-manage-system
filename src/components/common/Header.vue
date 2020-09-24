@@ -77,7 +77,7 @@ export default {
             return number;
         },
         avatar(){
-            return this.$store.getters.userAvatar || '../../assets/img/img.jpg';
+            return this.$store.getters.userAvatar || require('../../assets/img/img.jpg');
         }
     },
     methods: {

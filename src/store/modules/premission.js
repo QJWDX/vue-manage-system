@@ -70,7 +70,7 @@ const actions = {
             login(params.query, params.headers).then(res => {
                 context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);
-                context.commit('setUserAvatar', res.data.user.setUserAvatar);
+                context.commit('setUserAvatar', res.data.user.avatar);
                 resolve(res.message);
             }).catch((err) => {
                 reject(err);
