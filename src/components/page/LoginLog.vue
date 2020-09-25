@@ -29,6 +29,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="ip" label="登录ip" align="center"></el-table-column>
+                <el-table-column prop="ip_address" label="登录地址" align="center"></el-table-column>
                 <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">

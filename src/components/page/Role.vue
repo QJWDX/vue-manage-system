@@ -18,7 +18,6 @@
             <el-table
                 :data="tableData"
                 border
-                class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
                 :cell-style="cellStyle"
