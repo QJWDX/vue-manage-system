@@ -2,7 +2,7 @@ import request from '../utils/request';
 
 export const roleList = query => {
     return request({
-        url: 'api/role',
+        url: 'api/role/list',
         method: 'get',
         params: query
     });
@@ -10,7 +10,7 @@ export const roleList = query => {
 
 export const storeRole = query => {
     return request({
-        url: 'api/role',
+        url: 'api/role/store',
         method: 'post',
         data: query
     });
@@ -18,14 +18,14 @@ export const storeRole = query => {
 
 export const roleInfo = id => {
     return request({
-        url: 'api/role/' + id,
+        url: 'api/role/show/' + id,
         method: 'get'
     });
 };
 
 export const saveRole = (id, query) => {
     return request({
-        url: 'api/role/' + id,
+        url: 'api/role/update/' + id,
         method: 'put',
         data: query
     });

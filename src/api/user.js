@@ -2,7 +2,7 @@ import request from '../utils/request';
 
 export const userList = query => {
     return request({
-        url: 'api/user',
+        url: 'api/user/list',
         method: 'get',
         params: query
     });
@@ -10,7 +10,7 @@ export const userList = query => {
 
 export const userStore = query => {
     return request({
-        url: 'api/user',
+        url: 'api/user/store',
         method: 'post',
         data: query
     });
@@ -19,7 +19,7 @@ export const userStore = query => {
 
 export const userInfo = id => {
     return request({
-        url: 'api/user/' + id,
+        url: 'api/user/show/' + id,
         method: 'get',
         params: []
     });
@@ -30,7 +30,7 @@ export const userInfo = id => {
 
 export const saveUser = (id, query) => {
     return request({
-        url: 'api/user/' + id,
+        url: 'api/user/update/' + id,
         method: 'put',
         data: query
     });

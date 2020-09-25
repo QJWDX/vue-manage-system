@@ -48,7 +48,7 @@ export const getVueRoute = query => {
 
 export const loginLog = query => {
     return request({
-        url: 'api/loginLog',
+        url: 'api/loginLog/list',
         method: 'get',
         params: query
     });
@@ -56,7 +56,7 @@ export const loginLog = query => {
 
 export const loginLogInfo = id => {
     return request({
-        url: 'api/loginLog/' + id,
+        url: 'api/loginLog/show/' + id,
         method: 'get'
     });
 };

@@ -2,7 +2,7 @@ import request from '../utils/request';
 
 export const menuList = query => {
     return request({
-        url: 'api/menus',
+        url: 'api/menus/list',
         method: 'get',
         params: query
     });
@@ -10,7 +10,7 @@ export const menuList = query => {
 
 export const menuStore = query => {
     return request({
-        url: 'api/menus',
+        url: 'api/menus/store',
         method: 'post',
         data: query
     });
@@ -19,7 +19,7 @@ export const menuStore = query => {
 
 export const menuInfo = id => {
     return request({
-        url: 'api/menus/' + id,
+        url: 'api/menus/show/' + id,
         method: 'get'
     });
 };
@@ -29,7 +29,7 @@ export const menuInfo = id => {
 
 export const saveMenu = (id, query) => {
     return request({
-        url: 'api/menus/' + id,
+        url: 'api/menus/update/' + id,
         method: 'put',
         data: query
     });

@@ -38,8 +38,6 @@
                         <span v-else>未知</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="login_ip" label="最近登陆ip"></el-table-column>
-                  <el-table-column prop="login_time" label="最近登陆时间"></el-table-column>
                 <el-table-column prop="login_count" label="登陆次数"></el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column prop="status" label="状态">
