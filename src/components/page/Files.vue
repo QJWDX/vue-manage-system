@@ -24,8 +24,14 @@
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
                     </el-form-item>
-                    <el-form-item class="">
+                    <el-form-item>
                         <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-download" @click="handleExport">导出</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-upload" @click="handleUpload">上传</el-button>
                     </el-form-item>
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
@@ -44,8 +50,7 @@
                 <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="handleDel(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" @click="handleDel(scope.$index, scope.row)">下载</el-button>
+                        <el-button type="text" @click="handleDownload(scope.$index, scope.row)"><a href="http://127.0.0.1:8090/api/files/download/12"></a>下载</el-button>
                         <el-button type="text" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
                     </template>
                 </el-table-column>
@@ -72,11 +77,12 @@
                 pageTotal: 0,
                 query: {
                     page: 1,
-                    perPage: 10,
+                    perPage: 5,
                     type: '',
                     title: '',
                     startTime: '',
                     endTime: '',
+                    export: 0
                 },
                 notification: [], 
                 tableData: [],
@@ -94,7 +100,11 @@
         methods: {
             getData() {
                 this.$apiList.files.files(this.query).then(res => {
-                    console.log(res);
+                    if(this.query.export == 1){
+                         this.$fun.downloadFile(res.data.download_url);
+                        this.query.export = 0;
+                        return;
+                    }
                     this.tableData = res.data.items || [];
                     this.pageTotal = res.data.totalPage || 0;
                     this.query.perPage = res.data.perPage || 0;
@@ -103,19 +113,18 @@
             },
             getTypes(){
                  this.$apiList.files.types().then(res => {
-                    console.log(res);
                     this.types = res.data || [];
                 });
             },
             del(){
                 let params = {ids: this.checkList};
-                this.$apiList.login.delLoginLog(params).then(res => {
-                    if(res){
-                        this.$message.success(res.message);
-                        this.checkList = [];
-                        this.getData();
-                    }
-                });
+                // this.$apiList.login.delLoginLog(params).then(res => {
+                //     if(res){
+                //         this.$message.success(res.message);
+                //         this.checkList = [];
+                //         this.getData();
+                //     }
+                // });
             },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
@@ -151,6 +160,10 @@
             handleSearch() {
                 this.getData();
             },
+            handleExport(){
+                this.query.export = 1;
+                this.getData();
+            },
             handReadChange(){
                 this.query.page = 1;
             },
@@ -162,6 +175,13 @@
                     this.query.startTime = this.$fun.formatDateTime(val[0]);
                     this.query.endTime = this.$fun.formatDateTime(val[1]);
                 }
+            },
+            handleDownload(index, row){
+                let url = 'http://127.0.0.1:8090/api/files/download/' + row.id;
+                this.$fun.downloadFileByServer(url);
+            },
+            handleUpload(){
+                
             },
             typeFormat(row, column){
                 return this.types[row.type];

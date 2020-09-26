@@ -280,5 +280,34 @@ export default {
      */
     nToS(val){
        return !isNaN(val) ? val.toString() : val;
+    },
+
+    /**
+     * 
+     * 根据url下载文件
+     * @param {*} url 文件地址
+     * @param {*} fileName 文件名
+     */
+    downloadFile(url, fileName = ''){
+        console.log(url, fileName);
+        let a = document.createElement('a')
+        a.href = url;
+        a.download = fileName || url.substring(url.lastIndexOf('/')+1);
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); 
+    },
+
+    /**
+     * 
+     *服务端下载
+     * @param {*} url 服务端url 
+     */
+    downloadFileByServer(url){
+        let a = document.createElement('a')
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); 
     }
 }

@@ -22,3 +22,10 @@ export const types = () => {
         method: 'get'
     });
 };
+
+export const download = id => {
+    return request({
+        url: 'api/files/download/' + id,
+        method: 'get'
+    });
+};
