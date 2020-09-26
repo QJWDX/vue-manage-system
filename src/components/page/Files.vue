@@ -2,7 +2,16 @@
     <div class="">
         <div class="container">
             <el-form :inline="true" :model="query" class="demo-form-inline">
-                    <el-form-item>
+                 <el-form-item label="文件标题">
+                         <el-input v-model="query.title" placeholder="标题"></el-input>
+                    </el-form-item>
+                    <el-form-item label="文件类型">
+                        <el-select v-model="query.type" style="width:100px;" @change="handReadChange">
+                            <el-option label="全部" value=""></el-option>
+                            <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="上传时间">
                          <el-date-picker
                             @change="dateChange"
                             v-model="timeSelect"
@@ -21,24 +30,23 @@
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="ID" align="center" width="120" prop="id">
-                </el-table-column>
-                <el-table-column label="用户名" align="center" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.user.username}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="ip" label="登录ip" align="center"></el-table-column>
-                <el-table-column prop="login_address" label="登录地址" align="center"></el-table-column>
-                <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
+                <el-table-column label="uid" align="center" prop="uid"></el-table-column>
+                <el-table-column label="标题" align="center" prop="title"></el-table-column>
+                <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"></el-table-column>
+                <el-table-column label="文件夹" align="center" prop="folder"></el-table-column>
+                <el-table-column label="路径" align="center" prop="path"></el-table-column>
+                <el-table-column label="磁盘" align="center" prop="disks"></el-table-column>
+                <el-table-column label="大小" align="center" prop="size"></el-table-column>
+                <el-table-column label="宽" align="center" prop="width"></el-table-column>
+                <el-table-column label="高" align="center" prop="height"></el-table-column>
+                <el-table-column label="mime_type" align="center" prop="mime_type"></el-table-column>
+                 <el-table-column label="下载次数" align="center" prop="downloads"></el-table-column>
+                <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                      <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDel(scope.$index, scope.row)"
-                        >删除</el-button>
+                        <el-button type="text" @click="handleDel(scope.$index, scope.row)">查看</el-button>
+                        <el-button type="text" @click="handleDel(scope.$index, scope.row)">下载</el-button>
+                        <el-button type="text" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -61,12 +69,12 @@
         name: 'tabs',
         data() {
             return {
-                message: 'first',
-                showHeader: false,
                 pageTotal: 0,
                 query: {
                     page: 1,
                     perPage: 10,
+                    type: '',
+                    title: '',
                     startTime: '',
                     endTime: '',
                 },
@@ -75,21 +83,28 @@
                 multipleSelection: [],
                 checkList: [],
                 timeSelect: ['', ''],
+                types: []
             }
         },
         inject: ['reload'],
         created() {
             this.getData();
+            this.getTypes();
         },
         methods: {
-            // ...mapActions('notification', ['setUnreadNumber']),
             getData() {
-                this.$apiList.login.loginLog(this.query).then(res => {
+                this.$apiList.files.files(this.query).then(res => {
                     console.log(res);
                     this.tableData = res.data.items || [];
                     this.pageTotal = res.data.totalPage || 0;
                     this.query.perPage = res.data.perPage || 0;
                     this.query.page = res.data.currentPage || 1;
+                });
+            },
+            getTypes(){
+                 this.$apiList.files.types().then(res => {
+                    console.log(res);
+                    this.types = res.data || [];
                 });
             },
             del(){
@@ -148,6 +163,9 @@
                     this.query.endTime = this.$fun.formatDateTime(val[1]);
                 }
             },
+            typeFormat(row, column){
+                return this.types[row.type];
+            }
         }
     }
 
