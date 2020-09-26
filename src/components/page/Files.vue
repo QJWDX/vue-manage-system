@@ -36,11 +36,11 @@
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="uid" align="center" prop="uid"></el-table-column>
-                <el-table-column label="标题" align="center" prop="title"></el-table-column>
+                <el-table-column label="uid" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="标题" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"></el-table-column>
                 <el-table-column label="文件夹" align="center" prop="folder"></el-table-column>
-                <el-table-column label="路径" align="center" prop="path"></el-table-column>
+                <el-table-column label="路径" align="center" prop="path" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="磁盘" align="center" prop="disks"></el-table-column>
                 <el-table-column label="大小" align="center" prop="size"></el-table-column>
                 <el-table-column label="宽" align="center" prop="width"></el-table-column>
