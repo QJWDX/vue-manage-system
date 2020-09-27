@@ -299,15 +299,26 @@ export default {
     },
 
     /**
-     * 
-     *服务端下载
-     * @param {*} url 服务端url 
+     * 图片下载
+     * @param {*} url 
+     * @param {*} name 
      */
-    downloadFileByServer(url){
-        let a = document.createElement('a')
-        a.href = url;
-        document.body.appendChild(a);
-        a.click();
-        a.remove(); 
-    }
+    downloadByBlob(url, name) {
+        let image = new Image();
+        image.setAttribute('crossOrigin', 'anonymous');
+        image.src = url;
+        image.onload = () => {
+          let canvas = document.createElement('canvas');
+          canvas.width = image.width;
+          canvas.height = image.height;
+          let ctx = canvas.getContext('2d');
+          ctx.drawImage(image, 0, 0, image.width, image.height);
+          canvas.toBlob((blob) => {
+            let url = URL.createObjectURL(blob);
+            downloadFile(url, name);
+            // 用完释放URL对象
+            URL.revokeObjectURL(url);
+          });
+        };
+    },
 }

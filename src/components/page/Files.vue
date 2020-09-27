@@ -177,8 +177,12 @@
                 }
             },
             handleDownload(index, row){
-                let url = 'http://127.0.0.1:8090/api/files/download/' + row.id;
-                this.$fun.downloadFileByServer(url);
+                // let url = 'http://127.0.0.1:8090/api/files/download/' + row.id;
+                // this.$fun.downloadFileByServer(url);
+                console.log(row);
+                if(row.type == 'image'){
+                    this.$fun.downloadByBlob(row.download_url, row.title);
+                }
             },
             handleUpload(){
                 
