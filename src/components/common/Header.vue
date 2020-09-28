@@ -108,7 +108,6 @@ export default {
             }, 100)
         }; 
         return {
-            systemName: this.$store.getters.systemName,
             collapse: false,
             fullscreen: false,
             name: '管理员',
@@ -146,6 +145,9 @@ export default {
         },
         avatar(){
             return this.$store.getters.userAvatar || require('../../assets/img/img.jpg');
+        },
+        systemName(){
+            return this.$store.getters.systemName;
         }
     },
     methods: {

@@ -111,6 +111,7 @@ export default {
                 if (valid) {
                      this.$apiList.system.setSystemConfig(this.form).then(res => {
                         this.$message.success(res.message);
+                        this.$store.dispatch('setSystemInfo');
                     });
                 }
             });
