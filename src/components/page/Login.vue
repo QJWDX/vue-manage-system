@@ -43,7 +43,7 @@ const Base64 = require('js-base64').Base64;
 export default {
     data: function() {
         return {
-            systemName: this.$store.getters.systemInfo.system_name || '后台管理系统',
+            systemName: this.$store.getters.systemName,
             disable: false,
             catcha_img:'',
             remember: false,

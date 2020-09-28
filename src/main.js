@@ -32,7 +32,7 @@ if(sessionStorage.getItem('token')){
 
 // 使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | 后台管理系统`;
+    document.title = `${to.meta.title} | ${store.getters.systemName}`;
     if(sessionStorage.getItem('token')){
         if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
             Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
