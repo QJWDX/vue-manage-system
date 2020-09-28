@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">后台管理系统</div>
+            <div class="ms-title">{{systemName}}</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="param.username" placeholder="username" class="login-input">
@@ -23,8 +23,10 @@
                     <el-input v-model="param.captcha_code" placeholder="验证码" style="width:200px;" class="login-input">
                         <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
                     </el-input>
-                    <img :src="catcha_img" alt="" style="margin-left:16px;" @click="getCaptchaInfo">
-                     <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
+                    <img :src="catcha_img" alt="" @click="getCaptchaInfo" style="margin-left:10px;">
+                </el-form-item>
+                <el-form-item class="checkBox">
+                    <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()" :disabled="disable">登录</el-button>
@@ -41,6 +43,7 @@ const Base64 = require('js-base64').Base64;
 export default {
     data: function() {
         return {
+            systemName: this.$store.getters.systemInfo.system_name || '后台管理系统',
             disable: false,
             catcha_img:'',
             remember: false,
@@ -67,6 +70,7 @@ export default {
         };console.log(password);
     },
     created(){
+        this.$store.dispatch('setSystemInfo');
         this.getCaptchaInfo();
     },
     mounted(){
@@ -133,7 +137,7 @@ export default {
 }
 .ms-title {
     width: 100%;
-    line-height: 70px;
+    line-height: 60px;
     text-align: center;
     font-size: 24px;
     color: #fff;
@@ -177,7 +181,16 @@ export default {
 .el-button--small{
     border-radius: 0px;
 }
-form-item--small.el-form-item{
+.ms-content /deep/ .el-form-item{
     margin-bottom: 16px;
+}
+.ms-content /deep/ .el-form-item .el-form-item__content{ 
+    height: 40px;
+}
+.checkBox {
+    margin-bottom: 0px;
+}
+.checkBox /deep/ .el-form-item__content{
+    height: 32px !important;
 }
 </style>

@@ -36,18 +36,18 @@
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="uid" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column>
+                <!-- <el-table-column label="uid" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column> -->
                 <el-table-column label="标题" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"></el-table-column>
-                <el-table-column label="文件夹" align="center" prop="folder"></el-table-column>
+                <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat" width="100"></el-table-column>
+                <el-table-column label="文件夹" align="center" prop="folder" width="100"></el-table-column>
+                <el-table-column label="磁盘" align="center" prop="disks" width="70"></el-table-column>
+                <el-table-column label="宽" align="center" prop="width" width="60"></el-table-column>
+                <el-table-column label="高" align="center" prop="height" width="60"></el-table-column>
+                <el-table-column label="大小" align="center" prop="size" width="100" :formatter="formatSize"></el-table-column>
+                <el-table-column label="mime_type" align="center" prop="mime_type" width="100"></el-table-column>
                 <el-table-column label="路径" align="center" prop="path" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="磁盘" align="center" prop="disks"></el-table-column>
-                <el-table-column label="大小" align="center" prop="size"></el-table-column>
-                <el-table-column label="宽" align="center" prop="width"></el-table-column>
-                <el-table-column label="高" align="center" prop="height"></el-table-column>
-                <el-table-column label="mime_type" align="center" prop="mime_type"></el-table-column>
-                 <el-table-column label="下载次数" align="center" prop="downloads"></el-table-column>
-                <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
+                <el-table-column prop="created_at" label="上传时间" align="center" width="150"></el-table-column>
+                <el-table-column label="下载次数" align="center" prop="downloads" width="80"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" @click="handleDownload(scope.$index, scope.row)"><a href="http://127.0.0.1:8090/api/files/download/12"></a>下载</el-button>
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import DragDialogVue from './DragDialog.vue';
     export default {
         name: 'tabs',
         data() {
@@ -77,7 +78,7 @@
                 pageTotal: 0,
                 query: {
                     page: 1,
-                    perPage: 5,
+                    perPage: 12,
                     type: '',
                     title: '',
                     startTime: '',
@@ -101,7 +102,7 @@
             getData() {
                 this.$apiList.files.files(this.query).then(res => {
                     if(this.query.export == 1){
-                         this.$fun.downloadFile(res.data.download_url);
+                        this.$fun.downloadFile(res.data.download_url);
                         this.query.export = 0;
                         return;
                     }
@@ -177,18 +178,16 @@
                 }
             },
             handleDownload(index, row){
-                // let url = 'http://127.0.0.1:8090/api/files/download/' + row.id;
-                // this.$fun.downloadFileByServer(url);
-                console.log(row);
-                if(row.type == 'image'){
-                    this.$fun.downloadByBlob(row.download_url, row.title);
-                }
+                this.$fun.download('http://127.0.0.1:8090/files/download/'+row.id);
             },
             handleUpload(){
                 
             },
             typeFormat(row, column){
                 return this.types[row.type];
+            },
+            formatSize(row){
+                return this.$fun.formatSize(row.size, 'Kb');
             }
         }
     }

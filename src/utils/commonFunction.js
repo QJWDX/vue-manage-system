@@ -289,10 +289,17 @@ export default {
      * @param {*} fileName 文件名
      */
     downloadFile(url, fileName = ''){
-        console.log(url, fileName);
         let a = document.createElement('a')
         a.href = url;
         a.download = fileName || url.substring(url.lastIndexOf('/')+1);
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); 
+    },
+
+    download(url){
+        let a = document.createElement('a')
+        a.href = url;
         document.body.appendChild(a);
         a.click();
         a.remove(); 
@@ -321,4 +328,27 @@ export default {
           });
         };
     },
+
+    /**
+     * 文件大小格式转换
+     * @param {*} size 
+     * @param {*} format 
+     */
+    formatSize(size, format) {
+        format = format.toUpperCase();
+        let p = 0;
+        switch(format){
+            case 'KB':
+                p = 1;
+                break;
+            case 'MB':
+                p = 2;
+                break;
+            case 'GB':
+                p = 3;
+                break;
+        }
+        size /= Math.pow(1024, p);
+        return Math.round(size.toFixed(3)*10)/10 + format;
+    }
 }

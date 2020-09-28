@@ -34,7 +34,7 @@ const mutations = {
         sessionStorage.setItem('token', newToken);
     },
     removeToken(state){
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
         state.token = '';
     },
     setUserInfo(state, userInfo){

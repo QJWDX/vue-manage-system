@@ -97,6 +97,7 @@ service.interceptors.response.use(
                     });
                     break
                 case 401:
+                    console.log(error.response.data);
                     // token黑名单 移除本地token，用户信息
                     store.dispatch('delUserInfo');
                     route.push('/login');

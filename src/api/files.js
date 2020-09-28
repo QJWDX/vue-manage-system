@@ -25,7 +25,7 @@ export const types = () => {
 
 export const download = id => {
     return request({
-        url: 'api/files/download/' + id,
+        url: 'files/download/' + id,
         method: 'get'
     });
 };
