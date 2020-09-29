@@ -85,7 +85,6 @@
             // ...mapActions('notification', ['setUnreadNumber']),
             getData() {
                 this.$apiList.login.loginLog(this.query).then(res => {
-                    console.log(res);
                     this.tableData = res.data.items || [];
                     this.pageTotal = res.data.totalPage || 0;
                     this.query.perPage = res.data.perPage || 0;

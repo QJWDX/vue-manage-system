@@ -73,13 +73,14 @@ el-table整理样式
     background-color: rgb(50, 65, 87);
     color: #fff;
     font-size: 16px;
-    font-weight: bold;
+    /* font-weight: bold; */
     height: 40px;
     line-height: 40px;
 }
 .el-dialog__title {
     color: #fff;
-    font-size: 16px;
+    font-size: 15px;
+    letter-spacing: 2px;
 }
 .el-dialog__footer {
     padding: 10px 20px 20px;

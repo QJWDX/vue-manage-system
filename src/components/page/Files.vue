@@ -6,7 +6,7 @@
                          <el-input v-model="query.title" placeholder="标题"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型">
-                        <el-select v-model="query.type" style="width:100px;" @change="handTypeChange">
+                        <el-select v-model="query.type" style="width:100px;">
                             <el-option label="全部" value=""></el-option>
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
@@ -69,7 +69,7 @@
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
                 <el-form ref="form" :model="uploadParam" label-width="100px">
                     <el-form-item label="文件的类型" prop="type">
-                         <el-select v-model="uploadParam.type" style="width: 100%;">
+                         <el-select v-model="uploadParam.type" style="width: 100%;" @change="handTypeChange">
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
@@ -150,9 +150,6 @@ import DragDialogVue from './DragDialog.vue';
                  this.$apiList.files.types().then(res => {
                     this.types = res.data || [];
                 });
-                this.$apiList.files.folders().then(res => {
-                     this.folders = res.data || [];
-                });
             },
             del(){
                 let params = {ids: this.checkList};
@@ -203,7 +200,9 @@ import DragDialogVue from './DragDialog.vue';
                 this.getData();
             },
             handTypeChange(){
-                this.query.page = 1;
+                this.$apiList.files.folders({type:this.uploadParam.type}).then(res => {
+                     this.folders = res.data || [];
+                });
             },
             dateChange(val){
                 if(val == null){

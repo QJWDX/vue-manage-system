@@ -94,9 +94,9 @@
                 </el-form-item>
                 <el-form-item label="性别">
                     <el-radio-group v-model="form.sex">
-                        <el-radio :label="1">男</el-radio>
-                        <el-radio :label="0">女</el-radio>
-                          <el-radio :label="-1">未知</el-radio>
+                        <el-radio :label="1" border>男</el-radio>
+                        <el-radio :label="0" border>女</el-radio>
+                        <el-radio :label="-1" border>未知</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="状态">

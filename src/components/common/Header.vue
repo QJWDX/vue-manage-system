@@ -52,16 +52,16 @@
                 </el-dropdown>
             </div>
             <!-- 修改密码 -->
-            <el-dialog title="修改密码" :visible.sync="dialogVisible" width="25%" @close="dialogVisible=false;p_form={};">
-                <el-form ref="p_form" :model="p_form" :rules="rules" label-width="100px">
-                    <el-form-item label="旧密码" prop="password">
-                        <el-input type="password" v-model="p_form.password"></el-input>
+            <el-dialog title="修改密码" :visible.sync="dialogVisible" width="20%" @close="dialogVisible=false;p_form={};">
+                <el-form ref="p_form" :model="p_form" :rules="rules">
+                    <el-form-item prop="password">
+                        <el-input type="password" v-model="p_form.password" placeholder="原密码"></el-input>
                     </el-form-item>
-                    <el-form-item label="新密码" prop="new_password">
-                        <el-input type="password" v-model="p_form.new_password"></el-input>
+                    <el-form-item prop="new_password">
+                        <el-input type="password" v-model="p_form.new_password" placeholder="新密码"></el-input>
                     </el-form-item>
-                    <el-form-item label="确认密码" prop="confirm_password">
-                        <el-input type="password" v-model="p_form.confirm_password"></el-input>
+                    <el-form-item prop="confirm_password">
+                        <el-input type="password" v-model="p_form.confirm_password" placeholder="确认密码"></el-input>
                     </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">

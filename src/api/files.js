@@ -23,10 +23,11 @@ export const types = () => {
     });
 };
 
-export const folders = () => {
+export const folders = (query) => {
     return request({
         url: 'api/files/folderSelect',
-        method: 'get'
+        method: 'get',
+        params: query
     });
 };
 
