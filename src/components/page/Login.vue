@@ -23,7 +23,7 @@
                     <el-input v-model="param.captcha_code" placeholder="验证码" style="width:200px;" class="login-input">
                         <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
                     </el-input>
-                    <img :src="catcha_img" alt="" @click="getCaptchaInfo" style="margin-left:10px;">
+                    <img :src="catcha_img" alt="" @click="getCaptchaInfo" style="margin-left:18px;">
                 </el-form-item>
                 <el-form-item class="checkBox">
                     <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
@@ -43,7 +43,6 @@ const Base64 = require('js-base64').Base64;
 export default {
     data: function() {
         return {
-            systemName: this.$store.getters.systemName,
             disable: false,
             catcha_img:'',
             remember: false,
@@ -79,6 +78,11 @@ export default {
             this.param.username = username;
             this.param.password = Base64.decode(this.$fun.getCookie('XXP'));
             this.remember = true;
+        }
+    },
+    computed:{
+        systemName(){
+            return this.$store.getters.systemName;
         }
     },
     methods: {

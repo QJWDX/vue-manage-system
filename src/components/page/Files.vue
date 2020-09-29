@@ -6,7 +6,7 @@
                          <el-input v-model="query.title" placeholder="标题"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型">
-                        <el-select v-model="query.type" style="width:100px;" @change="handReadChange">
+                        <el-select v-model="query.type" style="width:100px;" @change="handTypeChange">
                             <el-option label="全部" value=""></el-option>
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
@@ -65,6 +65,31 @@
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
+            <!-- 文件上传 -->
+            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
+                <el-form ref="form" :model="uploadParam" label-width="100px">
+                    <el-form-item label="文件的类型" prop="type">
+                         <el-select v-model="uploadParam.type" style="width: 100%;">
+                            <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="存储文件夹" prop="folder">
+                         <el-select v-model="uploadParam.folder" style="width: 100%;">
+                            <el-option :label="item" :value="item" v-for="(item, key) in folders" :key="key"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="请选择文件">
+                        <el-upload :on-change="fileChange" action="#" :http-request="httpRequest" :on-remove="removeFile">                
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        </el-upload>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="closeDialog">取 消</el-button>
+                    <el-button type="primary" @click="submitForm()">确 定</el-button>
+                </span>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -90,13 +115,22 @@ import DragDialogVue from './DragDialog.vue';
                 multipleSelection: [],
                 checkList: [],
                 timeSelect: ['', ''],
-                types: []
+                types: [],
+                folders: [],
+                fileUids:[],
+                dialogVisible: false,
+                dialogTitle: '文件上传',
+                uploadParam: {
+                    type: '',
+                    folder: '',
+                    files: [],
+                }
             }
         },
         inject: ['reload'],
         created() {
             this.getData();
-            this.getTypes();
+            this.initData();
         },
         methods: {
             getData() {
@@ -112,9 +146,12 @@ import DragDialogVue from './DragDialog.vue';
                     this.query.page = res.data.currentPage || 1;
                 });
             },
-            getTypes(){
+            initData(){
                  this.$apiList.files.types().then(res => {
                     this.types = res.data || [];
+                });
+                this.$apiList.files.folders().then(res => {
+                     this.folders = res.data || [];
                 });
             },
             del(){
@@ -165,7 +202,7 @@ import DragDialogVue from './DragDialog.vue';
                 this.query.export = 1;
                 this.getData();
             },
-            handReadChange(){
+            handTypeChange(){
                 this.query.page = 1;
             },
             dateChange(val){
@@ -181,21 +218,57 @@ import DragDialogVue from './DragDialog.vue';
                 this.$fun.download('http://127.0.0.1:8090/files/download/'+row.id);
             },
             handleUpload(){
-                
+                this.dialogVisible = true;
             },
             typeFormat(row, column){
                 return this.types[row.type];
             },
             formatSize(row){
                 return this.$fun.formatSize(row.size, 'Kb');
+            },
+            fileChange(file){
+                // 上传文件变化时将文件对象push进files数组
+                this.uploadParam.files.push(file.raw);
+                this.fileUids.push(file.uid);
+            },
+            removeFile(file, fileList){
+                // upload 移除文件 相对应根据下标移除自定义的file
+                let index = this.$fun.arrayIndexOf(this.fileUids, file.uid);
+                this.uploadParam.files.splice(index, 1);
+                this.fileUids.splice(index, 1);
+            },
+            submitForm() {
+                let formData = new FormData();
+                formData.append('type', this.uploadParam.type);
+                formData.append('folder', this.uploadParam.folder);
+                for (let index = 0; index < this.uploadParam.files.length; index++) {
+                   formData.append('file[]', this.uploadParam.files[index]);
+                }
+                this.$apiList.files.upload(formData).then(res => {
+                    this.closeDialog();
+                    this.$message.success(res.message);
+                });
+            },
+            closeDialog(){
+                this.dialogVisible = false;
+                this.uploadParam = {
+                    type: '',
+                    folder: '',
+                    file: '',
+                };
+                this.fileUids = [];
+                this.fileList = [];
+            },
+            httpRequest(){
+
             }
         }
     }
 
 </script>
 <style scoped>
-.el-range-editor--small.el-input__inner{
+/* .el-range-editor--small.el-input__inner{
     height: 34px;
-}
+} */
 </style>
 

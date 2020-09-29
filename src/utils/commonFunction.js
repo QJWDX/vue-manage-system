@@ -350,5 +350,18 @@ export default {
         }
         size /= Math.pow(1024, p);
         return Math.round(size.toFixed(3)*10)/10 + format;
+    },
+
+    /**
+     * 根据数组值获取数组下标
+     * @param {*} array 
+     * @param {*} value 
+     */
+    arrayIndexOf(array, value){
+        for(let i=0; i<array.length; i++){
+            if(array[i] == value){
+                return i;
+            }
+        }
     }
 }

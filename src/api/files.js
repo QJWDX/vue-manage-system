@@ -23,9 +23,27 @@ export const types = () => {
     });
 };
 
+export const folders = () => {
+    return request({
+        url: 'api/files/folderSelect',
+        method: 'get'
+    });
+};
+
 export const download = id => {
     return request({
         url: 'files/download/' + id,
         method: 'get'
+    });
+};
+
+export const upload = params => {
+    return request({
+        url: 'api/files/upload',
+        method: 'post',
+        data: params,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     });
 };

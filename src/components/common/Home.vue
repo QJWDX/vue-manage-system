@@ -67,4 +67,31 @@ el-table整理样式
 .el-table--border td,.el-table--border th {
     border-right: 1px solid #999999;
 }
+.el-dialog__header {
+    padding: 0px 20px 5px;
+    text-align: center;
+    background-color: rgb(50, 65, 87);
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+}
+.el-dialog__title {
+    color: #fff;
+    font-size: 16px;
+}
+.el-dialog__footer {
+    padding: 10px 20px 20px;
+    text-align: right;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+}
+.el-dialog__headerbtn {
+    top:12px;
+}
+.el-dialog__footer {
+    text-align: center;
+}
 </style>
