@@ -73,12 +73,19 @@ export default {
         this.getCaptchaInfo();
     },
     mounted(){
+        // 绑定enter事件
+        document.addEventListener("keyup", this.enterKey);
+        // 获取记住的账号密码信息
         let username = this.$fun.getCookie('XXU');
         if(username){
             this.param.username = username;
             this.param.password = Base64.decode(this.$fun.getCookie('XXP'));
             this.remember = true;
         }
+    },
+    destroyed() {
+        // 销毁enter事件
+        document.removeEventListener("keyup", this.enterKey);
     },
     computed:{
         systemName(){
@@ -125,6 +132,15 @@ export default {
             }else{
                 this.$fun.setCookie('XXU', '');
                 this.$fun.setCookie('XXP', '');
+            }
+        },
+        enterKey(event) {
+            const path = this.$route.path;
+            if (path == "/login") {
+                const code = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+                if (code == 13) {
+                    this.submitForm();
+                }
             }
         }
     },
