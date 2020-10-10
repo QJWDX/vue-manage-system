@@ -208,7 +208,7 @@ export default {
     height: 40px;
 }
 .checkBox {
-    margin-bottom: 0px;
+    margin-bottom: 0px !important;
 }
 .checkBox /deep/ .el-form-item__content{
     height: 32px !important;
