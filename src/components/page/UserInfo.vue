@@ -96,7 +96,7 @@
                 }, 100)
             };
             return {
-                uploadUrl: 'http://localhost:8090/api/user/uploadAvatar/' + this.$store.getters.user.id,
+                uploadUrl: this.$fun.apiUrl() + '/api/user/uploadAvatar/' + this.$store.getters.user.id,
                 defaultSrc: require('../../assets/img/img.jpg'),
                 labelPosition: 'right',
                 fit: 'cover',

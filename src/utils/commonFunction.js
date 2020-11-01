@@ -1,5 +1,10 @@
 import {JSEncrypt} from 'jsencrypt';
 export default {
+
+    apiUrl(){
+        return 'http://www.hhdxdx.cn';
+    },
+
     /**
      * 时间格式转换
      * @param {*} date 时间对象
