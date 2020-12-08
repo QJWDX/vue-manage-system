@@ -64,17 +64,10 @@ const mutations = {
 };
 
 const actions = {
-    userLogin(context, params){
-        return new Promise(function(resolve, reject){
-            login(params.query, params.headers).then(res => {
-                context.commit('setUserInfo', res.data.user);
-                context.commit('setToken', res.data.token);
-                context.commit('setUserAvatar', res.data.user.avatar);
-                resolve(res.message);
-            }).catch((err) => {
-                reject(err);
-            });
-        });
+    userLoginSuccess(context, data){
+        context.commit('setUserInfo', data.user);
+        context.commit('setToken', data.token);
+        context.commit('setUserAvatar', data.user.avatar);
     },
     addMenuData(context, role){
         return new Promise(function(resolve, reject){

@@ -109,11 +109,16 @@ export default {
                             let encrypt_data = this.$fun.encryptData(this.param, publicKey);
                             let params = { encrypt_data: encrypt_data };
                             let headers = {encryptKey: key};
-                            this.$store.dispatch('userLogin', {query:params, headers:headers}).then(res => {
-                                this.rememberPassword();
-                                this.$store.dispatch('addMenuData', this.$store.getters.user.role);
-                                this.disable = false;
-                                this.$router.push('/');
+                            $this.$apiList.login().then(function(res){
+                                this.$store.dispatch('userLogin', res).then(() => {
+                                    this.rememberPassword();
+                                    this.$store.dispatch('addMenuData', this.$store.getters.user.role);
+                                    this.disable = false;
+                                    this.$router.push('/');
+                                }).catch(err => {
+                                    this.disable = false;
+                                    console.log(err);
+                                });
                             }).catch(err => {
                                 this.disable = false;
                                 console.log(err);
