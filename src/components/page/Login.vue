@@ -66,7 +66,7 @@ export default {
                     { min:4 , max:4, message: '验证码长度为4字符', trigger: 'blur'}
                 ]
             },
-        };console.log(password);
+        };
     },
     created(){
         this.$store.dispatch('setSystemInfo');
@@ -106,22 +106,17 @@ export default {
                     this.$apiList.login.getRsaPublicKey().then(res => {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
-                            let encrypt_data = this.$fun.encryptData(this.param, publicKey);
-                            let params = { encrypt_data: encrypt_data };
-                            let headers = {encryptKey: key};
-                            $this.$apiList.login().then(function(res){
-                                this.$store.dispatch('userLogin', res).then(() => {
-                                    this.rememberPassword();
-                                    this.$store.dispatch('addMenuData', this.$store.getters.user.role);
-                                    this.disable = false;
-                                    this.$router.push('/');
-                                }).catch(err => {
-                                    this.disable = false;
-                                    console.log(err);
-                                });
+                            let query = {};
+                            let headers = {};
+                            query.encrypt_data = this.$fun.encryptData(this.param, publicKey);
+                            headers.encryptKey = key;
+                            this.$store.dispatch('userLogin', {query:query, headers:headers}).then(res => {
+                                this.rememberPassword();
+                                this.$store.dispatch('addMenuData', this.$store.getters.user.role);
+                                this.disable = false;
+                                this.$router.push('/');
                             }).catch(err => {
                                 this.disable = false;
-                                console.log(err);
                             });
                         });
                 } else {

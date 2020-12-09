@@ -64,16 +64,16 @@ const mutations = {
 };
 
 const actions = {
-    userLogin(context, res){
+    userLogin(context, params){
         return new Promise(function(resolve, reject){
-            try{
-                context.commit('setUserInfo', res,data.user);
+            login(params.query, params.headers).then(res => {
+                context.commit('setUserInfo', res.data.user);
                 context.commit('setToken', res.data.token);
                 context.commit('setUserAvatar', res.data.user.avatar);
                 resolve(res.message);
-            }catch{
+            }).catch((err) => {
                 reject(err);
-            }
+            });
         });
     },
     addMenuData(context, role){
