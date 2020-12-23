@@ -107,15 +107,18 @@ export default {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
                             let query = {};
-                            let headers = {};
                             query.encrypt_data = this.$fun.encryptData(this.param, publicKey);
-                            headers.encryptKey = key;
-                            this.$store.dispatch('userLogin', {query:query, headers:headers}).then(res => {
+                            let headers = {
+                                encryptKey:key
+                            };
+                            this.$apiList.login.login(query, headers).then(res => {
+                                this.$store.dispatch('userLogin', res.data);
                                 this.rememberPassword();
                                 this.$store.dispatch('addMenuData', this.$store.getters.user.role);
                                 this.disable = false;
                                 this.$router.push('/');
-                            }).catch(err => {
+                            }).catch((err) => {
+                                console.log(err);
                                 this.disable = false;
                             });
                         });
