@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const files = query => {
-    return request({
+    return axios({
         url: 'api/files/list',
         method: 'get',
         params: query
@@ -10,21 +10,21 @@ export const files = query => {
 
 
 export const filesInfo = id => {
-    return request({
+    return axios({
         url: 'api/files/show/' + id,
         method: 'get'
     });
 };
 
 export const types = () => {
-    return request({
+    return axios({
         url: 'api/files/typeSelect',
         method: 'get'
     });
 };
 
 export const folders = (query) => {
-    return request({
+    return axios({
         url: 'api/files/folderSelect',
         method: 'get',
         params: query
@@ -32,14 +32,14 @@ export const folders = (query) => {
 };
 
 export const download = id => {
-    return request({
+    return axios({
         url: 'files/download/' + id,
         method: 'get'
     });
 };
 
 export const upload = params => {
-    return request({
+    return axios({
         url: 'api/files/upload',
         method: 'post',
         data: params,

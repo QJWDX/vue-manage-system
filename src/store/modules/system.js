@@ -18,16 +18,15 @@ const mutations = {
 
 const actions = {
     setSystemInfo(context){
-        return new Promise(function(resolve, reject){
+        try{
             getSystemConfig().then(res => {
-                console.log(res);
                 localStorage.setItem('systemInfo', JSON.stringify(res.data));
                 state.systemInfo = res.data;
-                resolve(res.message);
-            }).catch((err) => {
-                reject(err);
-            });
-        });
+            })
+        }catch(err){
+            console.log(err);
+        };
+        
     },
     delSystemInfo(context){
         localStorage.removeItem('systemInfo');

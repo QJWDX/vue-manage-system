@@ -57,7 +57,6 @@ const mutations = {
     },
     setMenus(state, menuData){
         const menus = createAsynMenus(menuData);
-        // console.log(menus);
         localStorage.setItem('menus', JSON.stringify(menus));
         state.menus = menus;
     }
@@ -109,7 +108,6 @@ function addRoutes(routerData){
     constantRoutes[1].children.splice(0);
     constantRoutes[1].children = rootRoutes.concat(asyncRoutes);
     const addRoutes = constantRoutes.concat(lastRoute);
-    // console.log(routes);
     // 动态路由添加
     router.addRoutes(addRoutes);
 }

@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const userList = query => {
-    return request({
+    return axios({
         url: 'api/user/list',
         method: 'get',
         params: query
@@ -9,7 +9,7 @@ export const userList = query => {
 };
 
 export const userStore = query => {
-    return request({
+    return axios({
         url: 'api/user/store',
         method: 'post',
         data: query
@@ -18,7 +18,7 @@ export const userStore = query => {
 
 
 export const userInfo = id => {
-    return request({
+    return axios({
         url: 'api/user/show/' + id,
         method: 'get',
         params: []
@@ -29,7 +29,7 @@ export const userInfo = id => {
 
 
 export const saveUser = (id, query) => {
-    return request({
+    return axios({
         url: 'api/user/update/' + id,
         method: 'put',
         data: query
@@ -37,14 +37,14 @@ export const saveUser = (id, query) => {
 };
 
 export const delUser = id => {
-    return request({
+    return axios({
         url: 'api/user/' + id,
         method: 'delete'
     });
 };
 
 export const getUserRole = id => {
-    return request({
+    return axios({
         url: 'api/user/getUserRole/' + id,
         method: 'get'
     });
@@ -52,7 +52,7 @@ export const getUserRole = id => {
 
 
 export const setUserRole = (id, query) => {
-    return request({
+    return axios({
         url: 'api/user/setUserRole/' + id,
         method: 'post',
         data: query
@@ -61,7 +61,7 @@ export const setUserRole = (id, query) => {
 
 
 export const modPassword = (id, query) => {
-    return request({
+    return axios({
         url: 'api/user/modPassword/' + id,
         method: 'post',
         data: query

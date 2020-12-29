@@ -1,44 +1,39 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
-export const login = (query, headers) => {
-    return request({
-        url: 'api/auth/login',
-        method: 'post',
-        data: query,
-        headers: headers
-    });
+export const login = (params, headers) => {
+    return axios.post('api/auth/login', params, {headers:headers});
 };
 
 export const logout = () => {
-    return request({
+    return axios({
         url: 'api/auth/logout',
         method: 'get'
     });
 };
 
 export const getCaptcha = () => {
-    return request({
+    return axios({
         url: 'api/auth/getCaptcha',
         method: 'post'
     });
 };
 
 export const getRsaPublicKey = () => {
-    return request({
+    return axios({
         url: 'api/auth/getRsaPublicKey',
         method: 'post'
     });
 };
 
 export const getUserInfo = () => {
-    return request({
+    return axios({
         url: 'api/auth/user',
         method: 'get'
     });
 };
 
 export const getVueRoute = query => {
-    return request({
+    return axios({
         url: 'api/menus/getVueRoute',
         method: 'get',
         params: query
@@ -47,7 +42,7 @@ export const getVueRoute = query => {
 
 
 export const loginLog = query => {
-    return request({
+    return axios({
         url: 'api/loginLog/list',
         method: 'get',
         params: query
@@ -55,14 +50,14 @@ export const loginLog = query => {
 };
 
 export const loginLogInfo = id => {
-    return request({
+    return axios({
         url: 'api/loginLog/show/' + id,
         method: 'get'
     });
 };
 
 export const delLoginLog = query => {
-    return request({
+    return axios({
         url: 'api/loginLog/delLoginLog',
         method: 'delete',
         params: query

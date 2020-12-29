@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const getNotifications = query => {
-    return request({
+    return axios({
         url: 'api/notifications/getNotifications',
         method: 'get',
         params: query
@@ -9,7 +9,7 @@ export const getNotifications = query => {
 };
 
 export const delNotifications = query => {
-    return request({
+    return axios({
         url: 'api/notifications/delNotifications',
         method: 'delete',
         params: query
@@ -17,7 +17,7 @@ export const delNotifications = query => {
 };
 
 export const getNotificationCountStatistics = query => {
-    return request({
+    return axios({
         url: 'api/notifications/getNotificationCountStatistics',
         method: 'get',
         params: query
@@ -26,7 +26,7 @@ export const getNotificationCountStatistics = query => {
 
 
 export const makeRead = query => {
-    return request({
+    return axios({
         url: 'api/notifications/makeRead',
         method: 'get',
         params: query

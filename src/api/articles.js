@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const articles = query => {
-    return request({
+    return axios({
         url: 'api/articles/list',
         method: 'get',
         params: query
@@ -10,7 +10,7 @@ export const articles = query => {
 
 
 export const articleInfo = id => {
-    return request({
+    return axios({
         url: 'api/articles/show/' + id,
         method: 'get'
     });

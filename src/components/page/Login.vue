@@ -106,12 +106,10 @@ export default {
                     this.$apiList.login.getRsaPublicKey().then(res => {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
-                            let query = {};
-                            query.encrypt_data = this.$fun.encryptData(this.param, publicKey);
-                            let headers = {
-                                encryptKey:key
-                            };
-                            this.$apiList.login.login(query, headers).then(res => {
+                            let encrypt_data = this.$fun.encryptData(this.param, publicKey);
+                            const params = new URLSearchParams();
+                            params.append('encrypt_data', encrypt_data);
+                            this.$apiList.login.login(params, {encryptKey:key}).then(res => {
                                 this.$store.dispatch('userLogin', res.data);
                                 this.rememberPassword();
                                 this.$store.dispatch('addMenuData', this.$store.getters.user.role);

@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const menuList = query => {
-    return request({
+    return axios({
         url: 'api/menus/list',
         method: 'get',
         params: query
@@ -9,7 +9,7 @@ export const menuList = query => {
 };
 
 export const menuStore = query => {
-    return request({
+    return axios({
         url: 'api/menus/store',
         method: 'post',
         data: query
@@ -18,7 +18,7 @@ export const menuStore = query => {
 
 
 export const menuInfo = id => {
-    return request({
+    return axios({
         url: 'api/menus/show/' + id,
         method: 'get'
     });
@@ -28,7 +28,7 @@ export const menuInfo = id => {
 
 
 export const saveMenu = (id, query) => {
-    return request({
+    return axios({
         url: 'api/menus/update/' + id,
         method: 'put',
         data: query
@@ -36,7 +36,7 @@ export const saveMenu = (id, query) => {
 };
 
 export const delMenu = id => {
-    return request({
+    return axios({
         url: 'api/menus/' + id,
         method: 'delete',
         params: []
@@ -45,7 +45,7 @@ export const delMenu = id => {
 
 
 export const menuSelect = () => {
-    return request({
+    return axios({
         url: 'api/menus/menuSelect',
         method: 'get'
     });
@@ -53,7 +53,7 @@ export const menuSelect = () => {
 
 
 export const getMenuTree = query => {
-    return request({
+    return axios({
         url: 'api/menus/getMenuTree',
         method: 'get',
         params: query
@@ -61,7 +61,7 @@ export const getMenuTree = query => {
 };
 
 export const getRoleMenus = query => {
-    return request({
+    return axios({
         url: 'api/menus/getRoleMenus',
         method: 'get',
         params: query
@@ -69,7 +69,7 @@ export const getRoleMenus = query => {
 };
 
 export const setRoleMenus = query => {
-    return request({
+    return axios({
         url: 'api/menus/setRoleMenus',
         method: 'post',
         data: query

@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const baseTable = query => {
-    return request({
+    return axios({
         url: '/example/baseTable',
         method: 'get',
         params: query

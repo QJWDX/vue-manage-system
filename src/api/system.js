@@ -1,7 +1,7 @@
-import request from '../utils/request';
+import axios from '../utils/request';
 
 export const getSystemConfig = () => {
-    return request({
+    return axios({
         url: 'api/system/getSystemConfig',
         method: 'get'
     });
@@ -9,7 +9,7 @@ export const getSystemConfig = () => {
 
 
 export const setSystemConfig = query => {
-    return request({
+    return axios({
         url: 'api/system/setSystemConfig',
         method: 'put',
         params: query
