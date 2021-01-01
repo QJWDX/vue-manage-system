@@ -1,5 +1,5 @@
 import {router, constantRoutes, lastRoute} from './../../router';
-import { login, getVueRoute } from './../../api/login';
+import {getVueRoute} from './../../api/setting';
 const state = {
     token : sessionStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},

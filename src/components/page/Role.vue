@@ -86,7 +86,7 @@
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
-
+        
         <!-- 权限分配弹出框 -->
         <el-dialog title="权限分配" :visible.sync="authVisible" width="40%" @close='closeDialog'>
             <el-tree

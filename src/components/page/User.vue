@@ -11,9 +11,15 @@
                 <el-form-item class="">
                     <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
                 </el-form-item>
-                <!-- <el-form-item class="">
-                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                </el-form-item> -->
+                <el-form-item class="">
+                    <el-button type="success" icon="el-icon-delete" @click="changeStatus(1)">启用</el-button>
+                </el-form-item>
+                <el-form-item class="">
+                    <el-button type="danger" icon="el-icon-delete" @click="changeStatus(0)">禁用</el-button>
+                </el-form-item>
+                <el-form-item class="">
+                    <el-button type="warning" icon="el-icon-delete" @click="changeStatus(2)">冻结</el-button>
+                </el-form-item>
             </el-form>
             <el-table
                 :data="tableData"
@@ -28,36 +34,40 @@
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <!-- <el-table-column prop="name" label="姓名"></el-table-column> -->
                 <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="tel" label="手机号"></el-table-column>
+                <el-table-column prop="phone" label="手机号"></el-table-column>
                 <!-- <el-table-column prop="email" label="邮箱"></el-table-column> -->
                 <el-table-column prop="sex" label="性别">
                     <template slot-scope="scope">
                         <span v-if="scope.row.sex === 0">女</span>
                         <span v-else-if="scope.row.sex === 1">男</span>
-                        <span v-else>未知</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="login_count" label="登陆次数"></el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column prop="status" label="状态">
                      <template slot-scope="scope">
-                         <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" disabled></el-switch>
+                        <el-button v-if="scope.row.status==1" type="text">启用中</el-button>
+                        <el-button v-else-if="scope.row.status==2" type="text" style="color:#E6A23C">冻结中</el-button>
+                        <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="220" align="center">
+                <el-table-column label="操作" width="320" align="center">
                     <template slot-scope="scope">
                         <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleRole(scope.$index, scope.row)"
-                        >角色分配</el-button>
+                            v-if="scope.row.status==1"
+                            type="danger"
+                            @click="handleStatus(scope.$index, scope.row)"
+                        >禁用</el-button>
                         <el-button
-                            type="text"
+                            v-else
+                            type="success"
+                            @click="handleStatus(scope.$index, scope.row)"
+                        >启用</el-button>
+                        <el-button
                             icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)"
                         >编辑</el-button>
                         <el-button
-                            type="text"
                             icon="el-icon-delete"
                             class="red"
                             @click="handleDel(scope.$index, scope.row)"
@@ -78,7 +88,7 @@
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" @close='closeDialog'>
             <el-form ref="form" :model="form" :rules="rules" label-width="70px">
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="form.name"></el-input>
@@ -89,42 +99,19 @@
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="form.email"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号" prop="tel">
-                    <el-input v-model="form.tel" ></el-input>
+                <el-form-item label="手机号" prop="phone">
+                    <el-input v-model="form.phone" ></el-input>
                 </el-form-item>
                 <el-form-item label="性别">
                     <el-radio-group v-model="form.sex">
                         <el-radio :label="1" border>男</el-radio>
                         <el-radio :label="0" border>女</el-radio>
-                        <el-radio :label="-1" border>未知</el-radio>
                     </el-radio-group>
-                </el-form-item>
-                <el-form-item label="状态">
-                    <el-switch v-model="form.status" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialog">取 消</el-button>
                 <el-button type="primary" @click="submitForm">确 定</el-button>
-            </span>
-        </el-dialog>
-
-        <!-- 角色分配 -->
-        <el-dialog title="角色分配" :visible.sync="roleVisible" width="20%" @close='closeDialog'>
-            <el-tree
-            :props="props"
-            :data="menus"
-            :default-expand-all="defaultExpand"
-            node-key="id"
-            show-checkbox
-            :default-checked-keys="checkRole"
-            @node-click="handleNodeClick"
-            @check-change="handleCheckChange"
-            >
-            </el-tree>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="roleEdit">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -136,19 +123,18 @@ export default {
     data() {
             var checkPhone = (rule, value, callback) => {
             if (!value) {
-                return callback(new Error('电话号码不能为空'))
+                return callback(new Error('手机号不能为空'))
             }
             setTimeout(() => {
             // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
             // 所以我就在前面加了一个+实现隐式转换
-
             if (!Number.isInteger(+value)) {
                 callback(new Error('请输入数字值'))
             } else {
                 if (this.$fun.checkPhone(value)) {
                     callback()
                 } else {
-                    callback(new Error('电话号码格式不正确'))
+                    callback(new Error('手机号格式不正确'))
                 }
             }
             }, 100)
@@ -183,10 +169,9 @@ export default {
                 name:'',
                 username:'',
                 email: '',
-                tel: '',
-                sex: -1,
-                status: 0,
-                head_img_url: '',
+                phone: '',
+                sex: 0,
+                avatar: '',
             },
             id: 0,
             props: {
@@ -205,7 +190,7 @@ export default {
                     { required: true, message: '用户名不能为空', trigger: 'blur' },
                     { min:2 , max:16, message: '用户名长度为2-16个字符', trigger: 'blur'}
                 ],
-                tel: [
+                phone: [
                     { validator: checkPhone, trigger: 'blur' }
                 ],
                 email: [
@@ -226,7 +211,8 @@ export default {
              return 'text-align:center';
         },
         getData() {
-            this.$apiList.user.userList(this.query).then(res => {
+            this.$apiList.setting.userList(this.query).then(res => {
+                console.log(res);
                 this.tableData = res.data.items || [];
                 this.pageTotal = res.data.totalPage || 0;
                 this.perPage = res.data.perPage || 0;
@@ -244,16 +230,15 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            this.$apiList.user.userInfo(row.id).then(res => {
+            this.$apiList.setting.userInfo(row.id).then(res => {
                 if(res){
                     this.id = res.data.id;
                     this.form = {
                         name: res.data.name,
                         username: res.data.username,
                         email: res.data.email,
-                        tel: res.data.tel,
-                        sex: res.data.sex,
-                        status: res.data.status,
+                        phone: res.data.phone,
+                        sex: res.data.sex
                     }
                     this.dialogType = 'edit';
                     this.dialogTitle = '编辑用户';
@@ -266,9 +251,8 @@ export default {
                 if (valid) {
                     switch(this.dialogType){
                         case 'add':
-                            this.form.status = parseInt(this.form.status);
                             this.form.sex = parseInt(this.form.sex);
-                            this.$apiList.user.userStore(this.form).then(res => {
+                            this.$apiList.setting.userStore(this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -278,7 +262,7 @@ export default {
                             });
                             break;
                         case 'edit':
-                             this.$apiList.user.saveUser(this.id, this.form).then(res => {
+                             this.$apiList.setting.userUpate(this.id, this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.closeDialog();
@@ -301,7 +285,7 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                this.$apiList.user.delUser(row.id).then(res => {
+                this.$apiList.setting.userDelete(row.id).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.tableData.splice(index, 1);
@@ -336,27 +320,30 @@ export default {
             // this.$set(this.query, 'pageIndex', val);
             this.getData();
         },
-        handleRole(index, row){
-            this.$apiList.role.getRoleTree().then(res => {
-                if(res){
-                    this.menus = res.data;
-                    this.roleVisible = true;
-                }
-            });
-            this.$apiList.user.getUserRole(row.id).then(res => {
-                if(res){
-                    this.id = row.id;
-                    this.checkRole = res.data;
-                }
-            });
+        handleStatus(index, row){
+            const params = {
+                ids:row.id,
+                status: row.status == 1 ? 0 : 1
+            };
+            this.changeUserStatus(params);
         },
-        roleEdit(){
-          this.$apiList.user.setUserRole(this.id, {'role': this.checkRole}).then(res => {
-             if(res){
-                 this.$message.success(res.message);
-                 this.closeDialog();
-             }
-          });
+        changeStatus(status){
+            if(this.checkList.length == 0){
+                this.$message.error('没有选中项');
+                return;
+            }
+            const params = {
+                ids:this.checkList.join(','),
+                status: status
+            };
+             this.changeUserStatus(params);
+        },
+        changeUserStatus(params){
+            this.$apiList.setting.changeUserStatus(params).then(res => {
+                this.$message.success(res.message);
+                this.checkList = [];
+                this.getData();
+            });
         },
         handleCheckChange(data, checked, indeterminate) {
             if(checked){
@@ -386,9 +373,8 @@ export default {
                 name:'',
                 username:'',
                 email: '',
-                tel: '',
-                sex: -1,
-                status: 0,
+                phone: '',
+                sex: 0
             };
             this.id = 0;
         }
