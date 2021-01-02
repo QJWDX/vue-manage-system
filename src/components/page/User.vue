@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="container">
-            <el-form :inline="true" :model="query" class="demo-form-inline">
+            <el-form :inline="true" :model="search" class="demo-form-inline">
                 <el-form-item>
-                    <el-input v-model="query.username" placeholder="用户名"></el-input>
+                    <el-input v-model="search.username" placeholder="用户名"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -12,13 +12,13 @@
                     <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
                 </el-form-item>
                 <el-form-item class="">
-                    <el-button type="success" icon="el-icon-delete" @click="changeStatus(1)">启用</el-button>
+                    <el-button type="success" @click="changeStatus(1)">启用</el-button>
                 </el-form-item>
                 <el-form-item class="">
-                    <el-button type="danger" icon="el-icon-delete" @click="changeStatus(0)">禁用</el-button>
+                    <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
                 </el-form-item>
                 <el-form-item class="">
-                    <el-button type="warning" icon="el-icon-delete" @click="changeStatus(2)">冻结</el-button>
+                    <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
                 </el-form-item>
             </el-form>
             <el-table
@@ -79,16 +79,16 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
-                    :current-page="query.page"
-                    :page-size="query.perPage"
-                    :total="pageTotal"
+                    :current-page="pagination.page"
+                    :page-size="pagination.perPage"
+                    :total="pagination.pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" @close='closeDialog'>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" @close="callOf('form')">
             <el-form ref="form" :model="form" :rules="rules" label-width="70px">
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="form.name"></el-input>
@@ -110,7 +110,7 @@
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
+                <el-button @click="callOf('form')">取 消</el-button>
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
@@ -129,12 +129,12 @@ export default {
             // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
             // 所以我就在前面加了一个+实现隐式转换
             if (!Number.isInteger(+value)) {
-                callback(new Error('请输入数字值'))
+                callback(new Error('请输入数字类型'))
             } else {
                 if (this.$fun.checkPhone(value)) {
                     callback()
                 } else {
-                    callback(new Error('手机号格式不正确'))
+                    callback(new Error('请输入正确手机号格式'))
                 }
             }
             }, 100)
@@ -152,14 +152,16 @@ export default {
             }, 100)
         };
         return {
-            query: {
+            search: {
                 username: '',
+            },
+            pagination: {
                 page: 1,
-                perPage: 10
+                perPage: 15,
+                pageTotal: 0
             },
             tableData: [],
             multipleSelection: [],
-            checkList: [],
             dialogVisible: false,
             dialogType: 'add',
             dialogTitle: '新增菜单',
@@ -211,12 +213,14 @@ export default {
              return 'text-align:center';
         },
         getData() {
-            this.$apiList.setting.userList(this.query).then(res => {
-                console.log(res);
+            const params = this.search;
+            params.page = this.pagination.page;
+            params.perPage = this.pagination.perPage;
+            this.$apiList.setting.userList(params).then(res => {
                 this.tableData = res.data.items || [];
-                this.pageTotal = res.data.totalPage || 0;
-                this.perPage = res.data.perPage || 0;
-                this.page = res.data.currentPage || 1;
+                this.pagination.pageTotal = parseInt(res.data.total);
+                this.pagination.perPage =  parseInt(res.data.per_page);
+                this.pagination.page =  parseInt(res.data.current_page);
             });
         },
         // 触发搜索按钮
@@ -255,8 +259,6 @@ export default {
                             this.$apiList.setting.userStore(this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
-                                    this.closeDialog();
-                                    this.getData();
                                     this.reload();
                                 }
                             });
@@ -265,8 +267,6 @@ export default {
                              this.$apiList.setting.userUpate(this.id, this.form).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
-                                    this.closeDialog();
-                                    this.getData();
                                     this.reload();
                                 }
                             });
@@ -300,11 +300,11 @@ export default {
             for (let index = 0; index < val.length; index++) {
                 this.multipleSelection.push(val[index].id);
             }
-            this.checkList = this.checkList.concat(this.multipleSelection);
+            this.multipleSelection = this.multipleSelection.concat(this.multipleSelection);
         },
         // 批量删除
         handleAllDel() {
-            if(this.checkList.length == 0){
+            if(this.multipleSelection.length == 0){
                 this.$message.error('删除项还未选择');
                 return;
             }
@@ -316,8 +316,7 @@ export default {
         },
         // 分页导航
         handlePageChange(val) {
-            this.query.page = val;
-            // this.$set(this.query, 'pageIndex', val);
+            this.pagination.page = val;
             this.getData();
         },
         handleStatus(index, row){
@@ -328,12 +327,12 @@ export default {
             this.changeUserStatus(params);
         },
         changeStatus(status){
-            if(this.checkList.length == 0){
+            if(this.multipleSelection.length == 0){
                 this.$message.error('没有选中项');
                 return;
             }
             const params = {
-                ids:this.checkList.join(','),
+                ids:this.multipleSelection.join(','),
                 status: status
             };
              this.changeUserStatus(params);
@@ -341,7 +340,7 @@ export default {
         changeUserStatus(params){
             this.$apiList.setting.changeUserStatus(params).then(res => {
                 this.$message.success(res.message);
-                this.checkList = [];
+                this.multipleSelection = [];
                 this.getData();
             });
         },
@@ -360,23 +359,10 @@ export default {
         handleNodeClick(data) {
             // console.log(data);
         },
-        loadNode(node, resolve) {
-           
-        },
-        closeDialog(){
-            this.checkRole = [];
-            this.dialogVisible = false;
-            this.dialogTitle = '新增用户';
-            this.roleVisible = false;
-            this.dialogType = '';
-            this.form = {
-                name:'',
-                username:'',
-                email: '',
-                phone: '',
-                sex: 0
-            };
-            this.id = 0;
+        loadNode(node, resolve) {},
+        callOf(formName){
+        　　this.dialogVisible = false;
+        　　this.$refs[formName].resetFields();
         }
     }
 };

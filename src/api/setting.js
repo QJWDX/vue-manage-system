@@ -84,15 +84,15 @@ export const modPassword = (id, params) => {
 // 角色管理
 export const roleList = params => {
     return axios({
-        url: 'api/role/list',
+        url: 'api/setting/role',
         method: 'get',
         params: params
     });
 };
 
-export const storeRole = params => {
+export const roleStore = params => {
     return axios({
-        url: 'api/role/store',
+        url: 'api/setting/role',
         method: 'post',
         data: params
     });
@@ -100,26 +100,43 @@ export const storeRole = params => {
 
 export const roleInfo = id => {
     return axios({
-        url: 'api/role/show/' + id,
+        url: 'api/setting/role/' + id,
         method: 'get'
     });
 };
 
-export const saveRole = (id, params) => {
+export const roleUpdate = (id, params) => {
     return axios({
-        url: 'api/role/update/' + id,
+        url: 'api/setting/role/' + id,
         method: 'put',
         data: params
     });
 };
 
-export const delRole = params => {
+export const roleDelete = id => {
     return axios({
-        url: 'api/role/delRole',
-        method: 'delete',
+        url: 'api/setting/role/' + id,
+        method: 'delete'
+    });
+};
+
+// 禁用启用角色
+export const changeRoleStatus = params => {
+    return axios({
+        url: 'api/setting/changeRoleStatus',
+        method: 'get',
         params: params
     });
 };
+
+// 角色用户管理
+export const roleUserList = (id) => {
+    return axios({
+        url: 'api/setting/roleUserList/' + id,
+        method: 'get'
+    });
+};
+
 
 export const getRoleTree = () => {
     return axios({
@@ -131,7 +148,7 @@ export const getRoleTree = () => {
 // 菜单管理
 export const menuList = params => {
     return axios({
-        url: 'api/menus/list',
+        url: 'api/setting/menus',
         method: 'get',
         params: params
     });
@@ -139,7 +156,7 @@ export const menuList = params => {
 
 export const menuStore = params => {
     return axios({
-        url: 'api/menus/store',
+        url: 'api/setting/menus',
         method: 'post',
         data: params
     });
@@ -147,22 +164,22 @@ export const menuStore = params => {
 
 export const menuInfo = id => {
     return axios({
-        url: 'api/menus/show/' + id,
+        url: 'api/setting/menus/' + id,
         method: 'get'
     });
 };
 
-export const saveMenu = (id, params) => {
+export const menuUpdate = (id, params) => {
     return axios({
-        url: 'api/menus/update/' + id,
+        url: 'api/setting/menus/' + id,
         method: 'put',
         data: params
     });
 };
 
-export const delMenu = id => {
+export const menuDelete = id => {
     return axios({
-        url: 'api/menus/' + id,
+        url: 'api/setting/menus/' + id,
         method: 'delete',
         params: []
     });
@@ -170,14 +187,14 @@ export const delMenu = id => {
 
 export const menuSelect = () => {
     return axios({
-        url: 'api/menus/menuSelect',
+        url: 'api/setting/menuSelect',
         method: 'get'
     });
 };
 
 export const getMenuTree = params => {
     return axios({
-        url: 'api/menus/getMenuTree',
+        url: 'api/setting/getMenuTree',
         method: 'get',
         params: params
     });
@@ -185,7 +202,7 @@ export const getMenuTree = params => {
 
 export const getRoleMenus = params => {
     return axios({
-        url: 'api/menus/getRoleMenus',
+        url: 'api/setting/getRoleMenus',
         method: 'get',
         params: params
     });
@@ -193,9 +210,73 @@ export const getRoleMenus = params => {
 
 export const setRoleMenus = params => {
     return axios({
-        url: 'api/menus/setRoleMenus',
+        url: 'api/setting/setRoleMenus',
         method: 'post',
         data: params
+    });
+};
+
+export const setRoleUsers = params => {
+    return axios({
+        url: 'api/setting/setRoleUsers',
+        method: 'post',
+        data: params
+    });
+};
+
+export const menuPermissionTransfer = id => {
+    return axios({
+        url: 'api/setting/menuPermissionTransfer/'+ id,
+        method: 'get'
+    });
+};
+
+export const setMenuPermission = params => {
+    return axios({
+        url: 'api/setting/setMenuPermission',
+        method: 'post',
+        data: params
+    });
+};
+
+
+// 权限管理
+export const permissionList = params => {
+    return axios({
+        url: 'api/setting/permission',
+        method: 'get',
+        params: params
+    });
+};
+
+export const permissionStore = params => {
+    return axios({
+        url: 'api/setting/permission',
+        method: 'post',
+        data: params
+    });
+};
+
+export const permissionInfo = id => {
+    return axios({
+        url: 'api/setting/permission/' + id,
+        method: 'get'
+    });
+};
+
+export const permissionUpdate = (id, params) => {
+    return axios({
+        url: 'api/setting/permission/' + id,
+        method: 'put',
+        data: params
+    });
+};
+
+export const permissionDelete = id => {
+    return axios({
+        url: 'api/setting/permission/' + id,
+        method: 'delete',
+        params: []
     });
 };
 
@@ -215,7 +296,7 @@ export const loginLogInfo = id => {
     });
 };
 
-export const delLoginLog = params => {
+export const loginLogDelete = params => {
     return axios({
         url: 'api/setting/delLoginLog',
         method: 'delete',

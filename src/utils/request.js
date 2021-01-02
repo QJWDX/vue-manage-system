@@ -46,7 +46,8 @@ service.interceptors.response.use(
                 }else{
                     Message({
                         'message':response.data.message,
-                        'type':'error'
+                        'type':'error',
+                        'center': true
                     });
                 }
                 break;
@@ -69,7 +70,8 @@ service.interceptors.response.use(
                         'message':error.response.data.message,
                         'type':'error',
                         'duration' : 2000,
-                        'showClose' :true
+                        'showClose' :true,
+                        'center': true
                     });
                     break
                 case 401:

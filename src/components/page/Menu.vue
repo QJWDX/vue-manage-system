@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="container">
-             <el-form :inline="true" :model="query" class="demo-form-inline">
+             <el-form :inline="true" :model="search" class="demo-form-inline">
                 <el-form-item>
-                    <el-input v-model="query.username" placeholder="菜单名"></el-input>
+                    <el-input v-model="search.name" placeholder="菜单名"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -55,6 +55,11 @@
                         <el-button
                             type="text"
                             icon="el-icon-edit"
+                            @click="handlePermission(scope.$index, scope.row)"
+                        >权限设置</el-button>
+                        <el-button
+                            type="text"
+                            icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)"
                         >编辑</el-button>
                         <el-button
@@ -70,16 +75,16 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
-                    :current-page="query.page"
-                    :page-size="query.perPage"
-                    :total="pageTotal"
+                    :current-page="pagination.page"
+                    :page-size="pagination.perPage"
+                    :total="pagination.pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" @close='closeDialog'>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="菜单名称" prop="name">
                     <el-input v-model="form.name"></el-input>
@@ -108,18 +113,25 @@
                 <el-form-item label="默认路由">
                     <el-switch v-model="form.is_default" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
-                 <el-form-item label="排序字段" prop="sort_field">
-                    <el-input v-model="form.sort_field" type="number" min="0" max="9999"></el-input>
+                 <el-form-item label="排序字段" prop="sort">
+                    <el-input v-model="form.sort" type="number" min="0" max="9999"></el-input>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
+                <el-button @click="callOf('form')">取 消</el-button>
                 <el-button type="primary" @click="submitForm">确 定</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog title="菜单接口权限设置" :visible.sync="permissionVisible" width="40%">
+            <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入接口名称或path" v-model="checkPermission" :data="permissionData" width='100%' height='1000px' :titles="titles">
+            </el-transfer>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="permissionVisible=false">取 消</el-button>
+                <el-button type="primary" @click="updateMenuPermission">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
-
 <script>
 export default {
     data() {
@@ -140,16 +152,26 @@ export default {
             callback()
         };
         return {
-            query: {
+            titles: ['可选接口权限列表','已拥有接口权限列表'],
+            permissionData: [],
+            checkPermission: [],
+            menu_id: 0,
+            // 自定义搜索方法
+            filterMethod(query, item) {
+                return item.label.indexOf(query) > -1;
+            },
+            search: {
                 name: '',
+            },
+            pagination: {
                 page: 1,
-                perPage: 10
+                perPage: 15,
+                pageTotal: 0
             },
             tableData: [],
             multipleSelection: [],
-            checkList: [],
             dialogVisible: false,
-            roleVisible: false,
+            permissionVisible: false,
             dialogTitle: '新增菜单',
             pageTotal: 0,
             form: {
@@ -161,7 +183,7 @@ export default {
                 is_show: 0,
                 is_related_route: 0,
                 is_default: 0,
-                sort_field: '0',
+                sort: '0',
             },
             dialogType: '',
             id: 0,
@@ -177,7 +199,7 @@ export default {
                 component: [
                     { validator: checkComponent, trigger: 'blur' }
                 ],
-                sort_field: [
+                sort: [
                     { required: true, message: '排序值不能为空', trigger: 'blur' },
                     { min:0 , max:4, message: '排序值范围为0-9999', trigger: 'blur'}
                 ],
@@ -197,15 +219,18 @@ export default {
              return 'text-align:center';
         },
         getData() {
-            this.$apiList.menus.menuList(this.query).then(res => {
+            const params = this.search;
+            params.page = this.pagination.page;
+            params.perPage = this.pagination.perPage;
+            this.$apiList.setting.menuList(params).then(res => {
                 this.tableData = res.data.items || [];
-                this.pageTotal = res.data.totalPage || 0;
-                this.perPage = res.data.perPage || 0;
-                this.page = res.data.currentPage || 1;
+                this.pagination.pageTotal = parseInt(res.data.total);
+                this.pagination.perPage =  parseInt(res.data.per_page);
+                this.pagination.page =  parseInt(res.data.current_page);
             });
         },
         getMenuSelect(){
-            this.$apiList.menus.menuSelect().then(res => {
+            this.$apiList.setting.menuSelect().then(res => {
                 this.menus = res.data;
             });
         },
@@ -220,7 +245,7 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            this.$apiList.menus.menuInfo(row.id).then(res => {
+            this.$apiList.setting.menuInfo(row.id).then(res => {
                 if(res){
                     this.id = res.data.id;
                     this.form = {
@@ -232,7 +257,7 @@ export default {
                         is_show: res.data.is_show,
                         is_related_route: res.data.is_related_route,
                         is_default: res.data.is_default,
-                        sort_field: this.$fun.nToS(res.data.sort_field),
+                        sort: this.$fun.nToS(res.data.sort),
                     }
                     this.dialogType = 'edit';
                     this.dialogTitle = '编辑菜单';
@@ -245,23 +270,15 @@ export default {
                 if (valid) {
                     switch(this.dialogType){
                         case 'add':
-                            this.$apiList.menus.menuStore(this.form).then(res => {
-                                if(res){
-                                    this.$message.success(res.message);
-                                    this.closeDialog();
-                                    this.getData();
-                                    this.reload();
-                                }
+                            this.$apiList.setting.menuStore(this.form).then(res => {
+                                this.$message.success(res.message);
+                                this.reload();
                             });
                             break;
                         case 'edit':
-                             this.$apiList.menus.saveMenu(this.id, this.form).then(res => {
-                                if(res){
-                                    this.$message.success(res.message);
-                                    this.closeDialog();
-                                    this.getData();
-                                    this.reload();
-                                }
+                             this.$apiList.setting.menuUpdate(this.id, this.form).then(res => {
+                                this.$message.success(res.message);
+                                this.reload();
                             });
                             break;
                         default:
@@ -278,12 +295,9 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             }).then(() => {
-                this.$apiList.menus.delMenu(row.id).then(res => {
-                    if(res){
-                        this.$message.success(res.message);
-                        this.tableData.splice(index, 1);
-                        this.reload();
-                    }
+                this.$apiList.setting.menuDelete(row.id).then(res => {
+                    this.$message.success(res.message);
+                    this.reload();
                 });
             }).catch(() => {});
         },
@@ -293,11 +307,11 @@ export default {
             for (let index = 0; index < val.length; index++) {
                 this.multipleSelection.push(val[index].id);
             }
-            this.checkList = this.checkList.concat(this.multipleSelection);
+            this.multipleSelection = this.multipleSelection.concat(this.multipleSelection);
         },
         // 批量删除
         handleAllDel() {
-            if(this.checkList.length == 0){
+            if(this.multipleSelection.length == 0){
                 this.$message.error('删除项还未选择');
                 return;
             }
@@ -309,29 +323,53 @@ export default {
         },
         // 分页导航
         handlePageChange(val) {
-            this.query.page = val;
-            // this.$set(this.query, 'pageIndex', val);
+            this.pagination.page = val;
             this.getData();
-        },
-        closeDialog(){
-            this.dialogVisible = false;
-            this.dialogType = '';
-            this.dialogTitle = '新增菜单';
-            this.form = {
-                name: '',
-                component: '',
-                parent_id: '0',
-                path: '',
-                is_show: 0,
-                is_related_route: 0,
-                is_default: 0,
-                sort_field: 999,
-            };
-            this.id = 0;
         },
         change(){
             this.$forceUpdate()
+        },
+        callOf(formName){
+        　　this.dialogVisible = false;
+        　　this.$refs[formName].resetFields();
+        },
+        handlePermission(index, row){
+            this.menu_id = row.id;
+            this.permissionVisible = true;
+            this.$apiList.setting.menuPermissionTransfer(row.id).then(res => {
+                this.permissionData = res.data.permission_not_check;
+                this.checkPermission = res.data.permission_check;
+            });
+        },
+        updateMenuPermission(){
+            // console.log(this.checkPermission);
+            // return;
+            const params = {};
+            params.id = this.menu_id;
+            params.permission_ids = this.checkPermission.join(',');
+            this.$apiList.setting.setMenuPermission(params).then(res => {
+                this.permissionVisible = false;
+                this.$message.success(res.message);
+            });
         }
     }
 };
 </script>
+
+<style>
+    .el-transfer{
+        vertical-align: center;
+    }
+    .el-transfer-panel{
+        width: 40%;
+        height: 600px;
+    }
+    .el-transfer-panel__list{
+        width: 100%;
+        height: 600px;
+    }
+    .el-transfer-panel__list.is-filterable{
+       width: 100%;
+       height: 600px;
+    }
+</style>
