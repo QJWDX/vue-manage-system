@@ -2,7 +2,10 @@ import {JSEncrypt} from 'jsencrypt';
 export default {
 
     apiUrl(){
-        return 'http://www.hhdxdx.cn';
+        let protocol = window.location.protocol; //协议
+        let host = window.location.host; //主机
+        let reg = /^localhost+/;
+        return reg.test(host) ? protocol + '//127.0.0.1' : protocol + '//www.hhdxdx.cn';
     },
 
     /**

@@ -1,5 +1,5 @@
 import {router, constantRoutes, lastRoute} from './../../router';
-import {getVueRoute} from './../../api/setting';
+import {getUserVueRoute} from './../../api/setting';
 const state = {
     token : sessionStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
@@ -71,9 +71,9 @@ const actions = {
     addMenuData(context, role){
         return new Promise(function(resolve, reject){
             /**
-             * 从后台获取vue所需路由和菜单基础数据
+             * 从后台获取用户vue所需路由和菜单基础数据
              */
-            getVueRoute({'role': role}).then(res => {
+            getUserVueRoute().then(res => {
                 context.commit('setRoutes', res.data.routes);
                 context.commit('setMenus', res.data.menus);
                 resolve(res.message);

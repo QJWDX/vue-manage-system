@@ -39,13 +39,10 @@
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>
-                            <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
+                            <a href="https://github.com/QJWDX/vue-manage-system" target="_blank">
                                 <el-dropdown-item>项目仓库</el-dropdown-item>
                             </a>
                          </el-dropdown-item>
-                        <el-dropdown-item>
-                            <router-link to="userInfo">个人中心 </router-link>
-                        </el-dropdown-item>
                         <el-dropdown-item command="modPassword">修改密码</el-dropdown-item>
                         <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
@@ -198,14 +195,19 @@ export default {
             this.fullscreen = !this.fullscreen;
         },
         submitForm(){
-            console.log(this.p_form);
             this.$refs['p_form'].validate((valid) => {
                 if (valid) {
-                    this.$apiList.user.modPassword(this.$store.getters.user.id, this.p_form).then(res => {
-                        this.p_form = {};
-                        this.dialogVisible = false;
-                        this.$store.dispatch('delUserInfo');
-                        this.$router.push('/login');
+                    let params = new URLSearchParams();
+                    params.append('password', this.p_form.password)
+                    params.append('new_password', this.p_form.new_password)
+                    params.append('confirm_password', this.p_form.confirm_password)
+                    this.$apiList.setting.userPasswordUpdate(this.$store.getters.user.id, params).then(res => {
+                        if(res.code == 200){
+                            this.p_form = {};
+                            this.dialogVisible = false;
+                            this.$store.dispatch('delUserInfo');
+                            this.$router.push('/login');
+                        }
                     });
                 }
             });

@@ -6,12 +6,12 @@ const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     timeout: 5000
 });
-let protocol = window.location.protocol; //协议
+    let protocol = window.location.protocol; //协议
    let host = window.location.host; //主机
    let reg = /^localhost+/;
    if(reg.test(host)) {
       // 若\本地项目调试使用
-      service.defaults.baseURL = 'http://127.0.0.1';
+      service.defaults.baseURL = protocol + '//127.0.0.1';
    } else {
        // 动态请求地址
        service.defaults.baseURL = protocol + "//www.hhdxdx.cn";

@@ -1,11 +1,10 @@
 import axios from '../utils/request';
 
 // vue路由
-export const getVueRoute = params => {
+export const getUserVueRoute = () => {
     return axios({
-        url: 'api/setting/getVueRoute',
-        method: 'get',
-        params: params
+        url: 'api/setting/getUserVueRoute',
+        method: 'post'
     });
 };
 
@@ -58,24 +57,10 @@ export const changeUserStatus = params => {
     });
 };
 
-export const getUserRole = id => {
+// 更新用户密码
+export const userPasswordUpdate = (id, params) => {
     return axios({
-        url: 'api/user/getUserRole/' + id,
-        method: 'get'
-    });
-};
-
-export const setUserRole = (id, params) => {
-    return axios({
-        url: 'api/user/setUserRole/' + id,
-        method: 'post',
-        data: params
-    });
-};
-
-export const modPassword = (id, params) => {
-    return axios({
-        url: 'api/user/modPassword/' + id,
+        url: 'api/setting/userPasswordUpdate/' + id,
         method: 'post',
         data: params
     });
@@ -192,25 +177,16 @@ export const menuSelect = () => {
     });
 };
 
-export const getMenuTree = params => {
+export const getMenuTree = (id) => {
     return axios({
-        url: 'api/setting/getMenuTree',
-        method: 'get',
-        params: params
+        url: 'api/setting/getMenuTree/' + id,
+        method: 'get'
     });
 };
 
-export const getRoleMenus = params => {
+export const setRoleMenus = (id, params) => {
     return axios({
-        url: 'api/setting/getRoleMenus',
-        method: 'get',
-        params: params
-    });
-};
-
-export const setRoleMenus = params => {
-    return axios({
-        url: 'api/setting/setRoleMenus',
+        url: 'api/setting/setRoleMenus/' + id,
         method: 'post',
         data: params
     });
@@ -281,7 +257,7 @@ export const permissionDelete = id => {
 };
 
 // 登陆日志
-export const loginLog = params => {
+export const loginLogList = params => {
     return axios({
         url: 'api/setting/loginLog',
         method: 'get',

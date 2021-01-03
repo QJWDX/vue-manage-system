@@ -1,5 +1,5 @@
 <template>
-     <div class="container">
+     <div style='padding:20px;'>
          <el-row>
             <el-col :span="8">
                 <el-form :label-position="labelPosition" label-width="80px" :model="form" class="userForm" :rules="rules"  ref="form">
@@ -27,14 +27,13 @@
                     <el-form-item label="用户邮箱" prop="email">
                         <el-input v-model="form.email"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号码" prop="tel">
-                        <el-input v-model="form.tel"></el-input>
+                    <el-form-item label="手机号码" prop="phone">
+                        <el-input v-model="form.phone"></el-input>
                     </el-form-item>
                     <el-form-item label="用户性别">
                          <el-radio-group v-model="form.sex">
                             <el-radio label="1">男</el-radio>
                             <el-radio label="0">女</el-radio>
-                            <el-radio label="-1">未知</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="身份证号" prop="id_card">
@@ -96,7 +95,7 @@
                 }, 100)
             };
             return {
-                uploadUrl: this.$fun.apiUrl() + '/api/user/uploadAvatar/' + this.$store.getters.user.id,
+                uploadUrl: this.$fun.apiUrl() + '/api/setting/userAvatarUpload/' + this.$store.getters.user.id,
                 defaultSrc: require('../../assets/img/img.jpg'),
                 labelPosition: 'right',
                 fit: 'cover',
@@ -145,14 +144,15 @@
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
                         let query = {
+                            username: this.$store.getters.user.username,
                             name: this.form.name,
                             email: this.form.email,
-                            tel: this.form.tel,
+                            phone: this.form.phone,
                             sex: this.form.sex,
                             id_card: this.form.id_card,
                             address: this.form.address
                         };
-                        this.$apiList.user.saveUser(this.$store.getters.user.id, query).then(res => {
+                        this.$apiList.setting.userUpate(this.$store.getters.user.id, query).then(res => {
                             console.log(res);
                             this.$message.success(res.message);
                         });

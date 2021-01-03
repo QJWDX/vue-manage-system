@@ -49,8 +49,8 @@
                 <el-table-column prop="created_at" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="400" align="center">
                     <template slot-scope="scope">
-                        <el-button type="success" plain @click="handUser(scope.$index, scope.row)">用户设置</el-button>
-                        <el-button type="primary" plain @click="handleAuth(scope.$index, scope.row)">菜单设置</el-button>
+                        <el-button type="success" plain @click="handUser(scope.$index, scope.row)">权限用户</el-button>
+                        <el-button type="primary" plain @click="handleAuth(scope.$index, scope.row)">权限菜单</el-button>
                         <el-button type="info" plain  icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="danger" plain icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                     </template>
@@ -59,7 +59,7 @@
             <div class="pagination">
                 <el-pagination
                     background
-                    layout="total, prev, pager, next"
+                    layout="total, prev, pager, next, jumper"
                     :current-page="pagination.page"
                     :page-size="pagination.perPage"
                     :total="pagination.pageTotal"
@@ -194,12 +194,6 @@ export default {
                 this.pagination.page =  parseInt(res.data.current_page);
             });
         },
-        // 获取权限菜单
-        getMenus(query){
-            this.$apiList.setting.getMenuTree(query).then(res => {
-                this.menus = res.data;
-            });
-        },
         // 触发搜索按钮
         handleSearch() {
             this.getData();
@@ -292,20 +286,18 @@ export default {
         },
         // 权限分配
         handleAuth(index, row){
-            this.getMenus({role:row.id});
-            this.$apiList.setting.getRoleMenus({role:row.id}).then(res => {
+            this.$apiList.setting.getMenuTree(row.id).then(res => {
+                this.menus = res.data.menu_tree;
                 this.id = row.id;
-                this.checkMenus = res.data;
+                this.checkMenus = res.data.role_menu_id;
                 this.authVisible = true;
             });
         },
         // 保存权限
         updateRoleMenus(){
-            this.$apiList.setting.setRoleMenus({role:this.id, menus:this.checkMenus}).then(res => {
-                if(res){
-                    this.$message.success(res.message);
-                    this.reload();
-                }
+            this.$apiList.setting.setRoleMenus(this.id, {menus:this.checkMenus}).then(res => {
+                this.$message.success(res.message);
+                this.reload();
             });
             
         },

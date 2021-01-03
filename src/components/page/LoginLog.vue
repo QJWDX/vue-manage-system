@@ -1,7 +1,7 @@
 <template>
     <div class="">
         <div class="container">
-            <el-form :inline="true" :model="query" class="demo-form-inline">
+            <el-form :inline="true" :model="search" class="demo-form-inline">
                     <el-form-item>
                          <el-date-picker
                             @change="dateChange"
@@ -34,7 +34,7 @@
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                       <el-button
-                            type="text"
+                            type="danger"
                             icon="el-icon-delete"
                             class="red"
                             @click="handleDel(scope.$index, scope.row)"
@@ -46,9 +46,9 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next, jumper"
-                    :current-page="query.page"
-                    :page-size="query.perPage"
-                    :total="pageTotal"
+                    :current-page="pagination.page"
+                    :page-size="pagination.perPage"
+                    :total="pagination.pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
@@ -64,11 +64,14 @@
                 message: 'first',
                 showHeader: false,
                 pageTotal: 0,
-                query: {
-                    page: 1,
-                    perPage: 10,
+                search: {
                     startTime: '',
                     endTime: '',
+                },
+                pagination: {
+                    page: 1,
+                    perPage: 15,
+                    pageTotal: 0
                 },
                 notification: [], 
                 tableData: [],
@@ -82,18 +85,20 @@
             this.getData();
         },
         methods: {
-            // ...mapActions('notification', ['setUnreadNumber']),
             getData() {
-                this.$apiList.login.loginLog(this.query).then(res => {
+                const params = this.search;
+                params.page = this.pagination.page;
+                params.perPage = this.pagination.perPage;
+                this.$apiList.setting.loginLogList(params).then(res => {
                     this.tableData = res.data.items || [];
-                    this.pageTotal = res.data.totalPage || 0;
-                    this.query.perPage = res.data.perPage || 0;
-                    this.query.page = res.data.currentPage || 1;
+                    this.pagination.pageTotal = parseInt(res.data.total);
+                    this.pagination.perPage =  parseInt(res.data.per_page);
+                    this.pagination.page =  parseInt(res.data.current_page);
                 });
             },
             del(){
                 let params = {ids: this.checkList};
-                this.$apiList.login.delLoginLog(params).then(res => {
+                this.$apiList.login.loginLogDelete(params).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.checkList = [];
@@ -117,7 +122,7 @@
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                this.del();
+                    this.del();
                 }).catch(() => {});
             },
             handleSelectionChange(val) {
@@ -129,22 +134,22 @@
             },
             // 分页导航
             handlePageChange(val) {
-                this.query.page = val;
+                this.pagination.page = val;
                 this.getData();
             },
             handleSearch() {
                 this.getData();
             },
             handReadChange(){
-                this.query.page = 1;
+                this.pagination.page = 1;
             },
             dateChange(val){
                 if(val == null){
-                    this.query.startTime = '';
-                    this.query.endTime = '';
+                    this.search.startTime = '';
+                    this.search.endTime = '';
                 }else{
-                    this.query.startTime = this.$fun.formatDateTime(val[0]);
-                    this.query.endTime = this.$fun.formatDateTime(val[1]);
+                    this.search.startTime = this.$fun.formatDateTime(val[0]);
+                    this.search.endTime = this.$fun.formatDateTime(val[1]);
                 }
             },
         }
