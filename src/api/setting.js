@@ -1,5 +1,4 @@
 import axios from '../utils/request';
-
 // vue路由
 export const getUserVueRoute = () => {
     return axios({

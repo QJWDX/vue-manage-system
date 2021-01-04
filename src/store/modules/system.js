@@ -17,7 +17,7 @@ const mutations = {
 };
 
 const actions = {
-    setSystemInfo(context){
+    getSystemConfig(context){
         try{
             getSystemConfig().then(res => {
                 localStorage.setItem('systemInfo', JSON.stringify(res.data));

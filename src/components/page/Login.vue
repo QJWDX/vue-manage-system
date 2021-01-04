@@ -63,13 +63,13 @@ export default {
                 ],
                 captcha_code: [
                     { required: true, message: '请输入验证码', trigger: 'blur' },
-                    { min:4 , max:4, message: '验证码长度为4字符', trigger: 'blur'}
+                    { min:4 , max:8, message: '验证码长度不在范围内', trigger: 'blur'}
                 ]
             },
         };
     },
     created(){
-        this.$store.dispatch('setSystemInfo');
+        this.$store.dispatch('getSystemConfig');
         this.getCaptchaInfo();
     },
     mounted(){
@@ -107,9 +107,9 @@ export default {
                             let key = res.data.key; 
                             let publicKey = res.data.public_key;
                             let encrypt_data = this.$fun.encryptData(this.param, publicKey);
-                            const params = new URLSearchParams();
-                            params.append('encrypt_data', encrypt_data);
-                            this.$apiList.login.login(params, {encryptKey:key}).then(res => {
+                            // const params = new URLSearchParams();
+                            // params.append('encrypt_data', encrypt_data);
+                            this.$apiList.login.login({encrypt_data:encrypt_data}, {encryptKey:key}).then(res => {
                                 this.$store.dispatch('userLogin', res.data);
                                 this.rememberPassword();
                                 this.$store.dispatch('addMenuData', this.$store.getters.user.role);

@@ -1,7 +1,8 @@
 import axios from '../utils/request';
+import qs from 'qs';
 
 export const login = (params, headers) => {
-    return axios.post('auth/user/login', params, {headers:headers});
+    return axios.post('auth/user/login', qs.stringify(params), {headers:headers});
 };
 
 export const logout = () => {

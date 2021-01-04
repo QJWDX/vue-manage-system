@@ -36,14 +36,14 @@ module.exports = {
         ]
     },
     devServer: {
-        port: 8080,
         proxy: {
-            '/api':{
-                target:'http://localhost',
+            '/':{
+                target:'http://127.0.0.1',
+                // target:'https:/www.hhdxdx.cn',
                 changeOrigin:true,
-                pathRewrite:{
-                    '/api':''
-                }
+                // pathRewrite:{
+                //     '/api':''
+                // }
             }
         }
     },

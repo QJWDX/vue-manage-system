@@ -32,7 +32,8 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="role_name" label="角色名称"></el-table-column>
+                <el-table-column prop="name" label="角色名称"></el-table-column>
+                <el-table-column prop="display_name" label="显示名称"></el-table-column>
                 <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="status" label="状态">
                      <template slot-scope="scope">
@@ -71,8 +72,11 @@
         <!-- 新增编辑弹出框 -->
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" @close="callOf('form')">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                <el-form-item label="角色名称" prop="role_name">
-                    <el-input v-model="form.role_name"></el-input>
+                <el-form-item label="角色名称" prop="name">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="显示名称" prop="display_name">
+                    <el-input v-model="form.display_name"></el-input>
                 </el-form-item>
                 <el-form-item label="角色备注" prop="remark">
                     <el-input type="textarea" v-model="form.remark" :rows="4"></el-input>
@@ -148,8 +152,9 @@ export default {
             authVisible: false,
             userVisible: false,
             form: {
-                role_name:'',
-                remark:''
+                name: '',
+                display_name: '',
+                remark: ''
             },
             indent:24,
             menus: [],
@@ -161,9 +166,13 @@ export default {
                 children: 'children'
             },
              rules: {
-                role_name: [
+                name: [
                     {required: true, message: '角色名称不能为空', trigger: 'blur' },
-                    { min:2 , max:10, message: '角色名称长度为2-10个字符', trigger: 'blur'}
+                    { min:2 , max:10, message: '角色名称长度为2-20个字符', trigger: 'blur'}
+                ],
+                display_name: [
+                    {required: true, message: '显示名称不能为空', trigger: 'blur' },
+                    { min:2 , max:10, message: '显示名称长度为2-10个字符', trigger: 'blur'}
                 ],
                 remark:[
                       { min:0 , max:255, message: '角色备注必须为0-255个字符', trigger: 'blur'}
@@ -208,7 +217,8 @@ export default {
         handleEdit(index, row) {
             this.$apiList.setting.roleInfo(row.id).then(res => {
                     this.id = res.data.id;
-                    this.form.role_name =  res.data.role_name;
+                    this.form.name =  res.data.name;
+                    this.form.display_name =  res.data.display_name;
                     this.form.remark =  res.data.remark;
                     this.dialogVisible = true;
                     this.dialogType = 'edit';
@@ -222,7 +232,6 @@ export default {
                     switch(this.dialogType){
                         case 'add':
                             this.form.status = parseInt(this.form.status);
-                            this.form.sex = parseInt(this.form.sex);
                             this.$apiList.setting.roleStore(this.form).then(res => {
                                 this.$message.success(res.message);
                                 this.dialogVisible = false;
@@ -338,14 +347,27 @@ export default {
         },
         // 权限多选改变事件
         handleCheckChange(data, checked, indeterminate) {
+            var menus = [];
+            menus = this.handSelectMenu(data, menus)
             if(checked){
-                this.checkMenus = this.checkMenus.concat([data.id]);
+                this.checkMenus = this.$fun.array_unique(this.checkMenus.concat(menus));
             }else{
-                const index = this.checkMenus.indexOf(data.id);
-                if (index > -1) {
-                    this.checkMenus.splice(index, 1);
-                }
+                menus.forEach(menu_id => {
+                    const index = this.checkMenus.indexOf(menu_id);
+                    if (index > -1) {
+                        this.checkMenus.splice(index, 1);
+                    }
+                })
             }
+        },
+        handSelectMenu(data, menus){
+            menus.push(data.id);
+            if(data.children.length > 0){
+                data.children.forEach(element => {
+                    this.handSelectMenu(element, menus)
+                });
+            }
+            return menus;
         },
         // 树形节点点击触发事件
         handleNodeClick(data) {
