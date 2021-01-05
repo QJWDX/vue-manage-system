@@ -119,7 +119,7 @@ export default {
                                 console.log(err);
                                 this.disable = false;
                             });
-                        });
+                    });
                 } else {
                     return false;
                 }

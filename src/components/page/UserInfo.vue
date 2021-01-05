@@ -5,12 +5,12 @@
                 <el-form :label-position="labelPosition" label-width="80px" :model="form" class="userForm" :rules="rules"  ref="form">
                     <el-form-item label="用户头像">
                          <el-upload
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload"
+                            :on-success="handleUploadSuccess"
+                            :before-upload="beforeUpload"
                             :action="uploadUrl"
                             :headers="headers"
                         >
-                            <el-button size="small" type="primary">点击上传</el-button>
+                            <el-button type="warning">点击上传头像</el-button>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="用户名称">
@@ -21,6 +21,20 @@
                     </el-form-item>
                     <el-form-item label="用户邮箱" prop="email">
                         <el-input v-model="form.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="出生日期" prop="email">
+                        <div class="block">
+                            <el-date-picker
+                                v-model="form.birthday"
+                                type="date"
+                                sie='small'
+                                placeholder="选择日期"
+                                format="yyyy 年 MM 月 dd 日"
+                                value-format="yyyy-MM-dd"
+                                :picker-options="expireTimeOption"
+                            >
+                            </el-date-picker>
+                        </div>
                     </el-form-item>
                     <el-form-item label="手机号码" prop="phone">
                         <el-input v-model="form.phone"></el-input>
@@ -35,7 +49,10 @@
                         <el-input v-model="form.id_card"></el-input>
                     </el-form-item>
                     <el-form-item label="用户地址" prop="address">
-                        <el-input type="textarea" v-model="form.address" rows="4"></el-input>
+                        <el-input v-model="form.address"></el-input>
+                    </el-form-item>
+                    <el-form-item label="用户简介" prop="description">
+                        <el-input type="textarea" v-model="form.description" rows="3"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="warning">取消编辑</el-button>
@@ -91,14 +108,12 @@
             };
             return {
                 uploadUrl: '/api/setting/userAvatarUpload',
-                defaultSrc: require('../../assets/img/img.jpg'),
                 labelPosition: 'right',
-                fit: 'cover',
                 form: {},
                 rules: {
                     name: [
-                        { required: true, message: '姓名不能为空', trigger: 'blur' },
-                        { min:2 , max:6, message: '姓名长度为2-6个字符', trigger: 'blur'}
+                        { required: true, message: '真实姓名不能为空', trigger: 'blur' },
+                        { min:2 , max:6, message: '真实姓名长度为2-6个字符', trigger: 'blur'}
                     ],
                     id_card: [
                        { validator: checkIdCard, trigger: 'blur' }
@@ -110,55 +125,61 @@
                         { validator: checkEmail, trigger: 'blur' }
                     ],
                     address: [
-                        { required: true, message: '地址不能为空', trigger: 'blur' },
-                        { min:1 , max:255, message: '地址长度不能超过255个字符', trigger: 'blur'}
+                        {max:255, message: '地址长度不能超过255个字符', trigger: 'blur'}
                     ],
+                },
+                expireTimeOption: {
+                    disabledDate(date) {
+                        //disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
+                        return date.getTime() > Date.now();
+                    }
                 }
             }
         },
         created() {
-            let user = this.$store.getters.user;
-            user.sex =  this.$fun.nToS(user.sex);
-            this.form = user;
+            // let user = this.$store.getters.user;
+            this.getUserInfo();
         },
+        inject: ['reload'],
         computed: {
             headers(){
                 return {
                     Authorization: 'Bearer ' + this.$store.getters.token
                 };
             },
-            role() {
-                return this.$store.getters.user.role.indexOf('1') !== -1 ? '超级管理员' : '普通用户';
-            },
             avatar(){
                 return this.$store.getters.userAvatar;
             }
         },
         methods:{
+            getUserInfo(){
+                this.$apiList.setting.userInfo( this.$store.getters.user.id).then(res => {
+                    if(res.code == 200){
+                        this.form = res.data;
+                        this.form.sex = this.$fun.nToS(this.form.sex);
+                    }
+                });
+            },
             onSubmit() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        let query = {
-                            username: this.$store.getters.user.username,
-                            name: this.form.name,
-                            email: this.form.email,
-                            phone: this.form.phone,
-                            sex: this.form.sex,
-                            id_card: this.form.id_card,
-                            address: this.form.address
-                        };
-                        this.$apiList.setting.userUpate(this.$store.getters.user.id, query).then(res => {
-                            console.log(res);
+                        const params = this.form;
+                        this.$apiList.setting.userUpate(this.$store.getters.user.id, params).then(res => {
                             this.$message.success(res.message);
+                            // 更新用户信息
+                            this.$store.dispatch('updateUserInfo', res.data);
+                            // this.reload();
                         });
                     }
                 });
             },
-             handleAvatarSuccess(res, file) {
-                 this.form.avatar = res.data.src_url; 
-                //this.$store.dispatch('storeUserAvatar', res.data.url);
+             handleUploadSuccess(res, file) {
+                if(res.code !== 200){
+                    this.$message.error(res.message);
+                }
+                this.form.avatar = res.data.path;
             },
-            beforeAvatarUpload(file) {
+            beforeUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isJPG) {

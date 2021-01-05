@@ -49,7 +49,7 @@
                 </el-dropdown>
             </div>
             <!-- 修改密码 -->
-            <el-dialog title="修改密码" :visible.sync="dialogVisible" width="20%" @close="dialogVisible=false;p_form={};">
+            <!-- <el-dialog title="修改密码" :visible.sync="dialogVisible" width="20%" @close="dialogVisible=false;p_form={};">
                 <el-form ref="p_form" :model="p_form" :rules="rules">
                     <el-form-item prop="password">
                         <el-input type="password" v-model="p_form.password" placeholder="原密码"></el-input>
@@ -65,7 +65,7 @@
                     <el-button @click="dialogVisible=false;p_form={};">取 消</el-button>
                     <el-button  type="primary" @click="submitForm">确 定</el-button>
                 </span>
-            </el-dialog>
+            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -105,9 +105,11 @@ export default {
             }, 100)
         }; 
         return {
+            rsaKey: '',
+            publicKey: '',
             collapse: false,
             fullscreen: false,
-            name: '管理员',
+            name: 'ADMINISTRATOR',
             dialogVisible:false,
             p_form:{
                 password:'',
@@ -130,7 +132,6 @@ export default {
     },
     computed: {
         ...mapActions('premisssion', ['delUserInfo']),
-        // ...mapActions('notification', ['storeUnreadNumber']),
         username() {
             let user = this.$store.getters.user;
             let username = user.username;
@@ -152,7 +153,83 @@ export default {
         handleCommand(command) {
             switch(command){
                 case 'modPassword':
-                    this.dialogVisible = true;
+                    // this.dialogVisible = true;
+                    this.$prompt('请输入您的密码', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        // inputPattern: /^[a-zA-Z]\w{5,17}$/,
+                        inputErrorMessage: '密码必须以字母开头，长度在6~18之间，只能包含字母、数字和下划线'
+                    }).then(({value}) => {
+                        this.$apiList.login.getRsaPublicKey().then(res => {
+                            let key = res.data.key; 
+                            let publicKey = res.data.public_key;
+                            let params = {};
+                            var password = value;
+                            params.password = password;
+                            let encrypt_data = this.$fun.encryptData(params, publicKey);
+                            this.$apiList.setting.checkPassword({encrypt_data:encrypt_data}, {encryptKey:key}).then(res => {
+                                if(res.code == 500){
+                                    return;
+                                }
+                                this.$prompt('请输入新密码', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    inputPattern: /^[a-zA-Z]\w{5,17}$/,
+                                    inputErrorMessage: '密码必须以字母开头，长度在6~18之间，只能包含字母、数字和下划线'
+                                }).then(({ value }) => {
+                                    var new_password = value;
+                                    this.$prompt('请输入确认密码', '提示', {
+                                        confirmButtonText: '确定',
+                                        cancelButtonText: '取消',
+                                        inputPattern: /^[a-zA-Z]\w{5,17}$/,
+                                        inputErrorMessage: '密码必须以字母开头，长度在6~18之间，只能包含字母、数字和下划线'
+                                    }).then(({ value }) => {
+                                        var confirm_password = value;
+                                        if(new_password !== confirm_password){
+                                            this.$message.error('两次输入密码不一致');
+                                            return
+                                        }
+                                         this.$apiList.login.getRsaPublicKey().then(res => {
+                                            let key = res.data.key; 
+                                            let publicKey = res.data.public_key;
+                                            let params = {};
+                                            params.password = password;
+                                            params.new_password = new_password;
+                                            params.confirm_password = confirm_password;
+                                            let encrypt_data = this.$fun.encryptData(params, publicKey);
+                                            this.$apiList.setting.userPasswordUpdate({encrypt_data:encrypt_data},{encryptKey:key}).then(res => {
+                                                if(res.code == 500){
+                                                    return;
+                                                }
+                                                 this.$confirm('密码修改成功, 是否退出重新登陆?', '提示', {
+                                                    confirmButtonText: '是',
+                                                    cancelButtonText: '否',
+                                                    type: 'warning'
+                                                }).then(() => {
+                                                    this.$store.dispatch('delUserInfo');
+                                                    this.$router.push('/login');
+                                                }).catch(() => {
+                                                    this.$message({
+                                                        type: 'warning',
+                                                        message: '您已取消退出重新登陆，下次登录别忘了输入新密码哦！'
+                                                    });          
+                                                });
+                                            });
+                                         });
+                                       
+                                    }).catch(() => {
+                                        this.$message.error('您已取消输入');
+                                    });
+                                }).catch(() => {
+                                    this.$message.error('您已取消输入');
+                                });
+                            });
+                        }).catch(error => {
+                            this.$message.error(error);
+                        });
+                    }).catch(() => {
+                        this.$message.error('您已取消输入');
+                    });
                     break;
                 case 'logout':
                     this.$apiList.login.logout().then(res => {

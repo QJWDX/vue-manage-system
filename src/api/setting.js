@@ -1,4 +1,6 @@
 import axios from '../utils/request';
+import qs from 'qs';
+
 // vue路由
 export const getUserVueRoute = () => {
     return axios({
@@ -56,13 +58,17 @@ export const changeUserStatus = params => {
     });
 };
 
+/**
+ * 检查用户密码
+ * @param {*} params 
+ */
+export const checkPassword = (params, headers) => {
+    return axios.post('api/setting/checkPassword', qs.stringify(params), {headers:headers});
+};
+
 // 更新用户密码
-export const userPasswordUpdate = (id, params) => {
-    return axios({
-        url: 'api/setting/userPasswordUpdate/' + id,
-        method: 'post',
-        data: params
-    });
+export const userPasswordUpdate = (params, headers) => {
+    return axios.post('api/setting/userPasswordUpdate', qs.stringify(params), {headers:headers});
 };
 
 // 角色管理

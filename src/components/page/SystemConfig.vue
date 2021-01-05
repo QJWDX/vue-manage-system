@@ -8,29 +8,40 @@
                 <el-form-item label="系统版本" prop="system_version">
                     <el-input v-model="form.system_version"></el-input>
                 </el-form-item>
-                <el-form-item label="网站名称" prop="site_name">
-                    <el-input v-model="form.site_name"></el-input>
+                <el-form-item label="系统地址" prop="system_url">
+                    <el-input v-model="form.system_url"></el-input>
                 </el-form-item>
-                <el-form-item label="网站地址" prop="site_url">
-                    <el-input v-model="form.site_url"></el-input>
+                <el-form-item label="系统备案" prop="system_icp">
+                    <el-input v-model="form.system_icp"></el-input>
                 </el-form-item>
-                <el-form-item label="网站备案号" prop="site_icp">
-                    <el-input v-model="form.site_icp"></el-input>
+                <el-form-item label="系统logo">
+                        <el-upload
+                        :on-success="handleUploadLogoSuccess"
+                        :before-upload="beforeUpload"
+                        :action="uploadUrl"
+                        :headers="headers"
+                    >
+                        <el-button type="warning">点击上传更新系统lOGO</el-button>
+                    </el-upload>
                 </el-form-item>
-                <el-form-item label="水印图片地址" prop="watermark">
-                    <el-input v-model="form.watermark"></el-input>
+                <el-form-item label="水印图片">
+                        <el-upload
+                        :on-success="handleUploadWatermarkSuccess"
+                        :before-upload="beforeUpload"
+                        :action="uploadUrl"
+                        :headers="headers"
+                    >
+                        <el-button type="warning">点击上传更新水印图片</el-button>
+                    </el-upload>
                 </el-form-item>
-                <el-form-item label="系统logo路径" prop="system_logo">
-                    <el-input v-model="form.system_logo"></el-input>
-                </el-form-item>
-                <el-form-item label="版权所有" prop="copyright">
-                    <el-input v-model="form.copyright"></el-input>
+                <el-form-item label="版权所有" prop="system_copyright">
+                    <el-input v-model="form.system_copyright"></el-input>
                 </el-form-item>
                 <el-form-item label="技术支持" prop="technical_support">
                     <el-input v-model="form.technical_support"></el-input>
                 </el-form-item>
                 <el-form-item label="系统备注">
-                    <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
+                    <el-input type="textarea" rows="5" v-model="form.system_remark"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="warning">取消设置</el-button>
@@ -45,18 +56,8 @@ export default {
     name: 'baseform',
     data() {
         return {
-            form: {
-                system_name: '',
-                system_version: '',
-                site_name: '',
-                site_url: '',
-                site_icp: '',
-                watermark: '',
-                system_logo: '',
-                copyright: '',
-                technical_support: '',
-                remarks: '',
-            },
+            uploadUrl:"/api/system/systemConfig/upload",
+            form: {},
             rules: {
                 system_name: [
                     {required: true, message: '系统名称必填', trigger: 'blur' }
@@ -64,22 +65,13 @@ export default {
                 system_version: [
                     {required: true, message: '系统版本必填', trigger: 'blur' }
                 ],
-                site_name: [
-                    {required: true, message: '网站名称必填', trigger: 'blur' }
+                system_url: [
+                    {required: true, message: '系统地址必填', trigger: 'blur' }
                 ],
-                site_url: [
-                    {required: true, message: '网站地址必填', trigger: 'blur' }
-                ],
-                site_icp: [
-                    {required: true, message: 'ICP备案号必填', trigger: 'blur' }
-                ],
-                watermark: [
-                    {required: true, message: '水印图片路径必填', trigger: 'blur' }
-                ],
-                system_logo: [
-                    {required: true, message: '系统logo路径必填', trigger: 'blur' }
-                ],
-                copyright: [
+                system_icp: [
+                    {required: true, message: '备案号必填', trigger: 'blur' }
+                ],    
+                system_copyright: [
                     {required: true, message: '版权所有必填', trigger: 'blur' }
                 ],
                 technical_support: [
@@ -91,6 +83,13 @@ export default {
     created(){
         this.getData();
     },
+    computed: {
+        headers(){
+            return {
+                Authorization: 'Bearer ' + this.$store.getters.token
+            };
+        }
+    },
     methods: {
         getData() {
             this.$apiList.system.getSystemConfig().then(res => {
@@ -100,15 +99,39 @@ export default {
         onSubmit() {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
-                     this.$apiList.system.setSystemConfig(this.form).then(res => {
+                    this.$apiList.system.setSystemConfig(this.form).then(res => {
                         this.$message.success(res.message);
-                        this.$store.dispatch('setSystemInfo');
+                        this.$store.dispatch('getSystemConfig');
                     });
                 }
             });
         },
         handleClick(tab, event) {
             console.log(tab, event);
+        },
+        handleUploadWatermarkSuccess(res, file) {
+            if(res.code !== 200){
+                this.$message.error(res.message);
+            }
+            this.form.system_logo = res.data.path;
+        },
+        handleUploadLogoSuccess(res, file) {
+            if(res.code !== 200){
+                this.$message.error(res.message);
+            }
+            this.form.system_logo = res.data.path;
+        },
+        beforeUpload(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            // if (!isJPG) {
+            //     this.$message.error('图片只能是JPG格式!');
+            // }
+            if (!isLt2M) {
+                this.$message.error('图片大小不能超过2MB!');
+            }
+            // return isJPG && isLt2M;
+            return isLt2M;
         }
     }
 };

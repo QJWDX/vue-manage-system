@@ -68,6 +68,10 @@ const actions = {
         context.commit('setToken', user.token);
         context.commit('setUserAvatar', user.user.avatar);
     },
+    updateUserInfo(context, user){
+        context.commit('setUserInfo', user);
+        context.commit('setUserAvatar', user.avatar);
+    },
     addMenuData(context, role){
         return new Promise(function(resolve, reject){
             /**
