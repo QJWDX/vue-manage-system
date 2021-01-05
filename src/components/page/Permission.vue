@@ -42,9 +42,9 @@
                 <el-table-column prop="name" label="权限名称"></el-table-column>
                 <el-table-column prop="path" label="请求路由"></el-table-column>
                 <el-table-column prop="method" label="请求方式"></el-table-column>
-                <el-table-column prop="status" label="状态">
+                <el-table-column prop="is_show" label="状态">
                     <template slot-scope="scope">   
-                        <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" disabled></el-switch>
+                        <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="220" align="center">
@@ -97,7 +97,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态">
-                    <el-switch v-model="form.status" :active-value="1" :inactive-value="0"></el-switch>
+                    <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
@@ -147,14 +147,14 @@ export default {
                 display_name: '',
                 path: '',
                 method: '',
-                status: 0,
+                is_show: 1,
             },
             dialogType: '',
             id: 0,
             rules: {
                 name: [
                     { required: true, message: '接口名称不能为空', trigger: 'blur' },
-                    { min:2 , max:20, message: '接口名称长度为2-20个字符', trigger: 'blur'}
+                    { min:2 , max:100, message: '接口名称长度为2-100个字符', trigger: 'blur'}
                 ],
                 path: [
                     { validator: checkPath, trigger: 'blur' }
@@ -199,15 +199,14 @@ export default {
         // 编辑操作
         handleEdit(index, row) {
             this.$apiList.setting.permissionInfo(row.id).then(res => {
+                console.log(res);
                 if(res){
                     this.id = res.data.id;
-                    this.form = {
-                        name: res.data.name,
-                        display_name: res.data.display_name,
-                        path: res.data.path,
-                        method: res.data.method,
-                        status: res.data.status,
-                    }
+                    this.form.name = res.data.name,
+                    this.form.display_name =  res.data.display_name,
+                    this.form.path = res.data.path,
+                    this.form.method = res.data.method,
+                    this.form.is_show = res.data.is_show,
                     this.dialogType = 'edit';
                     this.dialogTitle = '编辑接口';
                     this.dialogVisible = true;
@@ -225,7 +224,7 @@ export default {
                             });
                             break;
                         case 'edit':
-                             this.$apiList.setting.permissionUpdate(this.id, this.form).then(res => {
+                            this.$apiList.setting.permissionUpdate(this.id, this.form).then(res => {
                                 this.$message.success(res.message);
                                 this.reload();
                             });

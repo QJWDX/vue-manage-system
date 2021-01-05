@@ -168,11 +168,11 @@ export default {
              rules: {
                 name: [
                     {required: true, message: '角色名称不能为空', trigger: 'blur' },
-                    { min:2 , max:10, message: '角色名称长度为2-20个字符', trigger: 'blur'}
+                    { min:2 , max:30, message: '角色名称长度为2-30个字符', trigger: 'blur'}
                 ],
                 display_name: [
                     {required: true, message: '显示名称不能为空', trigger: 'blur' },
-                    { min:2 , max:10, message: '显示名称长度为2-10个字符', trigger: 'blur'}
+                    { min:2 , max:30, message: '显示名称长度为2-30个字符', trigger: 'blur'}
                 ],
                 remark:[
                       { min:0 , max:255, message: '角色备注必须为0-255个字符', trigger: 'blur'}

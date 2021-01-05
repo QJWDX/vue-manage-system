@@ -33,8 +33,8 @@
                     <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
                 </el-form-item>
                 <el-form-item>
+                    <el-button type="warning">取消设置</el-button>
                     <el-button type="primary" @click="onSubmit">保存设置</el-button>
-                    <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
         </div>

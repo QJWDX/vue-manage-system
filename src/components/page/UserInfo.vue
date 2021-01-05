@@ -3,19 +3,14 @@
          <el-row>
             <el-col :span="8">
                 <el-form :label-position="labelPosition" label-width="80px" :model="form" class="userForm" :rules="rules"  ref="form">
-                    <el-form-item>
+                    <el-form-item label="用户头像">
                          <el-upload
-                            class="upload-demo"
                             :on-success="handleAvatarSuccess"
                             :before-upload="beforeAvatarUpload"
                             :action="uploadUrl"
                             :headers="headers"
                         >
-                            <el-image
-                            style="width: 120px; height: 120px;border-radius:50%;"
-                            :src="avatar"
-                            :fit="fit">
-                            </el-image>
+                            <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="用户名称">
@@ -43,8 +38,8 @@
                         <el-input type="textarea" v-model="form.address" rows="4"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">保存修改</el-button>
-                        <el-button>取消</el-button>
+                        <el-button type="warning">取消编辑</el-button>
+                        <el-button type="primary" @click="onSubmit">保存编辑</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -95,7 +90,7 @@
                 }, 100)
             };
             return {
-                uploadUrl: this.$fun.apiUrl() + '/api/setting/userAvatarUpload/' + this.$store.getters.user.id,
+                uploadUrl: '/api/setting/userAvatarUpload',
                 defaultSrc: require('../../assets/img/img.jpg'),
                 labelPosition: 'right',
                 fit: 'cover',
@@ -160,8 +155,8 @@
                 });
             },
              handleAvatarSuccess(res, file) {
-                this.$store.dispatch('storeUserAvatar', res.data.url);
-                this.imgSrc = URL.createObjectURL(file.raw);
+                 this.form.avatar = res.data.src_url; 
+                //this.$store.dispatch('storeUserAvatar', res.data.url);
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -179,22 +174,4 @@
 </script>
 
 <style scoped>
-    .upload-demo /deep/  .el-upload--text {
-        background-color: #fff;
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        box-sizing: border-box;
-        width: 121px;
-        height: 121px;
-        text-align: center;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    .userForm /deep/ .el-input__inner{
-        border-radius: 0px;
-    }
-    .userForm /deep/ .el-textarea__inner{
-         border-radius: 0px;
-    }
 </style>
