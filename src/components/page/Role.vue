@@ -95,6 +95,7 @@
             :data="menus"
             :default-expand-all="defaultExpand"
             node-key="id"
+            ref="pageTree"
             show-checkbox
             :indent="indent"
             :default-checked-keys="checkMenus"
@@ -131,6 +132,7 @@
 </template>
 
 <script>
+import DragDialogVue from './DragDialog.vue';
 export default {
     name: 'basetable',
     data() {
@@ -298,13 +300,21 @@ export default {
             this.$apiList.setting.getMenuTree(row.id).then(res => {
                 this.menus = res.data.menu_tree;
                 this.id = row.id;
-                this.checkMenus = res.data.role_menu_id;
+                this.checkMenus = res.data.menu_check;
                 this.authVisible = true;
             });
         },
         // 保存权限
         updateRoleMenus(){
-            this.$apiList.setting.setRoleMenus(this.id, {menus:this.checkMenus}).then(res => {
+            let parentArr = this.$refs.pageTree.getHalfCheckedKeys();   
+             //获取子节点未全选时的父节点id
+            let childArr = this.$refs.pageTree.getCheckedKeys();
+            let menus = [];
+            menus = menus.concat(parentArr).concat(childArr);
+            // console.log(parentArr);
+            // console.log(childArr);
+            // return
+            this.$apiList.setting.setRoleMenus(this.id, {menus:menus}).then(res => {
                 this.$message.success(res.message);
                 this.reload();
             });
@@ -347,18 +357,19 @@ export default {
         },
         // 权限多选改变事件
         handleCheckChange(data, checked, indeterminate) {
-            var menus = [];
-            menus = this.handSelectMenu(data, menus)
-            if(checked){
-                this.checkMenus = this.$fun.array_unique(this.checkMenus.concat(menus));
-            }else{
-                menus.forEach(menu_id => {
-                    const index = this.checkMenus.indexOf(menu_id);
-                    if (index > -1) {
-                        this.checkMenus.splice(index, 1);
-                    }
-                })
-            }
+            // var menus = [];
+            // menus = this.handSelectMenu(data, menus);
+            // console.log(menus);
+            // if(checked){
+            //     this.checkMenus = this.$fun.array_unique(this.checkMenus.concat(menus));
+            // }else{
+            //     menus.forEach(menu_id => {
+            //         const index = this.checkMenus.indexOf(menu_id);
+            //         if (index > -1) {
+            //             this.checkMenus.splice(index, 1);
+            //         }
+            //     })
+            // }
         },
         handSelectMenu(data, menus){
             menus.push(data.id);

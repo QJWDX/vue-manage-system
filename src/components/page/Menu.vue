@@ -123,7 +123,7 @@
             </span>
         </el-dialog>
         <el-dialog title="菜单接口权限设置" :visible.sync="permissionVisible" width="40%">
-            <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入接口名称或path" v-model="checkPermission" :data="permissionData" width='100%' height='1000px' :titles="titles">
+            <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入接口名称或path" v-model="menu_permission" :data="all_permission" width='100%' height='1000px' :titles="titles">
             </el-transfer>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="permissionVisible=false">取 消</el-button>
@@ -153,8 +153,8 @@ export default {
         };
         return {
             titles: ['可选接口权限列表','已拥有接口权限列表'],
-            permissionData: [],
-            checkPermission: [],
+            all_permission: [],
+            menu_permission: [],
             menu_id: 0,
             // 自定义搜索方法
             filterMethod(query, item) {
@@ -337,8 +337,8 @@ export default {
             this.menu_id = row.id;
             this.permissionVisible = true;
             this.$apiList.setting.menuPermissionTransfer(row.id).then(res => {
-                this.permissionData = res.data.permission_not_check;
-                this.checkPermission = res.data.permission_check;
+                this.all_permission = res.data.all_permission;
+                this.menu_permission = res.data.menu_permission;
             });
         },
         updateMenuPermission(){
@@ -346,7 +346,7 @@ export default {
             // return;
             const params = {};
             params.id = this.menu_id;
-            params.permission_ids = this.checkPermission.join(',');
+            params.permission_ids = this.menu_permission.join(',');
             this.$apiList.setting.setMenuPermission(params).then(res => {
                 this.permissionVisible = false;
                 this.$message.success(res.message);
