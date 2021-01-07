@@ -98,21 +98,11 @@
         </el-dialog>
 
         <!-- 用户管理弹出框 -->
-        <el-dialog title="用户管理" :visible.sync="userVisible" width="25%" @close='userVisible=false;checkMenus=[]'>
-            <el-tree
-            :props="props"
-            :data="users"
-            :default-expand-all="defaultExpand"
-            node-key="id"
-            show-checkbox
-            :indent="indent"
-            :default-checked-keys="checkMenus"
-            @node-click="handleNodeClick"
-            @check-change="handleCheckChange"
-            >
-            </el-tree>
+        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="60%">
+            <el-transfer filterable :filter-method="filterMethod" filter-placeholder="用户名" v-model="check_user" :data="all_user" width='100%' height='1000px' :titles="titles">
+            </el-transfer>
             <span slot="footer" class="dialog-footer">
-                <el-button @close='userVisible=false;checkMenus=[]'>取 消</el-button>
+                <el-button @click="userVisible=false">取 消</el-button>
                 <el-button type="primary" @click="updateRoleUsers">确 定</el-button>
             </span>
         </el-dialog>
@@ -120,11 +110,11 @@
 </template>
 
 <script>
-import DragDialogVue from './DragDialog.vue';
 export default {
     name: 'basetable',
     data() {
         return {
+            titles: ['可选用户列表','已选用户列表'],
             search: {
                 role_name: '',
             },
@@ -151,6 +141,8 @@ export default {
             users:[],
             defaultExpand: false,
             checkMenus:[],
+            all_user: [],
+            check_user: [],
             props: {
                 label: 'label',
                 children: 'children'
@@ -167,7 +159,11 @@ export default {
                 remark:[
                       { min:0 , max:255, message: '角色备注必须为0-255个字符', trigger: 'blur'}
                 ]
-            }
+            },
+            // 自定义搜索方法
+            filterMethod(query, item) {
+                return item.label.indexOf(query) > -1;
+            },
         };
     },
     inject: ['reload'],
@@ -310,15 +306,14 @@ export default {
         },
         handUser(index, row){
             this.$apiList.setting.roleUserList(row.id).then(res => {
-                this.checkMenus = [];
                 this.id = row.id;
-                this.users = res.data.user_tree;
-                this.checkMenus = res.data.user_check;
+                this.all_user = res.data.all_user;
+                this.check_user = res.data.check_user;
                 this.userVisible = true;
             });
         },
         updateRoleUsers(){
-            this.$apiList.setting.setRoleUsers({role:this.id, users:this.checkMenus}).then(res => {
+            this.$apiList.setting.setRoleUsers({role:this.id, users:this.check_user}).then(res => {
                 if(res){
                     this.$message.success(res.message);
                     this.reload();

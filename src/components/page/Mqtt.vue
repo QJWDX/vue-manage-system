@@ -18,16 +18,16 @@
     </div>
 </template>
 <script>
-  import mqtt from 'mqtt';
-  var client;
-  const options = {
-    connectTimeout: 40000,
-    clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
-    username: 'admin',
-    password: 'admin123',
-    clean: true
-  };
-  client = mqtt.connect('ws://127.0.0.1:15675/ws', options);
+  // import mqtt from 'mqtt';
+  // var client;
+  // const options = {
+  //   connectTimeout: 40000,
+  //   clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
+  //   username: 'admin',
+  //   password: 'admin123',
+  //   clean: true
+  // };
+  // client = mqtt.connect('ws://127.0.0.1:15675/ws', options);
   export default {
     data() {
       return {
@@ -38,7 +38,7 @@
       }
     },
     created() {
-      this.mqttMsg()
+      // this.mqttMsg()
     },
     methods: {
       cellStyle({row, column, rowIndex, columnIndex}){
