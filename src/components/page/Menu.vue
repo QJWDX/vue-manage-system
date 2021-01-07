@@ -122,7 +122,7 @@
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
-        <el-dialog title="菜单接口权限设置" :visible.sync="permissionVisible" width="40%">
+        <el-dialog title="菜单接口权限设置" :visible.sync="permissionVisible" width="60%">
             <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入接口名称或path" v-model="menu_permission" :data="all_permission" width='100%' height='1000px' :titles="titles">
             </el-transfer>
             <span slot="footer" class="dialog-footer">
@@ -165,7 +165,7 @@ export default {
             },
             pagination: {
                 page: 1,
-                perPage: 15,
+                perPage: this.$fun.getDefaultPerPage(),
                 pageTotal: 0
             },
             tableData: [],
@@ -361,15 +361,18 @@ export default {
         vertical-align: center;
     }
     .el-transfer-panel{
-        width: 40%;
-        height: 600px;
+        width: 42%;
+        min-height: 600px;
+    }
+    .el-transfer__buttons{
+         max-width: 8%;
     }
     .el-transfer-panel__list{
         width: 100%;
-        height: 600px;
+       min-height: inherit;
     }
     .el-transfer-panel__list.is-filterable{
        width: 100%;
-       height: 600px;
+       min-height: inherit;
     }
 </style>

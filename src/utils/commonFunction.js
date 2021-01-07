@@ -27,6 +27,13 @@ export default {
     },
 
     /**
+     * 默认分页
+     */
+    getDefaultPerPage(){
+        // 1024       1280          1366      1440       1680       1920 
+        return document.body.clientWidth > 1920 ? 15 : 12;
+    },
+    /**
      * 时间格式转换
      * @param {*} date 时间对象
      */

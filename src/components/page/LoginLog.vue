@@ -19,7 +19,7 @@
                         <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                     </el-form-item>
             </el-form>
-            <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column label="ID" align="center" width="120" prop="id">
                 </el-table-column>
@@ -70,7 +70,7 @@
                 },
                 pagination: {
                     page: 1,
-                    perPage: 15,
+                    perPage: this.$fun.getDefaultPerPage(),
                     pageTotal: 0
                 },
                 notification: [], 

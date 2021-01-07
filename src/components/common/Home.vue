@@ -49,10 +49,8 @@ export default {
 };
 </script>
 <style>
-/**
-el-table整理样式
- */
-.el-table--border:after,.el-table--group:after,.el-table:before {
+/* el-table整理样式 */
+ .el-table--border:after,.el-table--group:after,.el-table:before {
     background-color: #999999;
 }
 .el-table--border,.el-table--group {
@@ -67,20 +65,21 @@ el-table整理样式
 .el-table--border td,.el-table--border th {
     border-right: 1px solid #999999;
 }
+/* 弹框样式 */
 .el-dialog__header {
-    padding: 0px 20px 5px;
+    padding:10px 20px;
     text-align: center;
     background-color: rgb(50, 65, 87);
     color: #fff;
-    font-size: 16px;
-    /* font-weight: bold; */
-    height: 40px;
-    line-height: 40px;
+    font-weight: 500 !important;
+    height: 28px;
+    line-height: 28px;
 }
 .el-dialog__title {
+    font-size: 1em !important;
     color: #fff;
-    font-size: 15px;
     letter-spacing: 2px;
+    font-family: "Microsoft YaHei" !important;
 }
 .el-dialog__footer {
     padding: 10px 20px 20px;

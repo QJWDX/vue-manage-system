@@ -134,7 +134,7 @@ export default {
             },
             pagination: {
                 page: 1,
-                perPage: 15,
+                perPage: this.$fun.getDefaultPerPage(),
                 pageTotal: 0
             },
             tableData: [],

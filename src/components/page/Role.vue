@@ -11,12 +11,6 @@
                 <el-form-item class="">
                     <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
                 </el-form-item>
-                  <el-form-item class="">
-                    <el-button type="success" @click="changeStatus(1)">启用</el-button>
-                </el-form-item>
-                <el-form-item class="">
-                    <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
-                </el-form-item>
                 <!-- <el-form-item class="">
                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                 </el-form-item> -->
@@ -35,12 +29,6 @@
                 <el-table-column prop="name" label="角色名称"></el-table-column>
                 <el-table-column prop="display_name" label="显示名称"></el-table-column>
                 <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="status" label="状态">
-                     <template slot-scope="scope">
-                        <el-button v-if="scope.row.status==1" type="text">启用中</el-button>
-                        <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
-                    </template>
-                </el-table-column>
                 <el-table-column prop="status" label="超级角色">
                      <template slot-scope="scope">
                         <el-button v-if="scope.row.is_super==1" type="text">是</el-button>
@@ -142,7 +130,7 @@ export default {
             },
             pagination: {
                 page: 1,
-                perPage: 10,
+                perPage: this.$fun.getDefaultPerPage(),
                 pageTotal: 0
             },
             id: 0,
@@ -337,48 +325,9 @@ export default {
                 }
             });
         },
-        changeStatus(status){
-            if(this.multipleSelection.length == 0){
-                this.$message.error('没有选中项');
-                return;
-            }
-            const params = {
-                ids: this.multipleSelection.join(','),
-                status: status
-            };
-             this.changeRoleStatus(params);
-        },
-        changeRoleStatus(params){
-            this.$apiList.setting.changeRoleStatus(params).then(res => {
-                this.$message.success(res.message);
-                this.multipleSelection = [];
-                this.getData();
-            });
-        },
         // 权限多选改变事件
         handleCheckChange(data, checked, indeterminate) {
-            // var menus = [];
-            // menus = this.handSelectMenu(data, menus);
-            // console.log(menus);
-            // if(checked){
-            //     this.checkMenus = this.$fun.array_unique(this.checkMenus.concat(menus));
-            // }else{
-            //     menus.forEach(menu_id => {
-            //         const index = this.checkMenus.indexOf(menu_id);
-            //         if (index > -1) {
-            //             this.checkMenus.splice(index, 1);
-            //         }
-            //     })
-            // }
-        },
-        handSelectMenu(data, menus){
-            menus.push(data.id);
-            if(data.children.length > 0){
-                data.children.forEach(element => {
-                    this.handSelectMenu(element, menus)
-                });
-            }
-            return menus;
+            // console.log(data);
         },
         // 树形节点点击触发事件
         handleNodeClick(data) {
