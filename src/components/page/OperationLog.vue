@@ -20,9 +20,9 @@
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
                     </el-form-item>
-                    <el-form-item class="">
+                    <!-- <el-form-item class="">
                         <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                     </el-form-item>
@@ -36,10 +36,12 @@
                         <span>{{scope.row.user.username}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="ip" label="登录ip" align="center"></el-table-column>
-                <el-table-column prop="login_address" label="登录地址" align="center"></el-table-column>
-                <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
-                <el-table-column label="操作" align="center">
+                <el-table-column prop="path" label="路由" align="center"></el-table-column>
+                <el-table-column prop="method" label="请求方式" align="center"></el-table-column>
+                <el-table-column prop="ip" label="ip" align="center"></el-table-column>
+                <el-table-column prop="input" label="请求字段" align="center"></el-table-column>
+                <el-table-column prop="sql" label="sql" align="center"></el-table-column>
+                <!-- <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                       <el-button
                             type="danger"
@@ -48,7 +50,7 @@
                             @click="handleDel(scope.$index, scope.row)"
                         >删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -66,7 +68,7 @@
 
 <script>
     export default {
-        name: 'loginLog',
+        name: 'operationLog',
         data() {
             return {
                 search: {
@@ -114,7 +116,7 @@
                 const params = this.search;
                 params.page = this.pagination.page;
                 params.perPage = this.pagination.perPage;
-                this.$apiList.setting.loginLogList(params).then(res => {
+                this.$apiList.log.operationLogList(params).then(res => {
                     this.tableData = res.data.items || [];
                     this.pagination.pageTotal = parseInt(res.data.total);
                     this.pagination.perPage =  parseInt(res.data.per_page);
@@ -123,7 +125,7 @@
             },
             del(){
                 let params = {ids: this.multipleSelection};
-                this.$apiList.setting.loginLogDelete(params).then(res => {
+                this.$apiList.log.operationLogDelete(params).then(res => {
                     if(res){
                         this.$message.success(res.message);
                         this.multipleSelection = [];
@@ -186,4 +188,3 @@
     height: 34px;
 }
 </style>
-

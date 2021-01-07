@@ -5,6 +5,7 @@ import * as system from './../api/system';
 import * as example from './../api/example';
 import * as files from './../api/files';
 import * as articles from './../api/articles';
+import * as log from './../api/log';
 export {
     login,
     setting,
@@ -12,5 +13,6 @@ export {
     system,
     example,
     files,
-    articles
+    articles,
+    log
 }

@@ -14,6 +14,9 @@
                 <!-- <el-form-item class="">
                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                 </el-form-item> -->
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                </el-form-item>
             </el-form>
             <el-table
                 :data="tableData"
@@ -29,13 +32,11 @@
                 <el-table-column prop="name" label="角色名称"></el-table-column>
                 <el-table-column prop="display_name" label="显示名称"></el-table-column>
                 <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="status" label="超级角色">
+                <el-table-column prop="is_super" label="超级角色">
                      <template slot-scope="scope">
-                        <el-button v-if="scope.row.is_super==1" type="text">是</el-button>
-                        <el-button v-else type="text" style="color:#F56C6C">否</el-button>
+                         <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" disabled></el-switch>
                     </template>
                 </el-table-column>
-                <el-table-column prop="created_at" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="400" align="center">
                     <template slot-scope="scope">
                         <el-button type="success" plain @click="handUser(scope.$index, scope.row)">权限用户</el-button>
@@ -98,7 +99,7 @@
         </el-dialog>
 
         <!-- 用户管理弹出框 -->
-        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="60%">
+        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="40%">
             <el-transfer filterable :filter-method="filterMethod" filter-placeholder="用户名" v-model="check_user" :data="all_user" width='100%' height='1000px' :titles="titles">
             </el-transfer>
             <span slot="footer" class="dialog-footer">

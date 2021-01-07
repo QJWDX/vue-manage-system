@@ -25,6 +25,9 @@
                     <el-form-item class="">
                         <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                     </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                    </el-form-item>
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -93,9 +96,24 @@
         inject: ['reload'],
         created() {
             this.getData();
+            window.addEventListener("keydown", this.handleKeyDown, true);
+        },
+        destroyed() {
+            window.removeEventListener("keydown", this.handleKeyDown, true);
         },
         methods: {
             // ...mapActions('notification', ['setUnreadNumber']),
+            handleKeyDown(e) {
+                let key = null;
+                if (window.event === undefined) {
+                    key = e.keyCode;
+                } else {
+                    key = window.event.keyCode;
+                }
+                if (key === 13) {
+                    this.getData();
+                }
+            },
             getData() {
                 this.$apiList.notifications.getNotifications(this.query).then(res => {
                     this.tableData = res.data.items || [];

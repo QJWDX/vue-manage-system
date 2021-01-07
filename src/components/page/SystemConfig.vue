@@ -21,7 +21,7 @@
                         :action="uploadUrl"
                         :headers="headers"
                     >
-                        <el-button type="warning">点击上传更新系统lOGO</el-button>
+                        <el-button type="success">点击上传图片</el-button>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="水印图片">
@@ -31,7 +31,7 @@
                         :action="uploadUrl"
                         :headers="headers"
                     >
-                        <el-button type="warning">点击上传更新水印图片</el-button>
+                        <el-button type="success">点击上传图片</el-button>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="版权所有" prop="system_copyright">

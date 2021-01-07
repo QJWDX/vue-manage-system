@@ -14,6 +14,9 @@
                 <!-- <el-form-item class="">
                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                 </el-form-item> -->
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                </el-form-item>
             </el-form>
             <el-table
                 :data="tableData"
@@ -210,8 +213,23 @@ export default {
     created() {
         this.getData();
         this.getMenuSelect();
+        window.addEventListener("keydown", this.handleKeyDown, true);
+    },
+    destroyed() {
+        window.removeEventListener("keydown", this.handleKeyDown, true);
     },
     methods: {
+        handleKeyDown(e) {
+            let key = null;
+            if (window.event === undefined) {
+                key = e.keyCode;
+            } else {
+                key = window.event.keyCode;
+            }
+            if (key === 13) {
+                this.getData();
+            }
+        },
         cellStyle({row, column, rowIndex, columnIndex}){
             return 'text-align:center';
         },

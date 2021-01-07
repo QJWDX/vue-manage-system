@@ -33,6 +33,9 @@
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-upload" @click="handleUpload">上传</el-button>
                     </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                    </el-form-item>
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -131,8 +134,23 @@ import DragDialogVue from './DragDialog.vue';
         created() {
             this.getData();
             this.initData();
+            window.addEventListener("keydown", this.handleKeyDown, true);
+        },
+        destroyed() {
+            window.removeEventListener("keydown", this.handleKeyDown, true);
         },
         methods: {
+            handleKeyDown(e) {
+                let key = null;
+                if (window.event === undefined) {
+                    key = e.keyCode;
+                } else {
+                    key = window.event.keyCode;
+                }
+                if (key === 13) {
+                    this.getData();
+                }
+            },
             getData() {
                 this.$apiList.files.files(this.query).then(res => {
                     if(this.query.export == 1){
