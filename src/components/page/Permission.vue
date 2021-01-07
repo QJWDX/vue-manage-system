@@ -23,6 +23,9 @@
                 <el-form-item class="">
                     <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
                 </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                </el-form-item>
                 <!-- <el-form-item class="">
                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                 </el-form-item> -->
@@ -96,7 +99,7 @@
                         <el-option label="DELETE" value="DELETE"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="状态">
+                <el-form-item label="权限状态">
                     <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
            </el-form>
@@ -168,8 +171,23 @@ export default {
     inject: ['reload'],
     created() {
         this.getData();
+        window.addEventListener("keydown", this.handleKeyDown, true);
+    },
+    destroyed() {
+        window.removeEventListener("keydown", this.handleKeyDown, true);
     },
     methods: {
+        handleKeyDown(e) {
+            let key = null;
+            if (window.event === undefined) {
+                key = e.keyCode;
+            } else {
+                key = window.event.keyCode;
+            }
+            if (key === 13) {
+                this.getData();
+            }
+        },
         cellStyle({row, column, rowIndex, columnIndex}){
             return 'text-align:center';
         },
