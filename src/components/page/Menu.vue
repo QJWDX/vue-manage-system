@@ -87,7 +87,7 @@
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="菜单名称" prop="name">
                     <el-input v-model="form.name"></el-input>

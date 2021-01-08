@@ -194,9 +194,4 @@
     cursor: pointer;
 }
 </style>
-<style scoped>
-.el-range-editor--small.el-input__inner{
-    height: 34px;
-}
-</style>
 

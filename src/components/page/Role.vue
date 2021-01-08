@@ -59,7 +59,7 @@
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" @close="callOf('form')">
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="角色名称" prop="name">
                     <el-input v-model="form.name"></el-input>
@@ -78,7 +78,7 @@
         </el-dialog>
 
         <!-- 角色菜单权限分配弹出框 -->
-        <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="25%" @close='authVisible=false;checkMenus=[]'>
+        <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close='authVisible=false;checkMenus=[]'>
             <el-tree
             :props="props"
             :data="menus"
@@ -99,7 +99,7 @@
         </el-dialog>
 
         <!-- 用户管理弹出框 -->
-        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="40%">
+        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="50%">
             <el-transfer filterable :filter-method="filterMethod" filter-placeholder="用户名" v-model="check_user" :data="all_user" width='100%' height='1000px' :titles="titles">
             </el-transfer>
             <span slot="footer" class="dialog-footer">

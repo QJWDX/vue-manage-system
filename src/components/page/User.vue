@@ -35,17 +35,16 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <!-- <el-table-column prop="name" label="姓名"></el-table-column> -->
+                <el-table-column prop="name" label="姓名"></el-table-column>
                 <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="phone" label="手机号"></el-table-column>
-                <!-- <el-table-column prop="email" label="邮箱"></el-table-column> -->
+                <el-table-column prop="phone" label="联系方式"></el-table-column>
+                <el-table-column prop="email" label="邮箱"></el-table-column>
                 <el-table-column prop="sex" label="性别">
                     <template slot-scope="scope">
                         <span v-if="scope.row.sex === 0">女</span>
                         <span v-else-if="scope.row.sex === 1">男</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="login_count" label="登陆次数"></el-table-column>
                 <el-table-column prop="created_at" label="注册时间"></el-table-column>
                 <el-table-column prop="status" label="状态">
                      <template slot-scope="scope">
@@ -91,25 +90,60 @@
         </div>
 
         <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" @close="callOf('form')">
-            <el-form ref="form" :model="form" :rules="rules" label-width="70px">
-                <el-form-item label="姓名" prop="name">
-                    <el-input v-model="form.name"></el-input>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="用户头像" prop="avatar">
+                        <el-upload
+                        class="avatar-uploader"
+                        :on-success="handleUploadSuccess"
+                        :before-upload="beforeUpload"
+                        :action="uploadUrl"
+                        :headers="headers"
+                        >
+                        <img v-if="form.avatar" :src="form.avatar" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
                 </el-form-item>
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="form.username"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="form.email"></el-input>
+                <el-form-item label="真实姓名" prop="name">
+                    <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号" prop="phone">
+                <el-form-item label="联系方式" prop="phone">
                     <el-input v-model="form.phone" ></el-input>
                 </el-form-item>
-                <el-form-item label="性别">
+                <el-form-item label="邮箱地址" prop="email">
+                    <el-input v-model="form.email"></el-input>
+                </el-form-item>
+                <el-form-item label="出生日期" prop="birthday">
+                    <div class="block">
+                        <el-date-picker
+                            v-model="form.birthday"
+                            type="date"
+                            sie='small'
+                            placeholder="选择日期"
+                            format="yyyy 年 MM 月 dd 日"
+                            value-format="yyyy-MM-dd"
+                            :picker-options="expireTimeOption"
+                        >
+                        </el-date-picker>
+                    </div>
+                </el-form-item>
+                <el-form-item label="用户性别" prop="sex">
                     <el-radio-group v-model="form.sex">
                         <el-radio :label="1" border>男</el-radio>
                         <el-radio :label="0" border>女</el-radio>
                     </el-radio-group>
+                </el-form-item>
+                <el-form-item label="身份证号" prop="id_card">
+                    <el-input v-model="form.id_card"></el-input>
+                </el-form-item>
+                <el-form-item label="用户地址" prop="address">
+                    <el-input v-model="form.address"></el-input>
+                </el-form-item>
+                <el-form-item label="用户简介" prop="description">
+                    <el-input type="textarea" v-model="form.description" rows="3"></el-input>
                 </el-form-item>
            </el-form>
             <span slot="footer" class="dialog-footer">
@@ -154,6 +188,18 @@ export default {
                 }
             }, 100)
         };
+        var checkIdCard = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('身份证号必填'))
+            }
+            setTimeout(() => {
+                if (this.$fun.checkIdCard(value)) {
+                    callback()
+                } else {
+                    callback(new Error('身份证号格式错误'))
+                }
+            }, 100)
+        };
         return {
             search: {
                 username: '',
@@ -170,22 +216,8 @@ export default {
             dialogTitle: '新增菜单',
             roleVisible: false,
             pageTotal: 0,
-            form: {
-                name:'',
-                username:'',
-                email: '',
-                phone: '',
-                sex: 0,
-                avatar: '',
-            },
             id: 0,
-            props: {
-                label: 'label',
-                children: 'children'
-            },
-            menus: [],
-            defaultExpand: true,
-            checkRole:[],
+            form: {},
             rules: {
                 name: [
                     { required: true, message: '姓名不能为空', trigger: 'blur' },
@@ -201,16 +233,44 @@ export default {
                 email: [
                     { validator: checkEmail, trigger: 'blur' }
                 ],
+                id_card: [
+                    { validator: checkIdCard, trigger: 'blur' }
+                ],
+                address: [
+                    {max:255, message: '长度不能超过255个字符', trigger: 'blur'}
+                ],
+                description: [
+                    {max:255, message: '长度不能超过255个字符', trigger: 'blur'}
+                ],
+            },
+            saveAvatarUrl: '',
+            uploadUrl: '/api/setting/userAvatarUpload',
+            expireTimeOption: {
+                disabledDate(date) {
+                    //disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
+                    return date.getTime() > Date.now();
+                }
             }
         }
     },
     inject: ['reload'],
     created() {
+        this.initFormData();
         this.getData();
         window.addEventListener("keydown", this.handleKeyDown, true);
     },
     destroyed() {
         window.removeEventListener("keydown", this.handleKeyDown, true);
+    },
+    computed: {
+        headers(){
+            return {
+                Authorization: 'Bearer ' + this.$store.getters.token
+            };
+        },
+        avatar(){
+            return this.$store.getters.userAvatar;
+        }
     },
     methods: {
         handleKeyDown(e) {
@@ -246,6 +306,7 @@ export default {
             this.getData();
         },
         handAdd(){
+            this.initFormData();
             this.dialogType = 'add';
             this.dialogVisible = true;
             this.dialogTitle = '新增用户';
@@ -260,7 +321,12 @@ export default {
                         username: res.data.username,
                         email: res.data.email,
                         phone: res.data.phone,
-                        sex: res.data.sex
+                        avatar: res.data.avatar,
+                        sex: res.data.sex,
+                        id_card: res.data.id_card,
+                        birthday: res.data.birthday,
+                        address: res.data.address,
+                        description: res.data.description
                     }
                     this.dialogType = 'edit';
                     this.dialogTitle = '编辑用户';
@@ -282,7 +348,11 @@ export default {
                             });
                             break;
                         case 'edit':
-                             this.$apiList.setting.userUpate(this.id, this.form).then(res => {
+                            const params = this.form;
+                            if(this.saveAvatarUrl){
+                                params.avatar = this.saveAvatarUrl;
+                            }
+                            this.$apiList.setting.userUpate(this.id, params).then(res => {
                                 if(res){
                                     this.$message.success(res.message);
                                     this.reload();
@@ -332,7 +402,6 @@ export default {
                 // 执行删除
             }).catch(() => {});
         },
-        // 分页导航
         handlePageChange(val) {
             this.pagination.page = val;
             this.getData();
@@ -362,26 +431,69 @@ export default {
                 this.getData();
             });
         },
-        handleCheckChange(data, checked, indeterminate) {
-            if(checked){
-                this.checkRole = this.checkRole.concat([data.id]);
-            }else{
-                const index = this.checkRole.indexOf(data.id);
-                if (index > -1) {
-                    this.checkRole.splice(index, 1);
-                }
+        handleUploadSuccess(res, file) {
+            if(res.code !== 200){
+                this.$message.error(res.message);
             }
-            console.log(this.checkRole);
-            console.log(data, checked, indeterminate);
+            this.saveAvatarUrl = res.data.path;
+            this.form.avatar = res.data.full_path;
         },
-        handleNodeClick(data) {
-            // console.log(data);
+        beforeUpload(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG 格式!');
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            return isJPG && isLt2M;
         },
-        loadNode(node, resolve) {},
         callOf(formName){
-        　　this.dialogVisible = false;
-        　　this.$refs[formName].resetFields();
+        　　this.dialogVisible = false
+            this.$nextTick(()=>{
+                this.$refs[formName].resetFields();
+            })    
+        },
+        initFormData(){
+            this.form = {
+                username:'',
+                name:'',
+                phone: '',
+                email: '',
+                sex: 0,
+                avatar: '',
+                id_card: '',
+                birthday: '',
+                address: '',
+                description: ''
+            };
         }
     }
 };
 </script>
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+}
+.avatar {
+    width: 120px;
+    height: 120px;
+    display: block;
+}
+</style>

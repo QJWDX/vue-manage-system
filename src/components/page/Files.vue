@@ -1,12 +1,12 @@
 <template>
     <div class="">
         <div class="container">
-            <el-form :inline="true" :model="query" class="demo-form-inline">
+            <el-form :inline="true" :model="search" class="demo-form-inline">
                  <el-form-item label="文件标题">
-                         <el-input v-model="query.title" placeholder="标题"></el-input>
+                         <el-input v-model="search.title" placeholder="标题"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型">
-                        <el-select v-model="query.type" style="width:100px;">
+                        <el-select v-model="search.type" style="width:100px;">
                             <el-option label="全部" value=""></el-option>
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
@@ -62,14 +62,14 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next, jumper"
-                    :current-page="query.page"
-                    :page-size="query.perPage"
-                    :total="pageTotal"
+                    :current-page="pagination.page"
+                    :page-size="pagination.perPage"
+                    :total="pagination.pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
             <!-- 文件上传 -->
-            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close='closeDialog'>
+            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close="callOf('form')">
                 <el-form ref="form" :model="uploadParam" label-width="100px">
                     <el-form-item label="文件的类型" prop="type">
                          <el-select v-model="uploadParam.type" style="width: 100%;" @change="handTypeChange">
@@ -89,7 +89,7 @@
                     </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">
-                    <el-button @click="closeDialog">取 消</el-button>
+                    <el-button @click="callOf('form')">取 消</el-button>
                     <el-button type="primary" @click="submitForm()">确 定</el-button>
                 </span>
             </el-dialog>
@@ -100,23 +100,23 @@
 <script>
 import DragDialogVue from './DragDialog.vue';
     export default {
-        name: 'tabs',
+        name: 'files',
         data() {
             return {
-                pageTotal: 0,
-                query: {
-                    page: 1,
-                    perPage: 12,
+                search: {
                     type: '',
                     title: '',
                     startTime: '',
                     endTime: '',
                     export: 0
                 },
-                notification: [], 
+                pagination: {
+                    page: 1,
+                    perPage: this.$fun.getDefaultPerPage(),
+                    pageTotal: 0
+                },
                 tableData: [],
                 multipleSelection: [],
-                checkList: [],
                 timeSelect: ['', ''],
                 types: [],
                 folders: [],
@@ -152,16 +152,19 @@ import DragDialogVue from './DragDialog.vue';
                 }
             },
             getData() {
-                this.$apiList.files.files(this.query).then(res => {
-                    if(this.query.export == 1){
+                const params = this.search;
+                params.page = this.pagination.page;
+                params.perPage = this.pagination.perPage;
+                this.$apiList.files.files(params).then(res => {
+                    if(this.search.export == 1){
                         this.$fun.downloadFile(res.data.download_url);
-                        this.query.export = 0;
+                        this.search.export = 0;
                         return;
                     }
                     this.tableData = res.data.items || [];
-                    this.pageTotal = res.data.totalPage || 0;
-                    this.query.perPage = res.data.perPage || 0;
-                    this.query.page = res.data.currentPage || 1;
+                    this.pagination.pageTotal = res.data.totalPage;
+                    this.pagination.perPage = res.data.perPage;
+                    this.pagination.page = res.data.currentPage;
                 });
             },
             initData(){
@@ -170,25 +173,18 @@ import DragDialogVue from './DragDialog.vue';
                 });
             },
             del(){
-                let params = {ids: this.checkList};
-                // this.$apiList.login.delLoginLog(params).then(res => {
-                //     if(res){
-                //         this.$message.success(res.message);
-                //         this.checkList = [];
-                //         this.getData();
-                //     }
-                // });
+                let params = {ids: this.multipleSelection};
             },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.checkList = [row.id];
+                    this.multipleSelection = [row.id];
                     this.del();
                 }).catch(() => {});
             },
             handleAllDel() {
-                if(this.checkList.length == 0){
+                if(this.multipleSelection.length == 0){
                     this.$message.error('删除项还未选择');
                     return;
                 }
@@ -203,18 +199,17 @@ import DragDialogVue from './DragDialog.vue';
                 for (let index = 0; index < val.length; index++) {
                     this.multipleSelection.push(val[index].id);
                 }
-                this.checkList = this.checkList.concat(this.multipleSelection);
+                this.multipleSelection = this.multipleSelection.concat(this.multipleSelection);
             },
-            // 分页导航
             handlePageChange(val) {
-                this.query.page = val;
+                this.pagination.page = val;
                 this.getData();
             },
             handleSearch() {
                 this.getData();
             },
             handleExport(){
-                this.query.export = 1;
+                this.search.export = 1;
                 this.getData();
             },
             handTypeChange(){
@@ -224,11 +219,11 @@ import DragDialogVue from './DragDialog.vue';
             },
             dateChange(val){
                 if(val == null){
-                    this.query.startTime = '';
-                    this.query.endTime = '';
+                    this.search.startTime = '';
+                    this.search.endTime = '';
                 }else{
-                    this.query.startTime = this.$fun.formatDateTime(val[0]);
-                    this.query.endTime = this.$fun.formatDateTime(val[1]);
+                    this.search.startTime = this.$fun.formatDateTime(val[0]);
+                    this.search.endTime = this.$fun.formatDateTime(val[1]);
                 }
             },
             handleDownload(index, row){
@@ -266,26 +261,11 @@ import DragDialogVue from './DragDialog.vue';
                     this.$message.success(res.message);
                 });
             },
-            closeDialog(){
-                this.dialogVisible = false;
-                this.uploadParam = {
-                    type: '',
-                    folder: '',
-                    file: '',
-                };
-                this.fileUids = [];
-                this.fileList = [];
-            },
-            httpRequest(){
-
+            callOf(formName){
+            　　this.dialogVisible = false;
+            　　this.$refs[formName].resetFields();
             }
         }
     }
-
 </script>
-<style scoped>
-/* .el-range-editor--small.el-input__inner{
-    height: 34px;
-} */
-</style>
 

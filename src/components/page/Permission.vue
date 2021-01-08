@@ -287,7 +287,6 @@ export default {
                 // 执行删除
             }).catch(() => {});
         },
-        // 分页导航
         handlePageChange(val) {
             this.pagination.page = val;
             this.getData();
