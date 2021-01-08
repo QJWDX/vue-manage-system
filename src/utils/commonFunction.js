@@ -1,4 +1,5 @@
 import {JSEncrypt} from 'jsencrypt';
+import {Message} from 'element-ui';
 export default {
 
     apiUrl(){
@@ -396,5 +397,41 @@ export default {
                 return i;
             }
         }
+    },
+
+    /**
+     * 消息弹框
+     * @param {*} msg 
+     * @param {*} type 
+     * @param {*} duration 
+     * @param {*} showClose 
+     * @param {*} offset 
+     * @param {*} center 
+     */
+    msg(msg = '', type = 1, duration = 3000, showClose = false, offset = 40, center = true){
+        switch(type){
+            case 0:
+                type = 'error';
+                break;
+            case 1:
+                type = 'success';
+                break;
+            case 2:
+                type = 'warning';
+                break;
+            case 3:
+                type = 'info';
+                break;
+            default:
+                break;
+        }
+        Message({
+            message: msg,
+            center: center,
+            showClose: showClose,
+            type: type,
+            duration:duration,
+            offset:offset
+        });
     }
 }

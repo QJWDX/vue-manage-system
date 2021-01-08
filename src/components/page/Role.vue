@@ -14,6 +14,9 @@
                 <!-- <el-form-item class="">
                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
                 </el-form-item> -->
+                <el-form-item class="">
+                    <el-button type="success" @click="refreshRolePermission">一键刷新权限</el-button>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                 </el-form-item>
@@ -78,7 +81,7 @@
         </el-dialog>
 
         <!-- 角色菜单权限分配弹出框 -->
-        <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close='authVisible=false;checkMenus=[]'>
+        <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close="authVisible=false;checkMenus=[]">
             <el-tree
             :props="props"
             :data="menus"
@@ -93,13 +96,13 @@
             >
             </el-tree>
             <span slot="footer" class="dialog-footer">
-                <el-button @close='authVisible=false;checkMenus=[]'>取 消</el-button>
+                <el-button @click="authVisible=false;checkMenus=[]">取 消</el-button>
                 <el-button type="primary" @click="updateRoleMenus">确 定</el-button>
             </span>
         </el-dialog>
 
         <!-- 用户管理弹出框 -->
-        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="50%">
+        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="50%" @close="userVisible=false;">
             <el-transfer filterable :filter-method="filterMethod" filter-placeholder="用户名" v-model="check_user" :data="all_user" width='100%' height='1000px' :titles="titles">
             </el-transfer>
             <span slot="footer" class="dialog-footer">
@@ -220,14 +223,14 @@ export default {
                         case 'add':
                             this.form.status = parseInt(this.form.status);
                             this.$apiList.setting.roleStore(this.form).then(res => {
-                                this.$message.success(res.message);
+                                this.$fun.msg(res.message);
                                 this.dialogVisible = false;
                                 this.reload();
                             });
                             break;
                         case 'edit':
                              this.$apiList.setting.roleUpdate(this.id, this.form).then(res => {
-                                this.$message.success(res.message);
+                                this.$fun.msg(res.message);
                                 this.dialogVisible = false;
                                 this.reload();
                             });
@@ -248,7 +251,7 @@ export default {
             }).then(() => {
                 this.$apiList.setting.roleDelete(row.id).then(res => {
                     if(res){
-                        this.$message.success(res.message);
+                        this.$fun.msg(res.message);
                         this.multipleSelection = [];
                         this.getData();
                     }
@@ -266,7 +269,7 @@ export default {
         // 批量删除
         handleAllDel() {
             if(this.multipleSelection.length == 0){
-                this.$message.error('删除项还未选择');
+                this.$fun.msg('删除项还未选择', 0);
                 return;
             }
             this.$confirm('确定要删除吗？', '提示', {
@@ -300,7 +303,7 @@ export default {
             // console.log(childArr);
             // return
             this.$apiList.setting.setRoleMenus(this.id, {menus:menus}).then(res => {
-                this.$message.success(res.message);
+                this.$fun.msg(res.message);
                 this.reload();
             });
             
@@ -316,7 +319,15 @@ export default {
         updateRoleUsers(){
             this.$apiList.setting.setRoleUsers({role:this.id, users:this.check_user}).then(res => {
                 if(res){
-                    this.$message.success(res.message);
+                    this.$fun.msg(res.message);
+                    this.reload();
+                }
+            });
+        },
+        refreshRolePermission(){
+            this.$apiList.setting.refreshRolePermission().then(res => {
+                if(res){
+                    this.$fun.msg(res.message);
                     this.reload();
                 }
             });

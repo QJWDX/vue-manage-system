@@ -110,6 +110,15 @@ export const roleDelete = id => {
     });
 };
 
+export const refreshRolePermission = () => {
+    return axios({
+        url: 'api/setting/refreshRolePermission',
+        method: 'get'
+    });
+};
+
+
+
 // 禁用启用角色
 export const changeRoleStatus = params => {
     return axios({

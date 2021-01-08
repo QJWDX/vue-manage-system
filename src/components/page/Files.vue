@@ -185,7 +185,7 @@ import DragDialogVue from './DragDialog.vue';
             },
             handleAllDel() {
                 if(this.multipleSelection.length == 0){
-                    this.$message.error('删除项还未选择');
+                    this.$fun.msg('删除项还未选择', 0);
                     return;
                 }
                 this.$confirm('确定要删除吗？', '提示', {
@@ -258,7 +258,7 @@ import DragDialogVue from './DragDialog.vue';
                 }
                 this.$apiList.files.upload(formData).then(res => {
                     this.closeDialog();
-                    this.$message.success(res.message);
+                    this.$fun.msg(res.message);
                 });
             },
             callOf(formName){

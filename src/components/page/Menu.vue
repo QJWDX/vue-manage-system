@@ -288,14 +288,14 @@ export default {
                 if (valid) {
                     switch(this.dialogType){
                         case 'add':
-                            this.$apiList.setting.menuStore(this.form).then(res => {
-                                this.$message.success(res.message);
+                            this.$apiList.setting.menuStore(this.form).then(res => {    
+                                this.$fun.msg(res.message);
                                 this.reload();
                             });
                             break;
                         case 'edit':
                              this.$apiList.setting.menuUpdate(this.id, this.form).then(res => {
-                                this.$message.success(res.message);
+                                this.$fun.msg(res.message);
                                 this.reload();
                             });
                             break;
@@ -314,7 +314,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.$apiList.setting.menuDelete(row.id).then(res => {
-                    this.$message.success(res.message);
+                    this.$fun.msg(res.message);
                     this.reload();
                 });
             }).catch(() => {});
@@ -330,7 +330,7 @@ export default {
         // 批量删除
         handleAllDel() {
             if(this.multipleSelection.length == 0){
-                this.$message.error('删除项还未选择');
+                this.$fun.msg('删除项还未选择', 0);
                 return;
             }
             this.$confirm('确定要删除吗？', '提示', {
@@ -367,7 +367,7 @@ export default {
             params.permission_ids = this.menu_permission.join(',');
             this.$apiList.setting.setMenuPermission(params).then(res => {
                 this.permissionVisible = false;
-                this.$message.success(res.message);
+                this.$fun.msg(res.message);
             });
         }
     }

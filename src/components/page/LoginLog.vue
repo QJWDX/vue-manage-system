@@ -125,7 +125,7 @@
                 let params = {ids: this.multipleSelection};
                 this.$apiList.setting.loginLogDelete(params).then(res => {
                     if(res){
-                        this.$message.success(res.message);
+                        this.$fun.msg(res.message);
                         this.multipleSelection = [];
                         this.getData();
                     }
@@ -141,7 +141,7 @@
             },
             handleAllDel() {
                 if(this.multipleSelection.length == 0){
-                    this.$message.error('删除项还未选择');
+                    this.$fun.msg('删除项还未选择', 0);
                     return;
                 }
                 this.$confirm('确定要删除吗？', '提示', {

@@ -337,24 +337,24 @@ export default {
         submitForm(){
             this.$refs['form'].validate((valid) => {
                 if (valid) {
+                    const params = this.form;
+                    if(this.saveAvatarUrl){
+                        params.avatar = this.saveAvatarUrl;
+                    }
+                    this.form.sex = parseInt(this.form.sex);
                     switch(this.dialogType){
                         case 'add':
-                            this.form.sex = parseInt(this.form.sex);
-                            this.$apiList.setting.userStore(this.form).then(res => {
+                            this.$apiList.setting.userStore(params).then(res => {
                                 if(res){
-                                    this.$message.success(res.message);
+                                    this.$fun.msg(res.message);
                                     this.reload();
                                 }
                             });
                             break;
                         case 'edit':
-                            const params = this.form;
-                            if(this.saveAvatarUrl){
-                                params.avatar = this.saveAvatarUrl;
-                            }
                             this.$apiList.setting.userUpate(this.id, params).then(res => {
                                 if(res){
-                                    this.$message.success(res.message);
+                                    this.$fun.msg(res.message);
                                     this.reload();
                                 }
                             });
@@ -375,7 +375,7 @@ export default {
             }).then(() => {
                 this.$apiList.setting.userDelete(row.id).then(res => {
                     if(res){
-                        this.$message.success(res.message);
+                         this.$fun.msg(res.message);
                         this.tableData.splice(index, 1);
                         this.reload();
                     }
@@ -426,14 +426,14 @@ export default {
         },
         changeUserStatus(params){
             this.$apiList.setting.changeUserStatus(params).then(res => {
-                this.$message.success(res.message);
+                this.$fun.msg(res.message);
                 this.multipleSelection = [];
                 this.getData();
             });
         },
         handleUploadSuccess(res, file) {
             if(res.code !== 200){
-                this.$message.error(res.message);
+                 this.$fun.msg(res.message, 0);
             }
             this.saveAvatarUrl = res.data.path;
             this.form.avatar = res.data.full_path;

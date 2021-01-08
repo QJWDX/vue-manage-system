@@ -237,13 +237,13 @@ export default {
                     switch(this.dialogType){
                         case 'add':
                             this.$apiList.setting.permissionStore(this.form).then(res => {
-                                this.$message.success(res.message);
+                                this.$fun.msg(res.message);
                                 this.reload();
                             });
                             break;
                         case 'edit':
                             this.$apiList.setting.permissionUpdate(this.id, this.form).then(res => {
-                                this.$message.success(res.message);
+                                this.$fun.msg(res.message);
                                 this.reload();
                             });
                             break;
@@ -262,7 +262,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.$apiList.setting.permissionDelete(row.id).then(res => {
-                    this.$message.success(res.message);
+                    this.$fun.msg(res.message);
                     this.reload();
                 });
             }).catch(() => {});
@@ -278,7 +278,7 @@ export default {
         // 批量删除
         handleAllDel() {
             if(this.multipleSelection.length == 0){
-                this.$message.error('删除项还未选择');
+                this.$fun.msg('删除项还未选择', 0);
                 return;
             }
             this.$confirm('确定要删除吗？', '提示', {

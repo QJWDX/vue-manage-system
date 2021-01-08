@@ -133,7 +133,7 @@
                 let params = {ids: this.checkList};
                 this.$apiList.notifications.delNotifications(params).then(res => {
                     if(res){
-                        this.$message.success(res.message);
+                        this.$fun.msg(res.message);
                         this.checkList = [];
                         this.getData();
                     }
@@ -149,7 +149,7 @@
             },
             handleAllDel() {
                 if(this.checkList.length == 0){
-                    this.$message.error('删除项还未选择');
+                     this.$fun.msg('删除项还未选择', 0);
                     return;
                 }
                 this.$confirm('确定要删除吗？', '提示', {

@@ -135,11 +135,16 @@ export default {
                 this.$fun.setCookie('XXP', '');
             }
         },
-        enterKey(event) {
+        enterKey(e) {
             const path = this.$route.path;
             if (path == "/login") {
-                const code = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-                if (code == 13) {
+                let key = null;
+                if (window.event === undefined) {
+                    key = e.keyCode;
+                } else {
+                    key = window.event.keyCode;
+                }
+                if (key === 13) {
                     this.submitForm();
                 }
             }

@@ -100,7 +100,7 @@ export default {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     this.$apiList.system.setSystemConfig(this.form).then(res => {
-                        this.$message.success(res.message);
+                        this.$fun.msg(res.message);
                         this.$store.dispatch('getSystemConfig');
                     });
                 }
@@ -111,13 +111,13 @@ export default {
         },
         handleUploadWatermarkSuccess(res, file) {
             if(res.code !== 200){
-                this.$message.error(res.message);
+                this.$fun.msg(res.message, 0);
             }
             this.form.system_logo = res.data.path;
         },
         handleUploadLogoSuccess(res, file) {
             if(res.code !== 200){
-                this.$message.error(res.message);
+                this.$fun.msg(res.message, 0);
             }
             this.form.system_logo = res.data.path;
         },
@@ -125,10 +125,10 @@ export default {
             const isJPG = file.type === 'image/jpeg';
             const isLt2M = file.size / 1024 / 1024 < 2;
             // if (!isJPG) {
-            //     this.$message.error('图片只能是JPG格式!');
+            //this.$fun.msg('图片只能是JPG格式', 0);
             // }
             if (!isLt2M) {
-                this.$message.error('图片大小不能超过2MB!');
+                this.$fun.msg('图片大小不能超过2MB', 0);
             }
             // return isJPG && isLt2M;
             return isLt2M;
