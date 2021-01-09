@@ -105,13 +105,13 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="用户名" prop="username">
-                    <el-input v-model="form.username"></el-input>
+                    <el-input v-model="form.username" :disabled="usernameDisable"></el-input>
                 </el-form-item>
                 <el-form-item label="真实姓名" prop="name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="联系方式" prop="phone">
-                    <el-input v-model="form.phone" ></el-input>
+                    <el-input v-model="form.phone"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱地址" prop="email">
                     <el-input v-model="form.email"></el-input>
@@ -250,7 +250,8 @@ export default {
                     //disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
                     return date.getTime() > Date.now();
                 }
-            }
+            },
+            usernameDisable: false
         }
     },
     inject: ['reload'],
@@ -331,6 +332,7 @@ export default {
                     this.dialogType = 'edit';
                     this.dialogTitle = '编辑用户';
                     this.dialogVisible = true;
+                    this.usernameDisable = true;
                 }
             });
         },
@@ -357,6 +359,7 @@ export default {
                                     this.$fun.msg(res.message);
                                     this.reload();
                                 }
+                                this.usernameDisable = false;
                             });
                             break;
                         default:
