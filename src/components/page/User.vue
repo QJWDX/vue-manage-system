@@ -53,11 +53,16 @@
                         <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="320" align="center">
+                <el-table-column label="操作" width="360" align="center">
                     <template slot-scope="scope">
                         <el-button
                             v-if="scope.row.status==1"
-                            type="danger"
+                            type="warning"
+                            @click="resetUserPassword(scope.$index, scope.row)"
+                        >重置密码</el-button>
+                        <el-button
+                            v-if="scope.row.status==1"
+                            type="info"
                             @click="handleStatus(scope.$index, scope.row)"
                         >禁用</el-button>
                         <el-button
@@ -340,9 +345,6 @@ export default {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     const params = this.form;
-                    if(this.saveAvatarUrl){
-                        params.avatar = this.saveAvatarUrl;
-                    }
                     this.form.sex = parseInt(this.form.sex);
                     switch(this.dialogType){
                         case 'add':
@@ -434,12 +436,16 @@ export default {
                 this.getData();
             });
         },
+        resetUserPassword(index, row){
+             this.$apiList.setting.resetUserPassword(row.id).then(res => {
+                this.$fun.msg(res.message);
+            });
+        },
         handleUploadSuccess(res, file) {
             if(res.code !== 200){
                  this.$fun.msg(res.message, 0);
             }
-            this.saveAvatarUrl = res.data.path;
-            this.form.avatar = res.data.full_path;
+            this.form.avatar = res.data.path;
         },
         beforeUpload(file) {
             const isJPG = file.type === 'image/jpeg';

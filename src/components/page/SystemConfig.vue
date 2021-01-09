@@ -126,6 +126,7 @@ export default {
             this.form.system_logo = res.data.full_path;
         },
         beforeUpload(file) {
+            // this.$fun.msg('推荐尺寸36px*36px');
             const isJPG = file.type === 'image/jpeg';
             const isLt2M = file.size / 1024 / 1024 < 2;
             // if (!isJPG) {
@@ -155,7 +156,7 @@ export default {
     border-color: #409EFF;
 }
 .image-uploader-icon {
-    font-size: 2em;
+    font-size: 1.25em;
     color: #8c939d;
     width:2.25rem;
     height: 2.25rem;

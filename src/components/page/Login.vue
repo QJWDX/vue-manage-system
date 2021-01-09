@@ -1,10 +1,13 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">{{systemName}}</div>
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <div class="ms-title">
+                <img :src="systemLogo">
+                <span>{{systemName}}</span>
+                </div>
+            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content" size="medium">
                 <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username" class="login-input">
+                    <el-input v-model="param.username" placeholder="username"  size="medium">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -13,23 +16,23 @@
                         type="password"
                         placeholder="password"
                         v-model="param.password"
-                        @keyup.enter.native="submitForm()"
-                        class="login-input"
+                        size="medium"
                     >
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
-                <el-form-item prop="captcha_code">
-                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:200px;" class="login-input">
+                <el-form-item prop="captcha_code" style="margin-bottom:4px;">
+                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:200px;"  size="medium">
                         <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
                     </el-input>
                     <img :src="catcha_img" alt="" @click="getCaptchaInfo" style="margin-left:18px;">
                 </el-form-item>
-                <el-form-item class="checkBox">
+                <div class="wrap_find">
                     <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
-                </el-form-item>
+                    <span class="findPassword" @click="findPassword">找回密码</span>
+                </div>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm()" :disabled="disable">登录</el-button>
+                    <el-button type="primary" @click="submitForm()" :disabled="disable" @keyup.enter.native="submitForm()">登录</el-button>
                 </div>
                 <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
             </el-form>
@@ -90,6 +93,9 @@ export default {
     computed:{
         systemName(){
             return this.$store.getters.systemName;
+        },
+        systemLogo(){
+            return this.$store.getters.systemLogo;
         }
     },
     methods: {
@@ -148,6 +154,9 @@ export default {
                     this.submitForm();
                 }
             }
+        },
+        findPassword(){
+             this.$fun.msg('功能还在开发中');
         }
     },
 };
@@ -168,15 +177,22 @@ export default {
     font-size: 24px;
     color: #fff;
 }
+.ms-title img {
+    vertical-align: middle;
+    width: 2.625rem;
+    margin-right: 0.3125rem;
+}
 .ms-login {
+    height: 25rem;
+    background-color: rgba(124, 141, 175, 0.3);
+    box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
+    border-radius: 0.125rem;
     position: absolute;
+    top: 45%;
+    margin-top: -14.625rem;
     left: 50%;
-    top: 50%;
-    width: 400px;
-    margin: -260px 0 0 -200px;
-    border-radius: 0px;
-    background: rgba(255, 255, 255, 0.3);
-    overflow: hidden;
+    margin-left: -13rem;
+    padding: 0.625rem;
 }
 .ms-content {
     padding: 15px 30px;
@@ -186,37 +202,58 @@ export default {
 }
 .login-btn button {
     width: 100%;
-    height: 36px;
-    margin-bottom: 10px;
+    height: 3rem;
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.15) 100%), linear-gradient(#0870df, #0870df);
+    background-blend-mode: overlay, normal;
+    box-shadow: inset 0 0 0 0 white;
+    border-radius: 0.3125rem;
+    border: none !important;
+    font-size: 1.125rem;
+    color: #ffffff;
 }
 .login-tips {
-    font-size: 12px;
-    line-height: 30px;
+    font-size: 0.875em;
+    line-height: 2em;
     color: #fff;
 }
-.login-input >>> .el-input__inner{
+.el-input >>> .el-input__inner{
     height: 40px;
     line-height: 40px;
     font-size: 14px;
     border-radius: 0px;
 }
-
-.login-input >>> .el-input-group__prepend{
+ .el-input >>> .el-input-group__prepend{
      border-radius: 0px;
 }
-.el-button--small{
-    border-radius: 0px;
+.wrap_find{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.3125rem 0;
 }
-.ms-content /deep/ .el-form-item{
-    margin-bottom: 16px;
+.wrap_find /deep/ .el-checkbox {
+    color: #606266;
+    font-weight: 500;
+    font-size: 0.875rem !important;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    white-space: nowrap;
+    user-select: none;
+    margin-right: 1.875rem;
 }
-.ms-content /deep/ .el-form-item .el-form-item__content{ 
-    height: 40px;
+
+.wrap_find /deep/ .el-checkbox__label{
+    font-size: 0.875rem !important;
 }
-.checkBox {
-    margin-bottom: 0px !important;
+.findPassword{
+    font-size: 0.875rem;
+    color: white;
+    margin-left: 0.9375rem;
+    cursor: pointer;
+    line-height: 1.1875rem;
 }
-.checkBox /deep/ .el-form-item__content{
-    height: 32px !important;
+.el-form-item:last-child {
+    margin-bottom: 10px !important;
 }
 </style>

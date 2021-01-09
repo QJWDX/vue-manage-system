@@ -71,6 +71,12 @@ export const userPasswordUpdate = (params, headers) => {
     return axios.post('api/setting/userPasswordUpdate', qs.stringify(params), {headers:headers});
 };
 
+// 重置用户密码
+export const resetUserPassword = (id) => {
+    return axios.get('api/setting/resetUserPassword/' + id);
+};
+
+
 // 角色管理
 export const roleList = params => {
     return axios({

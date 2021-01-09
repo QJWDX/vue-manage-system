@@ -31,6 +31,7 @@ service.interceptors.response.use(
     response => {
         switch(response.status){
             case 200:
+                console.log(response.data)
                 if(response.data.code === 200){
                     return response.data;
                 }else{
@@ -63,6 +64,9 @@ service.interceptors.response.use(
                         'showClose' :true,
                         'center': true
                     });
+                    if(error.response.data.code === 403){
+                        route.push('/403');
+                    }
                     break
                 case 401:
                     // token黑名单

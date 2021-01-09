@@ -5,10 +5,10 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo-images">
-            <el-avatar shape="square" size="small" :src="systemLogo"></el-avatar>
+        <div class="logo">
+            <img :src="systemLogo">
+            <span>{{systemName}}</span>
         </div>
-        <div class="logo">{{systemName}}</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
@@ -240,7 +240,8 @@ export default {
                 case 'logout':
                     this.$apiList.login.logout().then(res => {
                         this.$store.dispatch('delUserInfo');
-                        this.$router.push('/login');
+                        this.$router.replace({path: '/login'});
+                        location.reload();
                     });
                     break;
             }
@@ -364,7 +365,6 @@ export default {
     width: 100%;
     height: 70px;
     font-size: 22px;
-    font-weight: bold;
     color: #fff;
 }
 .collapse-btn {
@@ -377,12 +377,12 @@ export default {
     float: left;
     width: 300px;
     line-height: 70px;
+    font-weight: bold;
 }
-.header .logo-images {
-    float: left;
-    width: 30px;
-    height: 70px;
-    line-height: 80px;
+.header .logo img {
+    vertical-align: middle;
+    width: 2.625rem;
+    margin-right: 0.3125rem;
 }
 .header .logo-images image{
     display: inline-block;
