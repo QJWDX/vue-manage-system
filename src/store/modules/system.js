@@ -9,7 +9,10 @@ const getters = {
     },
     systemName:(state) => {
         return state.systemInfo.system_name || '后台管理系统';
-    }
+    },
+    systemLogo:(state) => {
+        return state.systemInfo.system_logo || '';
+    },
 };
 
 const mutations = {

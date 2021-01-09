@@ -5,6 +5,9 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
+        <div class="logo-images">
+            <el-avatar shape="square" size="small" :src="systemLogo"></el-avatar>
+        </div>
         <div class="logo">{{systemName}}</div>
         <div class="header-right">
             <div class="header-user-con">
@@ -146,6 +149,9 @@ export default {
         },
         systemName(){
             return this.$store.getters.systemName;
+        },
+        systemLogo(){
+             return this.$store.getters.systemLogo;
         }
     },
     methods: {
@@ -358,6 +364,7 @@ export default {
     width: 100%;
     height: 70px;
     font-size: 22px;
+    font-weight: bold;
     color: #fff;
 }
 .collapse-btn {
@@ -368,8 +375,17 @@ export default {
 }
 .header .logo {
     float: left;
-    width: 250px;
+    width: 300px;
     line-height: 70px;
+}
+.header .logo-images {
+    float: left;
+    width: 30px;
+    height: 70px;
+    line-height: 80px;
+}
+.header .logo-images image{
+    display: inline-block;
 }
 .header-right {
     float: right;

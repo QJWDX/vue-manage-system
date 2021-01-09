@@ -16,22 +16,26 @@
                 </el-form-item>
                 <el-form-item label="系统logo">
                         <el-upload
+                        class="image-uploader"
                         :on-success="handleUploadLogoSuccess"
                         :before-upload="beforeUpload"
                         :action="uploadUrl"
                         :headers="headers"
-                    >
-                        <el-button type="success">点击上传图片</el-button>
+                        >
+                        <img v-if="form.system_logo" :src="form.system_logo" class="imageUpload">
+                        <i v-else class="el-icon-plus image-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="水印图片">
                         <el-upload
+                        class="image-uploader"
                         :on-success="handleUploadWatermarkSuccess"
                         :before-upload="beforeUpload"
                         :action="uploadUrl"
                         :headers="headers"
-                    >
-                        <el-button type="success">点击上传图片</el-button>
+                        >
+                        <img v-if="form.system_watermark" :src="form.system_watermark" class="imageUpload">
+                        <i v-else class="el-icon-plus image-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="版权所有" prop="system_copyright">
@@ -113,13 +117,13 @@ export default {
             if(res.code !== 200){
                 this.$fun.msg(res.message, 0);
             }
-            this.form.system_logo = res.data.path;
+            this.form.system_watermark = res.data.full_path;
         },
         handleUploadLogoSuccess(res, file) {
             if(res.code !== 200){
                 this.$fun.msg(res.message, 0);
             }
-            this.form.system_logo = res.data.path;
+            this.form.system_logo = res.data.full_path;
         },
         beforeUpload(file) {
             const isJPG = file.type === 'image/jpeg';
@@ -136,3 +140,31 @@ export default {
     }
 };
 </script>
+<style>
+.image-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background-color: #ddd;
+    border: 0.0625rem dotted #ccc;
+    line-height: normal;
+}
+.image-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+.image-uploader-icon {
+    font-size: 2em;
+    color: #8c939d;
+    width:2.25rem;
+    height: 2.25rem;
+    line-height: 2.25rem;
+    text-align: center;
+}
+.imageUpload {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: block;
+}
+</style>
