@@ -112,6 +112,7 @@
 </template>
 <script>
 export default {
+    name: 'permission',
     data() {
         var checkPath = (rule, value, callback) => {
             if (parseInt(this.form.path)) {

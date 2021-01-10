@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {Message} from 'element-ui';
 import store from './../store';
-import route from './../router';
+import {router} from './../router';
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     timeout: 5000
@@ -14,7 +14,6 @@ service.interceptors.request.use(
         return config;
     },
     error => {
-        console.log(error);
         Message({
             'message':error.response.data.message,
             'type':'error',
@@ -31,7 +30,6 @@ service.interceptors.response.use(
     response => {
         switch(response.status){
             case 200:
-                console.log(response.data)
                 if(response.data.code === 200){
                     return response.data;
                 }else{
@@ -57,24 +55,28 @@ service.interceptors.response.use(
         if (error && error.response && error.response.status) {
             switch (error.response.status) {
                 case 500:
-                    Message({
-                        'message':error.response.data.message,
-                        'type':'error',
-                        'duration' : 2000,
-                        'showClose' :true,
-                        'center': true
-                    });
-                    if(error.response.data.code === 403){
-                        route.push('/403');
+                    switch(error.response.data.code){
+                        case 500:
+                            Message({
+                                'message':error.response.data.message,
+                                'type':'error',
+                                'duration' : 2000,
+                                'showClose' :true,
+                                'center': true
+                            });
+                            break;
+                        case 403:
+                            router.push('/403');
+                            break;
                     }
                     break
                 case 401:
                     // token黑名单
                     store.dispatch('delUserInfo');
-                    route.push('/login');
+                    router.push('/login');
                     break;
                 case 403:
-                    route.push('/403');
+                    router.push('/403');
                     break
                 case 404:
                     route.push('/404');

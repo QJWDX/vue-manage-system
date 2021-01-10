@@ -137,6 +137,7 @@
 </template>
 <script>
 export default {
+    name: 'menu',
     data() {
         var checkPath = (rule, value, callback) => {
             if (parseInt(this.form.is_related_route)) {

@@ -21,11 +21,11 @@
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
-                <el-form-item prop="captcha_code" style="margin-bottom:4px;">
-                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:200px;"  size="medium">
+                <el-form-item prop="captcha_code" style="margin-bottom:0px;">
+                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:60%;"  size="medium">
                         <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
                     </el-input>
-                    <img :src="catcha_img" alt="" @click="getCaptchaInfo" style="margin-left:18px;">
+                    <img :src="catcha_img" alt="" @click="getCaptchaInfo" class="catcha">
                 </el-form-item>
                 <div class="wrap_find">
                     <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
@@ -170,19 +170,8 @@ export default {
     background-image: url(../../assets/img/login-bg1.png);
     background-size: 100%;
 }
-.ms-title {
-    width: 100%;
-    line-height: 60px;
-    text-align: center;
-    font-size: 24px;
-    color: #fff;
-}
-.ms-title img {
-    vertical-align: middle;
-    width: 2.625rem;
-    margin-right: 0.3125rem;
-}
-.ms-login {
+.login-wrap .ms-login {
+    width: 25rem;
     height: 25rem;
     background-color: rgba(124, 141, 175, 0.3);
     box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
@@ -194,13 +183,26 @@ export default {
     margin-left: -13rem;
     padding: 0.625rem;
 }
-.ms-content {
+.login-wrap .ms-login .ms-title {
+    width: 100%;
+    line-height: 60px;
+    text-align: center;
+    font-size: 24px;
+    color: #fff;
+}
+.login-wrap .ms-login .ms-title img {
+    vertical-align: middle;
+    width: 2.625rem;
+    margin-right: 0.3125rem;
+}
+
+.login-wrap .ms-login .ms-content {
     padding: 15px 30px;
 }
-.login-btn {
+.login-wrap .ms-login .login-btn {
     text-align: center;
 }
-.login-btn button {
+.login-wrap .ms-login .login-btn button {
     width: 100%;
     height: 3rem;
     background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.15) 100%), linear-gradient(#0870df, #0870df);
@@ -211,11 +213,6 @@ export default {
     font-size: 1.125rem;
     color: #ffffff;
 }
-.login-tips {
-    font-size: 0.875em;
-    line-height: 2em;
-    color: #fff;
-}
 .el-input >>> .el-input__inner{
     height: 40px;
     line-height: 40px;
@@ -225,13 +222,13 @@ export default {
  .el-input >>> .el-input-group__prepend{
      border-radius: 0px;
 }
-.wrap_find{
+.login-wrap .ms-login .wrap_find{
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding: 0.3125rem 0;
 }
-.wrap_find /deep/ .el-checkbox {
+.login-wrap .ms-login .wrap_find /deep/ .el-checkbox {
     color: #606266;
     font-weight: 500;
     font-size: 0.875rem !important;
@@ -243,17 +240,20 @@ export default {
     margin-right: 1.875rem;
 }
 
-.wrap_find /deep/ .el-checkbox__label{
+.login-wrap .ms-login .wrap_find /deep/ .el-checkbox__label{
     font-size: 0.875rem !important;
 }
-.findPassword{
+.login-wrap .ms-login .findPassword{
     font-size: 0.875rem;
     color: white;
     margin-left: 0.9375rem;
     cursor: pointer;
     line-height: 1.1875rem;
 }
-.el-form-item:last-child {
-    margin-bottom: 10px !important;
+.catcha{
+    display: inline-block;
+    margin-left: 0.625rem;
+    flex: 1;
+    height: 40px !important;
 }
 </style>

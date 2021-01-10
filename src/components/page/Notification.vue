@@ -70,7 +70,7 @@
 <script>
     // import { mapState, mapActions } from 'vuex';
     export default {
-        name: 'tabs',
+        name: 'notification',
         data() {
             return {
                 message: 'first',

@@ -115,7 +115,7 @@
 
 <script>
 export default {
-    name: 'basetable',
+    name: 'role',
     data() {
         return {
             titles: ['可选用户列表','已选用户列表'],
@@ -154,7 +154,8 @@ export default {
              rules: {
                 name: [
                     {required: true, message: '角色名称不能为空', trigger: 'blur' },
-                    { min:2 , max:30, message: '角色名称长度为2-30个字符', trigger: 'blur'}
+                    {min:2 , max:30, message: '角色名称长度为2-30个字符', trigger: 'blur'},
+                    {pattern: /^[A-Za-z]*$/, message: '角色名称只能包含字母'}
                 ],
                 display_name: [
                     {required: true, message: '显示名称不能为空', trigger: 'blur' },

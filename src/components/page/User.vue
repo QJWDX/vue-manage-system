@@ -161,7 +161,7 @@
 
 <script>
 export default {
-    name: 'basetable',
+    name: 'user',
     data() {
             var checkPhone = (rule, value, callback) => {
             if (!value) {

@@ -33,14 +33,14 @@
                 </el-table-column>
                 <el-table-column label="用户名" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                        <span>{{scope.row.user.username}}</span>
+                        <span v-if="scope.row.user">{{scope.row.user.username}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="path" label="路由" align="center"></el-table-column>
                 <el-table-column prop="method" label="请求方式" align="center"></el-table-column>
                 <el-table-column prop="ip" label="ip" align="center"></el-table-column>
-                <el-table-column prop="input" label="请求字段" align="center"></el-table-column>
-                <el-table-column prop="sql" label="sql" align="center"></el-table-column>
+                <el-table-column prop="input" label="请求字段" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="sql" label="sql" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <!-- <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                       <el-button
@@ -85,9 +85,21 @@
                 multipleSelection: [],
                 timeSelect: ['', ''],
                 expireTimeOption: {
-                    disabledDate(date) {
-                        //disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
-                        return date.getTime() > Date.now();
+                    disabledDate(time) {
+                        // 限制时间在当前月份开始日期到当天
+                        var d = new Date();
+                        var ydate = (d.getFullYear())
+                        var mdate = (d.getMonth() + 1)
+                        var day = d.getDate()
+                        mdate = mdate > 9 ? mdate : '0' + mdate
+                        day = day > 9 ? day : '0' + day
+                        var start_date = `${ydate}-${mdate}-01`
+                        var end_date = `${ydate}-${mdate}-${day}`
+                        let start = new Date(start_date)
+                        let end = new Date(end_date)
+                        let ks = start.getTime(start)
+                        var js = end.getTime(end)
+                        return   time.getTime() > js || time.getTime() < ks-60*60*24*1000
                     }
                 }
             }
