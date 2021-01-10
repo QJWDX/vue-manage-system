@@ -2,7 +2,7 @@ import {JSEncrypt} from 'jsencrypt';
 import {Message} from 'element-ui';
 export default {
 
-    apiUrl(){
+    baseUrl(){
         let protocol = window.location.protocol; //协议
         let host = window.location.host; //主机
         let reg = /^localhost+/;
