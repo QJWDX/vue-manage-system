@@ -42,10 +42,10 @@
                 </el-table-column>
                 <el-table-column label="操作" width="400" align="center">
                     <template slot-scope="scope">
-                        <el-button type="success" plain @click="handUser(scope.$index, scope.row)">权限用户</el-button>
-                        <el-button type="primary" plain @click="handleAuth(scope.$index, scope.row)">权限菜单</el-button>
+                        <el-button type="success" plain @click="handUser(scope.$index, scope.row)" v-show="superUser">权限用户</el-button>
+                        <el-button type="primary" plain @click="handleAuth(scope.$index, scope.row)" v-show="superUser">权限菜单</el-button>
                         <el-button type="info" plain  icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="danger" plain icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="danger" plain icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" v-show="superUser">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -174,6 +174,12 @@ export default {
     inject: ['reload'],
     created() {
         this.getData();
+    },
+    computed: {
+        superUser(){
+            console.log(this.$store.getters.user);
+            return this.$store.getters.user.is_super;
+        }
     },
     methods: {
         cellStyle({row, column, rowIndex, columnIndex}){
