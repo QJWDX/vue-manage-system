@@ -39,21 +39,22 @@
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <!-- <el-table-column label="uid" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column> -->
                 <el-table-column label="标题" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat" width="100"></el-table-column>
-                <el-table-column label="文件夹" align="center" prop="folder" width="100"></el-table-column>
-                <el-table-column label="磁盘" align="center" prop="disks" width="70"></el-table-column>
-                <el-table-column label="宽" align="center" prop="width" width="60"></el-table-column>
-                <el-table-column label="高" align="center" prop="height" width="60"></el-table-column>
-                <el-table-column label="大小" align="center" prop="size" width="100" :formatter="formatSize"></el-table-column>
-                <el-table-column label="mime_type" align="center" prop="mime_type" width="100"></el-table-column>
-                <el-table-column label="路径" align="center" prop="path" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="created_at" label="上传时间" align="center" width="150"></el-table-column>
-                <el-table-column label="下载次数" align="center" prop="downloads" width="80"></el-table-column>
+                <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"></el-table-column>
+                <el-table-column label="文件夹" align="center" prop="folder"></el-table-column>
+                <el-table-column label="磁盘" align="center" prop="disks"></el-table-column>
+                <el-table-column label="宽高" align="center">
+                     <template slot-scope="scope">
+                         <span>{{scope.row.width}}*{{scope.row.height}}px</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="大小" align="center" prop="size" :formatter="formatSize"></el-table-column>
+                <el-table-column label="mime_type" align="center" prop="mime_type"></el-table-column>
+                <!-- <el-table-column label="路径" align="center" prop="path" :show-overflow-tooltip="true"></el-table-column> -->
+                <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="handleDownload(scope.$index, scope.row)"><a href="http://127.0.0.1:8090/api/files/download/12"></a>下载</el-button>
+                        <el-button type="text" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
                         <el-button type="text" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
                     </template>
                 </el-table-column>
@@ -75,12 +76,12 @@
                         <el-input v-model="form.title"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型" prop="type">
-                         <el-select v-model="form.type" @change="handTypeChange">
+                         <el-select v-model="form.type" @change="handTypeChange" style="width:100%">
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="存储文件夹" prop="folder">
-                         <el-select v-model="form.folder">
+                         <el-select v-model="form.folder" style="width:100%">
                             <el-option :label="item" :value="item" v-for="(item, key) in folders" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
@@ -100,7 +101,6 @@
 </template>
 
 <script>
-import DragDialogVue from './DragDialog.vue';
     export default {
         name: 'files',
         data() {
@@ -165,12 +165,13 @@ import DragDialogVue from './DragDialog.vue';
                     if(this.search.export == 1){
                         this.$fun.downloadFile(res.data.download_url);
                         this.search.export = 0;
+                        this.$fun.msg('导出成功')
                         return;
                     }
-                    this.tableData = res.data.items || [];
-                    this.pagination.pageTotal = res.data.totalPage;
-                    this.pagination.perPage = res.data.perPage;
-                    this.pagination.page = res.data.currentPage;
+                this.tableData = res.data.items || [];
+                this.pagination.pageTotal = parseInt(res.data.total);
+                this.pagination.perPage =  parseInt(res.data.per_page);
+                this.pagination.page =  parseInt(res.data.current_page);
                 });
             },
             initData(){
@@ -180,6 +181,11 @@ import DragDialogVue from './DragDialog.vue';
             },
             del(){
                 let params = {ids: this.multipleSelection};
+                 this.$apiList.files.delFile(params).then(res => {
+                    this.multipleSelection = [];
+                    this.$fun.msg(res.message);
+                    this.reload();
+                });
             },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
@@ -197,7 +203,7 @@ import DragDialogVue from './DragDialog.vue';
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                this.del();
+                    this.del();
                 }).catch(() => {});
             },
             handleSelectionChange(val) {
@@ -235,6 +241,9 @@ import DragDialogVue from './DragDialog.vue';
             handleUpload(){
                 this.dialogVisible = true;
             },
+            handleDownload(index, row){
+                this.$fun.downloadFile(row.download_url);
+            },
             typeFormat(row, column){
                 return this.types[row.type];
             },
@@ -261,8 +270,9 @@ import DragDialogVue from './DragDialog.vue';
                    formData.append('file[]', this.form.files[index]);
                 }
                 this.$apiList.files.upload(formData).then(res => {
-                    this.closeDialog();
                     this.$fun.msg(res.message);
+                    this.callOf('form');
+                    this.reload();
                 });
             },
             callOf(formName){

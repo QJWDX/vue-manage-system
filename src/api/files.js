@@ -1,10 +1,10 @@
 import axios from '../utils/request';
 
-export const fileList = query => {
+export const fileList = params => {
     return axios({
         url: 'api/File/files',
         method: 'get',
-        params: query
+        params: params
     });
 };
 
@@ -15,6 +15,14 @@ export const fileInfo = id => {
     });
 };
 
+export const delFile = params => {
+    return axios({
+        url: 'api/File/delFiles',
+        method: 'delete',
+        params: params
+    });
+};
+
 export const typeSelector = () => {
     return axios({
         url: 'api/File/typeSelector',
@@ -22,11 +30,11 @@ export const typeSelector = () => {
     });
 };
 
-export const folderSelector = (query) => {
+export const folderSelector = (params) => {
     return axios({
         url: 'api/File/folderSelector',
         method: 'get',
-        params: query
+        params: params
     });
 };
 

@@ -323,44 +323,50 @@ export default {
      * @param {*} fileName 文件名
      */
     downloadFile(url, fileName = ''){
-        let a = document.createElement('a')
-        a.href = url;
-        a.download = fileName || url.substring(url.lastIndexOf('/')+1);
+        if(this.isImage(url)){
+            this.downloadImg(url, fileName);
+            return;
+        }
+        let link = document.createElement('a')
+        link.href = url;
+        link.download = fileName || url.substring(url.lastIndexOf('/')+1);
         document.body.appendChild(a);
-        a.click();
-        a.remove(); 
+        link.click();
+        link.remove();
     },
-
-    download(url){
-        let a = document.createElement('a')
-        a.href = url;
-        document.body.appendChild(a);
-        a.click();
-        a.remove(); 
-    },
-
     /**
      * 图片下载
-     * @param {*} url 
-     * @param {*} name 
+     * @param {*} src 
+     * @param {*} fileName 
      */
-    downloadByBlob(url, name) {
-        let image = new Image();
-        image.setAttribute('crossOrigin', 'anonymous');
-        image.src = url;
-        image.onload = () => {
-          let canvas = document.createElement('canvas');
-          canvas.width = image.width;
-          canvas.height = image.height;
-          let ctx = canvas.getContext('2d');
-          ctx.drawImage(image, 0, 0, image.width, image.height);
-          canvas.toBlob((blob) => {
-            let url = URL.createObjectURL(blob);
-            downloadFile(url, name);
-            // 用完释放URL对象
-            URL.revokeObjectURL(url);
-          });
+    downloadImg(src, fileName = ''){
+        var image = new Image();
+        // 解决跨域 Canvas 污染问题
+        image.crossOrigin = "*";
+        image.onload = function() {
+            var canvas = document.createElement("canvas");
+            canvas.width = image.width;
+            canvas.height = image.height;
+            var context = canvas.getContext("2d");
+            context.drawImage(image, 0, 0, image.width, image.height);
+            var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
+        
+            var a = document.createElement("a"); // 生成一个a元素
+            var event = new MouseEvent("click"); // 创建一个单击事件
+            a.download = fileName || url.substring(url.lastIndexOf('/')+1); // 设置图片名称
+            a.href = url; // 将生成的URL设置为a.href属性
+            a.dispatchEvent(event); // 触发a的单击事件
         };
+        image.src = src;
+    },
+    /**
+     * 判断是否是图片
+     * @param {*} filePath 
+     */
+    isImage(filePath) {
+        var index = filePath.lastIndexOf(".");
+        var ext = filePath.substr(index+1);
+        return ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff'].indexOf(ext.toLowerCase()) !== -1;
     },
 
     /**

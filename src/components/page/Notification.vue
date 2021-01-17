@@ -1,7 +1,7 @@
 <template>
     <div class="">
         <div class="container">
-            <el-form :inline="true" :model="query" class="demo-form-inline">
+            <el-form :inline="true" :model="search" class="demo-form-inline">
                     <el-form-item label="发送时间">
                          <el-date-picker
                             @change="dateChange"
@@ -12,11 +12,11 @@
                             end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item>
-                        <el-select v-model="query.read_at" style="width:100px;" @change="handReadChange">
+                    <el-form-item label="消息状态">
+                        <el-select v-model="search.read_at">
                             <el-option label="全部" value="0"></el-option>
-                            <el-option label="未读" value="1"></el-option>
-                            <el-option label="已读" value="2"></el-option>
+                            <el-option label="已读" value="1"></el-option>
+                             <el-option label="未读" value="2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
@@ -31,20 +31,25 @@
             </el-form>
             <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="ID" align="center" prop="id">
+                <el-table-column label="消息编号" align="center" prop="id">
                 </el-table-column>
-                <el-table-column label="消息内容" align="center" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                        <span class="message-title">{{scope.row.data}}</span>
-                    </template>
+                <el-table-column label="消息标题" align="center" prop="title" :show-overflow-tooltip="true">
                 </el-table-column>
-                <el-table-column prop="read_at" label="是否已读" align="center"></el-table-column>
+                <el-table-column label="消息内容" align="center" prop="content" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="read_at" label="消息状态" align="center">
+                        <template slot-scope="scope">
+                            <span v-if='scope.read_at'>已读</span>
+                            <span v-else>未读</span>
+                        </template>
+                </el-table-column>
                 <el-table-column prop="created_at" label="发送时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button size="small" disabled v-if="scope.row.read_at">标为已读</el-button>
-                        <el-button size="small" @click="handleRead(scope.$index, scope.row.id)" v-else>标为已读</el-button>
+                        <el-button size="small" disabled v-if="scope.row.read_at">消息已读</el-button>
+                        <el-button size="small" @click="handleRead(scope.$index, scope.row)" type="warning" v-else>标为已读</el-button>
                         <el-button
+                            type="danger"
                             size="small"
                             icon="el-icon-delete"
                             class="red"
@@ -57,9 +62,9 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next, jumper"
-                    :current-page="query.page"
-                    :page-size="query.perPage"
-                    :total="pageTotal"
+                    :current-page="pagination.page"
+                    :page-size="pagination.perPage"
+                    :total="pagination.pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
@@ -75,21 +80,19 @@
             return {
                 message: 'first',
                 showHeader: false,
-                pageTotal: 0,
-                query: {
-                    page: 1,
-                    perPage: 10,
-                    type: 0,
-                    notifiable_type: 0,
-                    notifiable_id: this.$store.getters.user.id,
-                    read_at : '1',
+                search: {
+                    read_at : '0',
                     startTime: '',
                     endTime: '',
+                },
+                pagination: {
+                    page: 1,
+                    perPage: this.$fun.getDefaultPerPage(),
+                    pageTotal: 0
                 },
                 notification: [], 
                 tableData: [],
                 multipleSelection: [],
-                checkList: [],
                 timeSelect: ['', ''],
             }
         },
@@ -115,22 +118,23 @@
                 }
             },
             getData() {
-                this.$apiList.notifications.getNotifications(this.query).then(res => {
-                    this.tableData = res.data.items || [];
-                    this.pageTotal = res.data.totalPage || 0;
-                    this.query.perPage = res.data.perPage || 0;
-                    this.query.page = res.data.currentPage || 1;
+                this.$apiList.notifications.notificationsList(this.search).then(res => {
+                this.tableData = res.data.items || [];
+                this.pagination.pageTotal = parseInt(res.data.total);
+                this.pagination.perPage =  parseInt(res.data.per_page);
+                this.pagination.page =  parseInt(res.data.current_page);
                 });
             },
-            handleRead(index, id) {
-                this.$apiList.notifications.makeRead({id: id}).then(res => {
-                    this.getData();
+            handleRead(index, row) {
+                this.multipleSelection = [row.id]
+                this.$apiList.notifications.makeRead({ids: this.multipleSelection}).then(res => {
+                    this.$store.dispatch('setUnreadNumber', this.$store.getters.unreadNumber-this.multipleSelection.length);
+                    this.multipleSelection = [];
                     this.reload();
-                    this.$store.dispatch('setUnreadNumber', this.$store.getters.unreadNumber-1);
                 })
             },
             del(){
-                let params = {ids: this.checkList};
+                let params = {ids: this.multipleSelection};
                 this.$apiList.notifications.delNotifications(params).then(res => {
                     if(res){
                         this.$fun.msg(res.message);
@@ -148,14 +152,14 @@
                 }).catch(() => {});
             },
             handleAllDel() {
-                if(this.checkList.length == 0){
+                if(this.multipleSelection.length == 0){
                      this.$fun.msg('删除项还未选择', 0);
                     return;
                 }
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                this.del();
+                    this.del();
                 }).catch(() => {});
             },
             handleSelectionChange(val) {
@@ -163,26 +167,23 @@
                 for (let index = 0; index < val.length; index++) {
                     this.multipleSelection.push(val[index].id);
                 }
-                this.checkList = this.checkList.concat(this.multipleSelection);
+                this.multipleSelection = this.multipleSelection.concat(this.multipleSelection);
             },
             // 分页导航
             handlePageChange(val) {
-                this.query.page = val;
+                this.pagination.page = val;
                 this.getData();
             },
             handleSearch() {
                 this.getData();
             },
-            handReadChange(){
-                this.query.page = 1;
-            },
             dateChange(val){
                 if(val == null){
-                    this.query.startTime = '';
-                    this.query.endTime = '';
+                    this.search.startTime = '';
+                    this.search.endTime = '';
                 }else{
-                    this.query.startTime = this.$fun.formatDateTime(val[0]);
-                    this.query.endTime = this.$fun.formatDateTime(val[1]);
+                    this.search.startTime = this.$fun.formatDateTime(val[0]);
+                    this.search.endTime = this.$fun.formatDateTime(val[1]);
                 }
             },
         }

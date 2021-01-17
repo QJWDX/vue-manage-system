@@ -1,35 +1,35 @@
 import axios from '../utils/request';
 
-export const getNotifications = query => {
+export const notificationsList = params => {
     return axios({
-        url: 'api/notifications/getNotifications',
+        url: 'api/Notification/getNotifications',
         method: 'get',
-        params: query
+        params: params
     });
 };
 
-export const delNotifications = query => {
+export const delNotification = params => {
     return axios({
-        url: 'api/notifications/delNotifications',
+        url: 'api/Notification/delNotifications',
         method: 'delete',
-        params: query
+        params: params
     });
 };
 
-export const getNotificationCountStatistics = query => {
+export const getNotificationCount = () => {
     return axios({
-        url: 'api/notifications/getNotificationCountStatistics',
+        url: 'api/Notification/getNotificationCount',
         method: 'get',
-        params: query
+        params: []
     });
 };
 
 
-export const makeRead = query => {
+export const makeRead = params => {
     return axios({
-        url: 'api/notifications/makeRead',
+        url: 'api/Notification/makeRead',
         method: 'get',
-        params: query
+        params: params
     });
 };
 

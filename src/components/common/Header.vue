@@ -51,24 +51,6 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
-            <!-- 修改密码 -->
-            <!-- <el-dialog title="修改密码" :visible.sync="dialogVisible" width="20%" @close="dialogVisible=false;p_form={};">
-                <el-form ref="p_form" :model="p_form" :rules="rules">
-                    <el-form-item prop="password">
-                        <el-input type="password" v-model="p_form.password" placeholder="原密码"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="new_password">
-                        <el-input type="password" v-model="p_form.new_password" placeholder="新密码"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="confirm_password">
-                        <el-input type="password" v-model="p_form.confirm_password" placeholder="确认密码"></el-input>
-                    </el-form-item>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible=false;p_form={};">取 消</el-button>
-                    <el-button  type="primary" @click="submitForm">确 定</el-button>
-                </span>
-            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -192,7 +174,7 @@ export default {
                                     }).then(({ value }) => {
                                         var confirm_password = value;
                                         if(new_password !== confirm_password){
-                                            this.$message.error('两次输入密码不一致');
+                                            this.$fun.msg('两次输入密码不一致', 0);
                                             return
                                         }
                                          this.$apiList.login.getRsaPublicKey().then(res => {
@@ -215,26 +197,23 @@ export default {
                                                     this.$store.dispatch('delUserInfo');
                                                     this.$router.push('/login');
                                                 }).catch(() => {
-                                                    this.$message({
-                                                        type: 'warning',
-                                                        message: '您已取消退出重新登陆，下次登录别忘了输入新密码哦！'
-                                                    });          
+                                                     this.$fun.msg('您已取消退出重新登陆，下次登录别忘了输入新密码哦！', 2);         
                                                 });
                                             });
                                          });
                                        
                                     }).catch(() => {
-                                        this.$message.error('您已取消输入');
+                                        this.$fun.msg('您已取消输入', 2);
                                     });
                                 }).catch(() => {
-                                    this.$message.error('您已取消输入');
+                                     this.$fun.msg('您已取消输入', 2);
                                 });
                             });
                         }).catch(error => {
                             this.$message.error(error);
                         });
                     }).catch(() => {
-                        this.$message.error('您已取消输入');
+                         this.$fun.msg('您已取消输入', 2);
                     });
                     break;
                 case 'logout':
@@ -298,13 +277,8 @@ export default {
         }
     },
     created(){
-        let params = {
-            notifiable_id: this.$store.getters.user.id,
-            type:0,
-            notifiable_type:0
-        };
-        this.$apiList.notifications.getNotificationCountStatistics(params).then(res => {
-            this.$store.dispatch('setUnreadNumber', res.data.unread_count);
+        this.$apiList.notifications.getNotificationCount().then(res => {
+            this.$store.dispatch('setUnreadNumber', res.data.unread);
         });
     },
     mounted() {
