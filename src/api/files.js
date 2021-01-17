@@ -1,46 +1,38 @@
 import axios from '../utils/request';
 
-export const files = query => {
+export const fileList = query => {
     return axios({
-        url: 'api/files/list',
+        url: 'api/File/files',
         method: 'get',
         params: query
     });
 };
 
-
-export const filesInfo = id => {
+export const fileInfo = id => {
     return axios({
-        url: 'api/files/show/' + id,
+        url: 'api/File/files/' + id,
         method: 'get'
     });
 };
 
-export const types = () => {
+export const typeSelector = () => {
     return axios({
-        url: 'api/files/typeSelect',
+        url: 'api/File/typeSelector',
         method: 'get'
     });
 };
 
-export const folders = (query) => {
+export const folderSelector = (query) => {
     return axios({
-        url: 'api/files/folderSelect',
+        url: 'api/File/folderSelector',
         method: 'get',
         params: query
-    });
-};
-
-export const download = id => {
-    return axios({
-        url: 'files/download/' + id,
-        method: 'get'
     });
 };
 
 export const upload = params => {
     return axios({
-        url: 'api/files/upload',
+        url: 'api/File/upload',
         method: 'post',
         data: params,
         headers: {

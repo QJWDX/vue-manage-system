@@ -70,21 +70,23 @@
             </div>
             <!-- 文件上传 -->
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close="callOf('form')">
-                <el-form ref="form" :model="uploadParam" label-width="100px">
-                    <el-form-item label="文件的类型" prop="type">
-                         <el-select v-model="uploadParam.type" style="width: 100%;" @change="handTypeChange">
+                <el-form ref="form" :model="form" label-width="100px">
+                    <el-form-item label="文件标题" prop="title">
+                        <el-input v-model="form.title"></el-input>
+                    </el-form-item>
+                    <el-form-item label="文件类型" prop="type">
+                         <el-select v-model="form.type" @change="handTypeChange">
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="存储文件夹" prop="folder">
-                         <el-select v-model="uploadParam.folder" style="width: 100%;">
+                         <el-select v-model="form.folder">
                             <el-option :label="item" :value="item" v-for="(item, key) in folders" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="请选择文件">
-                        <el-upload :on-change="fileChange" action="#" :http-request="httpRequest" :on-remove="removeFile">                
-                            <i class="el-icon-upload"></i>
-                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <el-upload :on-change="fileChange" action="#" :on-remove="removeFile" :http-request="httpRequest">
+                            <el-button type='warning'>点击上传</el-button>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -123,7 +125,8 @@ import DragDialogVue from './DragDialog.vue';
                 fileUids:[],
                 dialogVisible: false,
                 dialogTitle: '文件上传',
-                uploadParam: {
+                form: {
+                    title: '',
                     type: '',
                     folder: '',
                     files: [],
@@ -131,6 +134,7 @@ import DragDialogVue from './DragDialog.vue';
             }
         },
         inject: ['reload'],
+        computed:{},
         created() {
             this.getData();
             this.initData();
@@ -140,6 +144,8 @@ import DragDialogVue from './DragDialog.vue';
             window.removeEventListener("keydown", this.handleKeyDown, true);
         },
         methods: {
+            httpRequest(){
+            },
             handleKeyDown(e) {
                 let key = null;
                 if (window.event === undefined) {
@@ -155,7 +161,7 @@ import DragDialogVue from './DragDialog.vue';
                 const params = this.search;
                 params.page = this.pagination.page;
                 params.perPage = this.pagination.perPage;
-                this.$apiList.files.files(params).then(res => {
+                this.$apiList.files.fileList(params).then(res => {
                     if(this.search.export == 1){
                         this.$fun.downloadFile(res.data.download_url);
                         this.search.export = 0;
@@ -168,7 +174,7 @@ import DragDialogVue from './DragDialog.vue';
                 });
             },
             initData(){
-                 this.$apiList.files.types().then(res => {
+                 this.$apiList.files.typeSelector().then(res => {
                     this.types = res.data || [];
                 });
             },
@@ -213,7 +219,7 @@ import DragDialogVue from './DragDialog.vue';
                 this.getData();
             },
             handTypeChange(){
-                this.$apiList.files.folders({type:this.uploadParam.type}).then(res => {
+                this.$apiList.files.folderSelector({type:this.form.type}).then(res => {
                      this.folders = res.data || [];
                 });
             },
@@ -226,9 +232,6 @@ import DragDialogVue from './DragDialog.vue';
                     this.search.endTime = this.$fun.formatDateTime(val[1]);
                 }
             },
-            handleDownload(index, row){
-                this.$fun.download('http://127.0.0.1:8090/files/download/'+row.id);
-            },
             handleUpload(){
                 this.dialogVisible = true;
             },
@@ -240,7 +243,7 @@ import DragDialogVue from './DragDialog.vue';
             },
             fileChange(file){
                 // 上传文件变化时将文件对象push进files数组
-                this.uploadParam.files.push(file.raw);
+                this.form.files.push(file.raw);
                 this.fileUids.push(file.uid);
             },
             removeFile(file, fileList){
@@ -251,10 +254,11 @@ import DragDialogVue from './DragDialog.vue';
             },
             submitForm() {
                 let formData = new FormData();
-                formData.append('type', this.uploadParam.type);
-                formData.append('folder', this.uploadParam.folder);
-                for (let index = 0; index < this.uploadParam.files.length; index++) {
-                   formData.append('file[]', this.uploadParam.files[index]);
+                formData.append('title', this.form.title);
+                formData.append('type', this.form.type);
+                formData.append('folder', this.form.folder);
+                for (let index = 0; index < this.form.files.length; index++) {
+                   formData.append('file[]', this.form.files[index]);
                 }
                 this.$apiList.files.upload(formData).then(res => {
                     this.closeDialog();
