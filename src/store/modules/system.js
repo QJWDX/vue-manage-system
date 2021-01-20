@@ -1,4 +1,4 @@
-import { getSystemConfig } from './../../api/system';
+import apiList from '@/request/apiList';
 const state = {
     systemInfo : JSON.parse(localStorage.getItem('systemInfo')) || {}
 };
@@ -22,9 +22,13 @@ const mutations = {
 const actions = {
     getSystemConfig(context){
         try{
-            getSystemConfig().then(res => {
+            apiList.system.getSystemConfig().then(res => {
                 localStorage.setItem('systemInfo', JSON.stringify(res.data));
                 state.systemInfo = res.data;
+                let hm = document.createElement('script');
+                hm.src = 'https://hm.baidu.com/hm.js?'+res.data.bd_code;
+                let s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(hm, s);
             })
         }catch(err){
             console.log(err);

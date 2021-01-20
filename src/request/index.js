@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {Message} from 'element-ui';
-import store from './../store';
-import {router} from './../router';
+import store from '../store';
+import {router} from '../router';
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     timeout: 5000

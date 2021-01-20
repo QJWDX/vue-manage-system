@@ -1,5 +1,5 @@
 import {router, constantRoutes, lastRoute} from './../../router';
-import {getUserVueRoute} from './../../api/setting';
+import apiList from '../../request/apiList';
 const state = {
     token : sessionStorage.getItem('token') || '',
     user : JSON.parse(localStorage.getItem('user')) || {},
@@ -77,7 +77,7 @@ const actions = {
             /**
              * 从后台获取用户vue所需路由和菜单基础数据
              */
-            getUserVueRoute().then(res => {
+            apiList.setting.getUserVueRoute().then(res => {
                 context.commit('setRoutes', res.data.routes);
                 context.commit('setMenus', res.data.menus);
                 resolve(res.message);
@@ -168,7 +168,7 @@ function getViews(componentName) {
     //   })
     // }
     if(componentName){
-        return  () => import(/* webpackChunkName: "dashboard" */ '../../components/page/' + componentName + '.vue');
+        return  () => import(/* webpackChunkName: "dashboard" */ '../../views/' + componentName + '.vue');
     }
     return '';
 }

@@ -11,7 +11,7 @@ import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
 import commonFunction from './utils/commonFunction';
-import * as apiList from './utils/apiList';
+import apiList from '@/request/apiList';
 Vue.config.productionTip = false;
 Vue.prototype.$fun = commonFunction;
 Vue.prototype.$apiList = apiList;

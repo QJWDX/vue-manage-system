@@ -18,24 +18,24 @@ export const constantRoutes = [
         children: [
             {
                 path: '/dashboard',
-                component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
+                component: () => import(/* webpackChunkName: "dashboard" */ '../views/home/Dashboard.vue'),
                 meta: { title: '系统首页' }
             }
         ]
     },
     {
         path: '/login',
-        component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
+        component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue'),
         meta: { title: '登录' }
     },
     {
         path: '/404',
-        component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
+        component: () => import(/* webpackChunkName: "404" */ '../views/error/404.vue'),
         meta: { title: '404' }
     },
     {
         path: '/403',
-        component: () => import(/* webpackChunkName: "403" */ '../components/page/403.vue'),
+        component: () => import(/* webpackChunkName: "403" */ '../views/error/403.vue'),
         meta: { title: '403' }
     },
 ];

@@ -1,4 +1,4 @@
-import axios from '../utils/request';
+import axios from '@/request/index';
 import qs from 'qs';
 const api = {
     login:{
@@ -25,6 +25,9 @@ const api = {
         
         setSystemConfig(params){
             return axios.put('api/system/setSystemConfig', params);
+        },
+        system(){
+            return axios('api/system/system');
         }
     },
     setting:{
@@ -35,7 +38,7 @@ const api = {
 
         // 用户列表
         userList(params){
-            return axios.get('api/setting/user', params);
+            return axios.get('api/setting/user', {params});
         },
 
         // 用户信息
@@ -108,7 +111,7 @@ const api = {
 
         // 禁用启用角色
         changeRoleStatus(params){
-            return axios.get('api/setting/changeRoleStatus', params);
+            return axios.get('api/setting/changeRoleStatus', {params});
         },
 
         // 角色用户管理
@@ -123,7 +126,7 @@ const api = {
 
         // 菜单管理
         menuList(params){
-            return axios.get('api/setting/menus', params);
+            return axios.get('api/setting/menus', {params});
         },
 
         menuStore(params){
@@ -168,7 +171,7 @@ const api = {
 
         // 权限管理
         permissionList(params){
-            return axios.get('api/setting/permission', params);
+            return axios.get('api/setting/permission', {params});
         },
 
         permissionStore(params){
@@ -189,7 +192,7 @@ const api = {
 
         // 登陆日志
         loginLogList(params){
-            return axios.get('api/setting/loginLog', params);
+            return axios.get('api/setting/loginLog', {params});
         },
 
         loginLogInfo(id){
@@ -197,16 +200,16 @@ const api = {
         },
 
         loginLogDelete(params){
-            return axios.get('api/setting/delLoginLog', params);
+            return axios.get('api/setting/delLoginLog', {params});
         }
     },
     notifications:{
         notificationsList(params){
-            return axios.get('api/Notification/getNotifications', params);
+            return axios.get('api/Notification/getNotifications', {params});
         },
         
         delNotification(params){
-            return axios.delete('api/Notification/delNotifications', params);
+            return axios.delete('api/Notification/delNotifications', {params});
         },
         
         getNotificationCount(){
@@ -214,14 +217,14 @@ const api = {
         },
         
         makeRead(params){
-            return axios.get('api/Notification/makeRead', params);
+            return axios.get('api/Notification/makeRead', {params});
         },
         
     },
     log:{
         // 登陆日志
         operationLogList(params){
-            return axios.get('api/log/operationLog', params);
+            return axios.get('api/log/operationLog', {params});
         },
 
         operationLogInfo(id){
@@ -229,7 +232,7 @@ const api = {
         },
 
         operationLogDelete(params){
-            return axios.delete('api/log/log/delOperationLog', params);
+            return axios.delete('api/log/log/delOperationLog', {params});
         }
     },
     files:{
@@ -242,7 +245,7 @@ const api = {
         },
         
         delFile(params){
-            return axios.delete('api/File/delFiles', params);
+            return axios.delete('api/File/delFiles', {params});
         },
         
         typeSelector(){
@@ -250,7 +253,7 @@ const api = {
         },
         
         folderSelector(params){
-            return axios.get('api/File/folderSelector', params);
+            return axios.get('api/File/folderSelector', {params});
         },
         
         upload(params){
@@ -266,4 +269,4 @@ const api = {
     }
 }
 
-export default api
+export default api;

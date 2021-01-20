@@ -99,8 +99,6 @@ export default {
     },
     methods: {
         getCaptchaInfo(){
-            console.log(this.$apiList.system);
-            return;
             this.$apiList.login.getCaptcha().then(res => {
                 this.catcha_img = res.data.img;
                 this.param.captcha_key = res.data.key;

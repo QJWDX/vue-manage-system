@@ -56,7 +56,6 @@
                 <el-table-column label="操作" width="360" align="center">
                     <template slot-scope="scope">
                         <el-button
-                            v-if="scope.row.status==1"
                             type="warning"
                             @click="resetUserPassword(scope.$index, scope.row)"
                         >重置密码</el-button>

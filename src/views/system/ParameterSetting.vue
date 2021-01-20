@@ -12,7 +12,7 @@
     </div>
 </template>
 <script>
-import SystemConfig from '@/components/page/SystemConfig';
+import SystemConfig from '@/views/system/SystemConfig';
 // import error from '@/components/page/404';
 export default {
     name: 'baseform',
