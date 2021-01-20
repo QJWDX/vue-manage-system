@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import DragDialogVue from './DragDialog.vue';
 const Base64 = require('js-base64').Base64;
 export default {
     data: function() {
@@ -100,6 +99,8 @@ export default {
     },
     methods: {
         getCaptchaInfo(){
+            console.log(this.$apiList.system);
+            return;
             this.$apiList.login.getCaptcha().then(res => {
                 this.catcha_img = res.data.img;
                 this.param.captcha_key = res.data.key;
