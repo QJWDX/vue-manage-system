@@ -439,5 +439,66 @@ export default {
             duration:duration,
             offset:offset
         });
-    }
+    },
+
+    getNowFormatDate() {
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+          month = '0' + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+          strDate = '0' + strDate;
+        }
+        return `${year}-${month}-${strDate}`;
+      },
+
+      
+      formatDateRange(value1, value2) {
+        let arr = [];
+        let getDate = function(str) {
+          let tempDate = new Date();
+          let list = str.split('-');
+          tempDate.setFullYear(list[0]);
+          tempDate.setMonth(list[1] - 1);
+          tempDate.setDate(list[2]);
+          return tempDate;
+        };
+        let date1 = getDate(value1);
+        let date2 = getDate(value2);
+        if (date1 > date2) {
+          let tempDate = date1;
+          date1 = date2;
+          date2 = tempDate;
+        }
+        date1.setDate(date1.getDate());
+        let dateArr = [];
+        let i = 0;
+        while (
+          !(
+            date1.getFullYear() == date2.getFullYear() &&
+            date1.getMonth() == date2.getMonth() &&
+            date1.getDate() == date2.getDate()
+          )
+        ) {
+          let dayStr = date1.getDate().toString();
+          if (dayStr.length == 1) {
+            dayStr = '0' + dayStr;
+          }
+          let monthStr = (date1.getMonth() + 1).toString();
+          if (monthStr.length == 1) {
+            monthStr = '0' + monthStr;
+          }
+          dateArr[i] = date1.getFullYear() + '-' + monthStr + '-' + dayStr;
+    
+          date1.setDate(date1.getDate() + 1);
+          i++;
+        }
+    
+        arr = dateArr;
+        arr.push(value2);
+        return arr;
+      }
 }

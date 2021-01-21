@@ -1,48 +1,48 @@
 <template>
-<div class="tabs_content">
-    <div class="container">
-        <div class="btns">
-        <el-button size="mini" @click="handleRefresh">刷新</el-button>
-        </div>
-        <div class="date-selector">
-        <span>时间区间: </span>
-        <el-date-picker
-            v-model="date_range"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
-            unlink-panels
-            :picker-options="{
-            disabledDate(time) {
-                return time.getTime() > Date.now() - 8.64e6;
-            }
-            }"
-            @change="handleDateChange"
-        >
-        </el-date-picker>
-        </div>
-        <div class="top-bar">
-            <div v-for="item in data_list" :key="item.name" class="top-bar-item">
-                <img :src="item.img" alt="" class="item-l" />
-                <div class="item-r">
-                <div class="item-r-title">{{ item.title }}</div>
-                <div class="item-r-total">{{ item.total }}</div>
-                </div>
-                <div class="cmore" @click="handleExchangeChart(item)">
-                查看更多
-                </div>
-            </div>
-        </div>
-        <div class="chart">
-            <div class="title">
-                <div class="border"></div>
-                <div class="name">{{ chart_title }}</div>
-            </div>
-            <div class="chart-wrap" ref="chart"></div>
-        </div>
+<div class="container">
+  <div class="chart-content">
+    <div class="btns">
+      <el-button size="mini" @click="handleRefresh">刷新</el-button>
     </div>
+    <div class="date-selector">
+      <span>时间区间: </span>
+      <el-date-picker
+      v-model="date_range"
+      type="daterange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      value-format="yyyy-MM-dd"
+      unlink-panels
+      :picker-options="{
+      disabledDate(time) {
+      return time.getTime() > Date.now() - 8.64e6;
+      }
+      }"
+      @change="handleDateChange"
+      >
+      </el-date-picker>
+    </div>
+    <div class="top-bar">
+      <div v-for="item in data_list" :key="item.name" class="top-bar-item">
+        <img :src="item.img" alt="" class="item-l" />
+        <div class="item-r">
+          <div class="item-r-title">{{ item.title }}</div>
+          <div class="item-r-total">{{ item.total }}</div>
+        </div>
+        <div class="cmore" @click="handleExchangeChart(item)">
+      查看更多
+      </div>
+    </div>
+    </div>
+    <div class="chart">
+        <div class="title">
+            <div class="border"></div>
+            <div class="name">{{ chart_title }}</div>
+        </div>
+        <div class="chart-wrap" ref="chart"></div>
+    </div>
+  </div>
 </div>
 </template>
 <script>
@@ -101,9 +101,9 @@ export default {
       if (!this.date_range) return;
 
       if (
-        this.$formatDateRange(this.date_range[0], this.date_range[1]).length > 1
+        this.$fun.formatDateRange(this.date_range[0], this.date_range[1]).length > 1
       ) {
-        return this.$formatDateRange(this.date_range[0], this.date_range[1]);
+        return  this.$fun.$formatDateRange(this.date_range[0], this.date_range[1]);
       } else {
         let arr = [];
         for (let i = 0; i < 24; i++) {
@@ -117,7 +117,7 @@ export default {
   watch: {},
 
   created() {
-    this.date_range = [this.$getNowFormatDate(), this.$getNowFormatDate()];
+    this.date_range = [this.$fun.getNowFormatDate(), this.$fun.getNowFormatDate()];
     this.getVisitData(this.date_range);
   },
 
@@ -134,10 +134,8 @@ export default {
         time: date_range[0],
         end_time: date_range[1]
       };
-      this.$apiList.dataAnalysis.visitData(params).then(res => {
-        console.log(res);
-        if (res.data.code === 200) {
-          const data = res.data.data;
+      this.$apiList.statistics.visitData(params).then(res => {
+          const data = res.data;
           this.data_list.forEach(item => {
             item.total = data[item.name].total;
             item.list = data[item.name].list;
@@ -146,12 +144,10 @@ export default {
           this.$nextTick(() => {
             this.chartInit(this.data_list[0]);
           });
-        }
       });
     },
 
     chartInit(item) {
-      console.log(item);
       if (!chart) {
         chart = echarts.init(this.$refs.chart);
         this.doms.push(chart);
@@ -184,43 +180,38 @@ export default {
     },
 
     handleRefresh() {
-      this.date_range = [this.$getNowFormatDate(), this.$getNowFormatDate()];
+      this.date_range = [ this.$fun.getNowFormatDate(),  this.$fun.getNowFormatDate()];
       this.getVisitData(this.date_range);
     }
   }
 };
 </script>
 <style scoped>
-.tabs_content {
-  height: calc(100% - 3.5rem);
-  position: relative;
-  background: #ffffff;
-}
-.container {
+.chart-content {
     width: 100%;
-    height: 100%;
+    height: 90%;
     overflow: hidden;
+    padding: 0;
 }
-.container.btns {
+.chart-content .btns {
     float: right;
-    margin: 20px 20px 0 0;
 }
-.container.date-selector {
-    margin: 24px 0 0 46px;
+.chart-content .date-selector {
+    padding: 0 40px;
 }
-.container.date-selectorspan {
+.chart-content .date-selector span {
     margin-right: 10px;
     font-size: 14px;
     color: #666;
 }
-.container .top-bar {
+.chart-content .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 34px;
     margin: 34px 46px;
 }
-.container .top-bar .top-bar-item {
+.chart-content .top-bar .top-bar-item {
       position: relative;
       display: flex;
       align-items: center;
@@ -228,33 +219,33 @@ export default {
       height: 100px;
       border: 1px solid #bababa;
 }
-.container .top-bar .top-bar-item .item-l {
+.chart-content .top-bar .top-bar-item .item-l {
     width: 60px;
     height: 60px;
     margin: 0 31px 0 21px;
 }
-.container .top-bar .top-bar-item .item-limg {
+.chart-content .top-bar .top-bar-item .item-limg {
     width: 100%;
     height: 100%;
 }
-.container .top-bar .top-bar-item .item-r {
+.chart-content .top-bar .top-bar-item .item-r {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
-.container .top-bar .top-bar-item .item-r .item-r-title {
+.chart-content .top-bar .top-bar-item .item-r .item-r-title {
     margin-bottom: 15px;
     font-size: 14px;
     color: #666;
 }
-.container .top-bar .top-bar-item .item-r-total {
+.chart-content .top-bar .top-bar-item .item-r-total {
     font-size: 26px;
     font-weight: 600;
     font-family: Arial;
     color: #222;
 }
 
-.container .top-bar .top-bar-item .cmore {
+.chart-content .top-bar .top-bar-item .cmore {
     position: absolute;
     bottom: 14px;
     right: 22px;
@@ -264,7 +255,7 @@ export default {
     line-height: 20px;
     cursor: pointer;
 }
-.container .top-bar .top-bar-item .cmore:hover {
+.chart-content .top-bar .top-bar-item .cmore:hover {
     text-decoration: underline;
     color: #5190fd;
 }
@@ -273,25 +264,25 @@ export default {
     height: 100%;
     box-sizing: border-box;
 }
-.chart.title {
+.chart .title {
     display: flex;
     align-items: center;
     margin-left: 70px;
 }
-.chart.title .border {
+.chart .title .border {
     width: 3px;
     height: 18px;
     margin-right: 6px;
     background: #5190fd;
     border-radius: 2px;
 }
-.chart.title .chart.name {
+.chart.title .chart .name {
     font-size: 16px;
     font-family: 'Microsoft YaHei';
     font-weight: bold;
     color: #222;
 }
-.chart.chart-wrap {
+.chart .chart-wrap {
     width: 100%;
     height: 65%;
     box-sizing: border-box;

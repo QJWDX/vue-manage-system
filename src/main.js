@@ -12,6 +12,19 @@ import 'babel-polyfill';
 import store from './store';
 import commonFunction from './utils/commonFunction';
 import apiList from '@/request/apiList';
+// 引入 ECharts 主模块
+let echarts = require('echarts/lib/echarts')
+// 引入折线图/柱状图等组件
+require('echarts/lib/chart/line')
+require('echarts/lib/chart/bar')
+require('echarts/lib/chart/pie')
+// 引入提示框和title组件，图例
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/title')
+require('echarts/lib/component/legend')
+require('echarts/lib/component/legendScroll') // 图例滚动
+// vue全局注入echarts
+Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false;
 Vue.prototype.$fun = commonFunction;
 Vue.prototype.$apiList = apiList;
