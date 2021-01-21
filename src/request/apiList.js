@@ -266,6 +266,24 @@ const api = {
                 }
             });
         }
+    },
+    statistics:{
+        // 访问分析
+        visitData(params){
+            return axios.get('api/Statistics/visitData', {params});
+        },
+        // 地域分析(总数)
+        districtTotalData(params){
+            return axios.get('api/Statistics/districtTotalData', {params});
+        },
+        // 地域分析（国家）
+        countryListData(params){
+            return axios.get('api/Statistics/countryListData', {params});
+        },
+        // 地域分析（省份
+        provinceListData(params){
+            return axios.get('api/Statistics/provinceListData', {params});
+        },
     }
 }
 

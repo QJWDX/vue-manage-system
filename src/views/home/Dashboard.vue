@@ -1,420 +1,300 @@
 <template>
-    <div>
-        <el-row :gutter="20">
-            <el-col :span="24">
-                <el-row :gutter="20" class="mgb20">
-                    <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-lx-notice grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-4">
-                                <i class="el-icon-lx-pic grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>图片</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-5">
-                                <i class="el-icon-lx-voice grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>音频</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-6">
-                                <i class="el-icon-lx-record grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>视频</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-                <el-card shadow="hover" style="height:403px;">
-                    <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                    </div>
-                    <el-table :show-header="false" :data="todoList" style="width:100%;">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">
-                                    {{scope.row.title}}
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="80">
-                            <template>
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-card>
-            </el-col>
-            <el-col :span="24">
-                <el-card shadow="hover" style="height:252px;">
-                    <div slot="header" class="clearfix">
-                        <span>语言详情</span>
-                    </div>Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-                    <el-progress :percentage="13.7"></el-progress>HTML
-                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
-                </el-card>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="12">
-                <el-card shadow="hover">
-                    <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
-                </el-card>
-            </el-col>
-            <el-col :span="12">
-                <el-card shadow="hover">
-                    <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
-                </el-card>
-            </el-col>
-        </el-row>
-    </div>
-</template>
-
-<script>
-import Schart from 'vue-schart';
-import bus from '../../components/common/bus';
-export default {
-    name: 'dashboard',
-    data() {
-        return {
-            user : {},
-            name: localStorage.getItem('ms_username'),
-            todoList: [
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要写100行代码加几个bug吧',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: true
-                },
-                {
-                    title: '今天要写100行代码加几个bug吧',
-                    status: true
-                }
-            ],
-            data: [
-                {
-                    name: '2018/09/04',
-                    value: 1083
-                },
-                {
-                    name: '2018/09/05',
-                    value: 941
-                },
-                {
-                    name: '2018/09/06',
-                    value: 1139
-                },
-                {
-                    name: '2018/09/07',
-                    value: 816
-                },
-                {
-                    name: '2018/09/08',
-                    value: 327
-                },
-                {
-                    name: '2018/09/09',
-                    value: 228
-                },
-                {
-                    name: '2018/09/10',
-                    value: 1065
-                }
-            ],
-            options: {
-                type: 'bar',
-                title: {
-                    text: '最近一周各品类销售图'
-                },
-                xRorate: 25,
-                labels: ['周一', '周二', '周三', '周四', '周五'],
-                datasets: [
-                    {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
-                    },
-                    {
-                        label: '百货',
-                        data: [164, 178, 190, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [144, 198, 150, 235, 120]
-                    }
-                ]
-            },
-            options2: {
-                type: 'line',
-                title: {
-                    text: '最近几个月各品类销售趋势图'
-                },
-                labels: ['6月', '7月', '8月', '9月', '10月'],
-                datasets: [
-                    {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
-                    },
-                    {
-                        label: '百货',
-                        data: [164, 178, 150, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [74, 118, 200, 235, 90]
-                    }
-                ]
+<div class="tabs_content">
+    <div class="container">
+        <div class="btns">
+        <el-button size="mini" @click="handleRefresh">刷新</el-button>
+        </div>
+        <div class="date-selector">
+        <span>时间区间: </span>
+        <el-date-picker
+            v-model="date_range"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            unlink-panels
+            :picker-options="{
+            disabledDate(time) {
+                return time.getTime() > Date.now() - 8.64e6;
             }
-        };
-    },
-    components: {
-        Schart
-    },
-    computed: {
-        role() {
-            return this.$store.getters.user.role.indexOf('1') !== -1 ? '超级管理员' : '普通用户';
+            }"
+            @change="handleDateChange"
+        >
+        </el-date-picker>
+        </div>
+        <div class="top-bar">
+            <div v-for="item in data_list" :key="item.name" class="top-bar-item">
+                <img :src="item.img" alt="" class="item-l" />
+                <div class="item-r">
+                <div class="item-r-title">{{ item.title }}</div>
+                <div class="item-r-total">{{ item.total }}</div>
+                </div>
+                <div class="cmore" @click="handleExchangeChart(item)">
+                查看更多
+                </div>
+            </div>
+        </div>
+        <div class="chart">
+            <div class="title">
+                <div class="border"></div>
+                <div class="name">{{ chart_title }}</div>
+            </div>
+            <div class="chart-wrap" ref="chart"></div>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+import echarts from 'echarts';
+import { echartsoption } from '@/vendor/echartsoption';
+import chartResize from '@/vendor/chartResize';
+let chart = null;
+export default {
+  name: '',
+
+  mixins: [chartResize],
+
+  components: {},
+
+  data() {
+    return {
+      date_range: [],
+      data_list: [
+        {
+          title: '公众号访问量（PV）',
+          // name: 'wx_visit_count',
+          name: 'wx_pv_count',
+          img: require('@/assets/img/dataAnalysis/access_count.png'),
+          total: 0,
+          list: []
         },
-        avatar(){
-            return this.$store.getters.userAvatar;
+        {
+          title: '公众开放访问人数（UV）',
+          name: 'wx_visitor_count',
+          img: require('@/assets/img/dataAnalysis/people_count.png'),
+          total: 0,
+          list: []
+        },
+        {
+          title: '后台管理访问量（PV）',
+          name: 'pv_count',
+          // name: 'visit_count',
+          img: require('@/assets/img/dataAnalysis/back_state.png'),
+          total: 0,
+          list: []
+        },
+        {
+          title: '后台管理访问人数（UV）',
+          name: 'visitor_count',
+          img: require('@/assets/img/dataAnalysis/manage.png'),
+          total: 0,
+          list: []
         }
-    },
-    created() {
-        this.user = this.$store.getters.user;
-        // this.handleListener();
-        // this.changeDate();
-    },
-    // activated() {
-    //     this.handleListener();
-    // },
-    // deactivated() {
-    //     window.removeEventListener('resize', this.renderChart);
-    //     bus.$off('collapse', this.handleBus);
-    // },
-    methods: {
-        changeDate() {
-            const now = new Date().getTime();
-            this.data.forEach((item, index) => {
-                const date = new Date(now - (6 - index) * 86400000);
-                item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-            });
+      ],
+      chart_title: '后台管理访问数'
+    };
+  },
+
+  computed: {
+    category_arr() {
+      if (!this.date_range) return;
+
+      if (
+        this.$formatDateRange(this.date_range[0], this.date_range[1]).length > 1
+      ) {
+        return this.$formatDateRange(this.date_range[0], this.date_range[1]);
+      } else {
+        let arr = [];
+        for (let i = 0; i < 24; i++) {
+          arr.push(`${i >= 10 ? i : '0' + i}:00`);
         }
-        // handleListener() {
-        //     bus.$on('collapse', this.handleBus);
-        //     // 调用renderChart方法对图表进行重新渲染
-        //     window.addEventListener('resize', this.renderChart);
-        // },
-        // handleBus(msg) {
-        //     setTimeout(() => {
-        //         this.renderChart();
-        //     }, 200);
-        // },
-        // renderChart() {
-        //     this.$refs.bar.renderChart();
-        //     this.$refs.line.renderChart();
-        // }
+        return arr;
+      }
     }
+  },
+
+  watch: {},
+
+  created() {
+    this.date_range = [this.$getNowFormatDate(), this.$getNowFormatDate()];
+    this.getVisitData(this.date_range);
+  },
+
+  mounted() {},
+
+  destroyed() {
+    chart.dispose();
+    chart = null;
+  },
+
+  methods: {
+    getVisitData(date_range) {
+      const params = {
+        time: date_range[0],
+        end_time: date_range[1]
+      };
+      this.$apiList.dataAnalysis.visitData(params).then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          const data = res.data.data;
+          this.data_list.forEach(item => {
+            item.total = data[item.name].total;
+            item.list = data[item.name].list;
+          });
+          this.chart_title = this.data_list[0].title.split('/')[0];
+          this.$nextTick(() => {
+            this.chartInit(this.data_list[0]);
+          });
+        }
+      });
+    },
+
+    chartInit(item) {
+      console.log(item);
+      if (!chart) {
+        chart = echarts.init(this.$refs.chart);
+        this.doms.push(chart);
+      }
+      const yAxis_name = item.title.includes('人次') ? '次数' : '人次';
+      const data_unit = item.title.includes('人次') ? '次' : '人';
+      const color = '#5190FD';
+      const option = echartsoption.lineChart(
+        yAxis_name,
+        this.category_arr,
+        item.list,
+        data_unit,
+        color
+      );
+      chart.setOption(option);
+    },
+
+    handleDateChange(value) {
+      if (!value) {
+        this.$message.error('请选择日期');
+        return;
+      }
+      this.getVisitData(value);
+    },
+
+    handleExchangeChart(item) {
+      if (this.chart_title === item.title.split('/')[0]) return;
+      this.chart_title = item.title.split('/')[0];
+      this.chartInit(item);
+    },
+
+    handleRefresh() {
+      this.date_range = [this.$getNowFormatDate(), this.$getNowFormatDate()];
+      this.getVisitData(this.date_range);
+    }
+  }
 };
 </script>
-
-
 <style scoped>
-.el-row {
-    margin-bottom: 20px;
+.tabs_content {
+  height: calc(100% - 3.5rem);
+  position: relative;
+  background: #ffffff;
 }
-
-.grid-content {
-    display: flex;
-    align-items: center;
-    height: 100px;
+.container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
-
-.grid-cont-right {
-    flex: 1;
-    text-align: center;
+.container.btns {
+    float: right;
+    margin: 20px 20px 0 0;
+}
+.container.date-selector {
+    margin: 24px 0 0 46px;
+}
+.container.date-selectorspan {
+    margin-right: 10px;
     font-size: 14px;
-    color: #999;
+    color: #666;
 }
-
-.grid-num {
-    font-size: 30px;
-    font-weight: bold;
-}
-
-.grid-con-icon {
-    font-size: 50px;
-    width: 100px;
-    height: 100px;
-    text-align: center;
-    line-height: 100px;
-    color: #fff;
-}
-
-.grid-con-1 .grid-con-icon {
-    background: rgb(45, 140, 240);
-}
-
-.grid-con-1 .grid-num {
-    color: rgb(45, 140, 240);
-}
-
-.grid-con-2 .grid-con-icon {
-    background: rgb(100, 213, 114);
-}
-
-.grid-con-2 .grid-num {
-    color: rgb(45, 140, 240);
-}
-
-.grid-con-3 .grid-con-icon {
-    background: rgb(242, 94, 67);
-}
-
-.grid-con-3 .grid-num {
-    color: rgb(242, 94, 67);
-}
-
-.grid-con-4 .grid-con-icon {
-    background: rgb(41, 116, 187);
-}
-
-.grid-con-4 .grid-num {
-    color: rgb(36, 158, 91);
-}
-
-.grid-con-5 .grid-con-icon {
-    background: rgb(20, 190, 176);
-}
-
-.grid-con-5 .grid-num {
-    color: rgb(86, 173, 28);
-}
-
-.grid-con-6 .grid-con-icon {
-    background: rgb(96, 223, 216);
-}
-
-.grid-con-6 .grid-num {
-    color: rgb(171, 67, 219);
-}
-
-.user-info {
+.container .top-bar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #ccc;
-    margin-bottom: 20px;
+    margin-bottom: 34px;
+    margin: 34px 46px;
 }
-
-.user-avator {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
+.container .top-bar .top-bar-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 24%;
+      height: 100px;
+      border: 1px solid #bababa;
 }
-
-.user-info-cont {
-    padding-left: 50px;
-    flex: 1;
+.container .top-bar .top-bar-item .item-l {
+    width: 60px;
+    height: 60px;
+    margin: 0 31px 0 21px;
+}
+.container .top-bar .top-bar-item .item-limg {
+    width: 100%;
+    height: 100%;
+}
+.container .top-bar .top-bar-item .item-r {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.container .top-bar .top-bar-item .item-r .item-r-title {
+    margin-bottom: 15px;
     font-size: 14px;
-    color: #999;
+    color: #666;
 }
-
-.user-info-cont div:first-child {
-    font-size: 30px;
+.container .top-bar .top-bar-item .item-r-total {
+    font-size: 26px;
+    font-weight: 600;
+    font-family: Arial;
     color: #222;
 }
 
-.user-info-list {
+.container .top-bar .top-bar-item .cmore {
+    position: absolute;
+    bottom: 14px;
+    right: 22px;
     font-size: 14px;
-    color: #999;
-    line-height: 25px;
+    font-weight: 400;
+    color: #222;
+    line-height: 20px;
+    cursor: pointer;
 }
-
-.user-info-list span {
+.container .top-bar .top-bar-item .cmore:hover {
+    text-decoration: underline;
+    color: #5190fd;
+}
+.chart {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+.chart.title {
+    display: flex;
+    align-items: center;
     margin-left: 70px;
 }
-
-.mgb20 {
-    margin-bottom: 20px;
+.chart.title .border {
+    width: 3px;
+    height: 18px;
+    margin-right: 6px;
+    background: #5190fd;
+    border-radius: 2px;
 }
-
-.todo-item {
-    font-size: 14px;
+.chart.title .chart.name {
+    font-size: 16px;
+    font-family: 'Microsoft YaHei';
+    font-weight: bold;
+    color: #222;
 }
-
-.todo-item-del {
-    text-decoration: line-through;
-    color: #999;
-}
-
-.schart {
+.chart.chart-wrap {
     width: 100%;
-    height: 300px;
+    height: 65%;
+    box-sizing: border-box;
 }
 </style>
+
