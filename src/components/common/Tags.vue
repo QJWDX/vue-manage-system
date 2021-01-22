@@ -11,7 +11,7 @@
         <div class="tags-close-box">
             <el-dropdown @command="handleTags">
                 <el-button size="mini" type="primary">
-                    标签选项<i class="el-icon-arrow-down el-icon--right"></i>
+                    标签<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu size="small" slot="dropdown">
                     <el-dropdown-item command="other">关闭其他</el-dropdown-item>
@@ -176,7 +176,7 @@
         box-sizing: border-box;
         padding-top: 1px;
         text-align: center;
-        width: 110px;
+        width: 80px;
         height: 30px;
         background: #fff;
         box-shadow: -3px 0 15px 3px rgba(0, 0, 0, .1);
