@@ -1,9 +1,8 @@
 <template>
-    <div style="padding:10px;">
+    <div class="container">
         <div class="tabs">
             <ul>
-                <li :class="componentName=='SystemConfig'?'active':'' " @click="tabFunc('SystemConfig')">系统参数设置</li>
-                <!-- <li :class="componentName=='error'?'active':'' " @click="tabFunc('error')">404</li> -->
+                <li :class="componentName=='SystemConfig'?'active':'' " @click="tabFunc('SystemConfig')">系统参数</li>
             </ul>
         </div>
         <div class="tabs_content">
@@ -12,8 +11,7 @@
     </div>
 </template>
 <script>
-import SystemConfig from '@/views/system/SystemConfig';
-// import error from '@/components/page/404';
+import SystemConfig from '@/components/system/SystemConfig';
 export default {
     name: 'baseform',
     data() {
@@ -23,11 +21,9 @@ export default {
     },
     components: {
       SystemConfig,
-    //   error,
     },
     created() {},
     methods: {
-      // 切换tab执行
       tabFunc (tab) {
         this.componentName = tab
       },

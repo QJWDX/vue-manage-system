@@ -1,5 +1,5 @@
 <template>
-    <div style='padding:20px;'>
+    <div class="tab-content">
         <div class="form-box">
             <el-form ref="form" :model="form" :rules="rules" label-width="120px">
                 <el-form-item label="系统名称" prop="system_name">

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="container">
+        <div class="tab-content">
             <h2>使用方法</h2>
             <p style="line-height: 50px;">
                 直接通过设置类名为 el-icon-lx-iconName 来使用即可。例如：（共{{iconList.length}}个图标）

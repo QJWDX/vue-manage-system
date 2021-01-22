@@ -1,6 +1,6 @@
 <template>
     <section class="main">
-        <div class="container">
+        <div class="tab-content">
             <div class="plugins-tips">
                 Vue.Draggable：基于 Sortable.js 的 Vue 拖拽组件。
                 访问地址：<a href="https://github.com/SortableJS/Vue.Draggable" target="_blank">Vue.Draggable</a>

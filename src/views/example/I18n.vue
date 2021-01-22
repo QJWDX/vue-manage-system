@@ -1,6 +1,6 @@
 <template>
     <section class="main">
-        <div class="container">
+        <div class="tab-content">
             <span>{{$t('i18n.tips')}}</span>
             <el-button type="primary" @click="$i18n.locale = $i18n.locale === 'zh'?'en':'zh';">{{$t('i18n.btn')}}</el-button>
             <div class="list">

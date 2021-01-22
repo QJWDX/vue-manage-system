@@ -1,12 +1,18 @@
 <template>
-    <div class="">
-        <div class="container">
+    <div class="container">
+        <div class="tabs">
+            <ul>
+                <li class="active">登录日志</li>
+            </ul>
+        </div>
+        <div class="tabs_content">
+            <div class="tab-content">
             <el-form :inline="true" :model="search" class="demo-form-inline">
                 <el-form-item>
                     <el-input v-model="search.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
                     <el-form-item>
-                         <el-date-picker
+                            <el-date-picker
                             @change="dateChange"
                             v-model="timeSelect"
                             type="datetimerange"
@@ -41,7 +47,7 @@
                 <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                      <el-button
+                        <el-button
                             type="danger"
                             icon="el-icon-delete"
                             class="red"
@@ -62,6 +68,7 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>

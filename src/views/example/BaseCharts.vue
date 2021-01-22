@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="container">
+        <div class="tab-content">
             <div class="plugins-tips">
                 vue-schart：vue.js封装sChart.js的图表组件。
                 访问地址：

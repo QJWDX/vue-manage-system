@@ -1,6 +1,12 @@
 <template>
-    <div>
-        <div class="container">
+    <div class="container">
+        <div class="tabs">
+            <ul>
+                <li class="active">{{this.$route.meta.title}}</li>
+            </ul>
+        </div>
+        <div class="tabs_content">
+            <div class="tab-content">
             <el-form :inline="true" :model="search" class="demo-form-inline">
                 <el-form-item>
                     <el-input v-model="search.role_name" placeholder="角色名"></el-input>
@@ -59,7 +65,6 @@
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
-        </div>
 
         <!-- 新增编辑弹出框 -->
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
@@ -79,7 +84,6 @@
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
-
         <!-- 角色菜单权限分配弹出框 -->
         <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close="authVisible=false;checkMenus=[]">
             <el-tree
@@ -111,6 +115,8 @@
             </span>
         </el-dialog>
     </div>
+</div>
+</div>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="container">
+        <div class="tab-content">
             <el-table
               :data="tableData"
               border

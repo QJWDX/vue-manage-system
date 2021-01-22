@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="container">
+        <div class="tab-content">
             <div class="handle-box">
                 <el-button
                     type="primary"

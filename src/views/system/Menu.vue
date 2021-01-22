@@ -1,89 +1,94 @@
 <template>
-    <div>
-        <div class="container">
-             <el-form :inline="true" :model="search" class="demo-form-inline">
-                <el-form-item>
-                    <el-input v-model="search.name" placeholder="菜单名"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-                </el-form-item>
-                <el-form-item class="">
-                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                </el-form-item>
-                <!-- <el-form-item class="">
-                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                </el-form-item> -->
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-                </el-form-item>
-            </el-form>
-            <el-table
-                :data="tableData"
-                border
-                ref="multipleTable"
-                header-cell-class-name="table-header"
-                :cell-style="cellStyle"
-                :header-cell-style="rowClass"
-                @selection-change="handleSelectionChange"
-            >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="菜单名称"></el-table-column>
-                <el-table-column prop="component" label="组件地址"></el-table-column>
-                <el-table-column prop="path" label="路由"></el-table-column>
-                <el-table-column prop="icon" label="图标">
+    <div class="container">
+        <div class="tabs">
+            <ul>
+                <li class="active">{{this.$route.meta.title}}</li>
+            </ul>
+        </div>
+        <div class="tabs_content">
+            <div class="tab-content">
+            <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form-item>
+                <el-input v-model="search.name" placeholder="菜单名"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+            </el-form-item>
+            <el-form-item class="">
+                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+            </el-form-item>
+            <!-- <el-form-item class="">
+                <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
+            </el-form-item> -->
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+            </el-form-item>
+        </el-form>
+        <el-table
+            :data="tableData"
+            border
+            ref="multipleTable"
+            header-cell-class-name="table-header"
+            :cell-style="cellStyle"
+            :header-cell-style="rowClass"
+            @selection-change="handleSelectionChange"
+        >
+            <el-table-column type="selection" width="55" align="center"></el-table-column>
+            <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+            <el-table-column prop="name" label="菜单名称"></el-table-column>
+            <el-table-column prop="component" label="组件地址"></el-table-column>
+            <el-table-column prop="path" label="路由"></el-table-column>
+            <el-table-column prop="icon" label="图标">
+                <template slot-scope="scope">
+                        <span :class="scope.row.icon">
+                    </span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="is_related_route" label="关联路由">
+                <template slot-scope="scope">
+                    <el-switch v-model="scope.row.is_related_route" :active-value="1" :inactive-value="0" disabled></el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column prop="is_show" label="状态">
+                <template slot-scope="scope">   
+                    <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column prop="is_default" label="默认路由">
                     <template slot-scope="scope">
-                         <span :class="scope.row.icon">
-                        </span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="is_related_route" label="关联路由">
-                    <template slot-scope="scope">
-                        <el-switch v-model="scope.row.is_related_route" :active-value="1" :inactive-value="0" disabled></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="is_show" label="状态">
-                    <template slot-scope="scope">   
-                        <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="is_default" label="默认路由">
-                     <template slot-scope="scope">
-                         <el-switch v-model="scope.row.is_default" :active-value="1" :inactive-value="0" disabled></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" width="220" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handlePermission(scope.$index, scope.row)"
-                        >权限设置</el-button>
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
-                        <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDel(scope.$index, scope.row)"
-                        >删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next, jumper"
-                    :current-page="pagination.page"
-                    :page-size="pagination.perPage"
-                    :total="pagination.pageTotal"
-                    @current-change="handlePageChange"
-                ></el-pagination>
-            </div>
+                        <el-switch v-model="scope.row.is_default" :active-value="1" :inactive-value="0" disabled></el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="220" align="center">
+                <template slot-scope="scope">
+                    <el-button
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handlePermission(scope.$index, scope.row)"
+                    >权限设置</el-button>
+                    <el-button
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handleEdit(scope.$index, scope.row)"
+                    >编辑</el-button>
+                    <el-button
+                        type="text"
+                        icon="el-icon-delete"
+                        class="red"
+                        @click="handleDel(scope.$index, scope.row)"
+                    >删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="pagination">
+            <el-pagination
+                background
+                layout="total, prev, pager, next, jumper"
+                :current-page="pagination.page"
+                :page-size="pagination.perPage"
+                :total="pagination.pageTotal"
+                @current-change="handlePageChange"
+            ></el-pagination>
         </div>
 
         <!-- 新增编辑弹出框 -->
@@ -134,6 +139,8 @@
             </span>
         </el-dialog>
     </div>
+</div>
+</div>
 </template>
 <script>
 export default {

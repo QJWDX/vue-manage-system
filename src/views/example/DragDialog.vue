@@ -1,6 +1,6 @@
 <template>
     <section class="main">
-        <div class="container">
+        <div class="tab-content">
             <p>通过指令 v-dialogDrag 使 Dialog 对话框具有可拖拽的功能。</p>
             <br>
             <el-button type="primary" @click="visible = true;">点我弹框</el-button>

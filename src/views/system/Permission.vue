@@ -1,6 +1,12 @@
 <template>
-    <div>
-        <div class="container">
+    <div class="container">
+        <div class="tabs">
+            <ul>
+                <li class="active">{{this.$route.meta.title}}</li>
+            </ul>
+        </div>
+        <div class="tabs_content">
+            <div class="tab-content">
              <el-form :inline="true" :model="search" class="demo-form-inline">
                 <el-form-item>
                     <el-input v-model="search.name" placeholder="接口名称"></el-input>
@@ -76,7 +82,7 @@
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
-        </div>
+
 
         <!-- 新增编辑弹出框 -->
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
@@ -108,6 +114,8 @@
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
+    </div>
+    </div>
     </div>
 </template>
 <script>

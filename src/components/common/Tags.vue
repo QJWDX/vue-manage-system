@@ -131,7 +131,7 @@
     .tags-li {
         float: left;
         margin: 3px 5px 2px 3px;
-        border-radius: 3px;
+        /* border-radius: 3px; */
         font-size: 12px;
         overflow: hidden;
         cursor: pointer;

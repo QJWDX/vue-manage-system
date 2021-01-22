@@ -37,22 +37,21 @@ a {
     width: auto;
     height: 100%;
     padding: 10px;
-    overflow-y: scroll;
     box-sizing: border-box;
 }
 
 .content-collapse {
     left: 65px;
 }
-
 .container {
-    padding: 30px;
+    height: 100%;
+    padding-top:10px;
+}
+.tab-content {
+    padding: 5px 20px;
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
     height: 100%;
 }
-
 .crumbs {
     margin: 10px 0;
 }

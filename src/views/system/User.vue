@@ -1,96 +1,101 @@
 <template>
-    <div>
-        <div class="container">
-            <el-form :inline="true" :model="search" class="demo-form-inline">
-                <el-form-item>
-                    <el-input v-model="search.username" placeholder="用户名"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-                </el-form-item>
-                <el-form-item class="">
-                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                </el-form-item>
-                <el-form-item class="">
-                    <el-button type="success" @click="changeStatus(1)">启用</el-button>
-                </el-form-item>
-                <el-form-item class="">
-                    <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
-                </el-form-item>
-                <el-form-item class="">
-                    <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-                </el-form-item>
-            </el-form>
-            <el-table
-                :data="tableData"
-                border
-                ref="multipleTable"
-                header-cell-class-name="table-header"
-                :cell-style="cellStyle"
-                :header-cell-style="rowClass"
-                @selection-change="handleSelectionChange"
-            >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="姓名"></el-table-column>
-                <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="phone" label="联系方式"></el-table-column>
-                <el-table-column prop="email" label="邮箱"></el-table-column>
-                <el-table-column prop="sex" label="性别">
+    <div class="container">
+        <div class="tabs">
+            <ul>
+                <li class="active">{{this.$route.meta.title}}</li>
+            </ul>
+        </div>
+        <div class="tabs_content">
+            <div class="tab-content">
+        <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form-item>
+                <el-input v-model="search.username" placeholder="用户名"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+            </el-form-item>
+            <el-form-item class="">
+                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+            </el-form-item>
+            <el-form-item class="">
+                <el-button type="success" @click="changeStatus(1)">启用</el-button>
+            </el-form-item>
+            <el-form-item class="">
+                <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
+            </el-form-item>
+            <el-form-item class="">
+                <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+            </el-form-item>
+        </el-form>
+        <el-table
+            :data="tableData"
+            border
+            ref="multipleTable"
+            header-cell-class-name="table-header"
+            :cell-style="cellStyle"
+            :header-cell-style="rowClass"
+            @selection-change="handleSelectionChange"
+        >
+            <el-table-column type="selection" width="55" align="center"></el-table-column>
+            <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+            <el-table-column prop="name" label="姓名"></el-table-column>
+            <el-table-column prop="username" label="用户名"></el-table-column>
+            <el-table-column prop="phone" label="联系方式"></el-table-column>
+            <el-table-column prop="email" label="邮箱"></el-table-column>
+            <el-table-column prop="sex" label="性别">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.sex === 0">女</span>
+                    <span v-else-if="scope.row.sex === 1">男</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="created_at" label="注册时间"></el-table-column>
+            <el-table-column prop="status" label="状态">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.sex === 0">女</span>
-                        <span v-else-if="scope.row.sex === 1">男</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="created_at" label="注册时间"></el-table-column>
-                <el-table-column prop="status" label="状态">
-                     <template slot-scope="scope">
-                        <el-button v-if="scope.row.status==1" type="text">启用中</el-button>
-                        <el-button v-else-if="scope.row.status==2" type="text" style="color:#E6A23C">冻结中</el-button>
-                        <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" width="360" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="warning"
-                            @click="resetUserPassword(scope.$index, scope.row)"
-                        >重置密码</el-button>
-                        <el-button
-                            v-if="scope.row.status==1"
-                            type="info"
-                            @click="handleStatus(scope.$index, scope.row)"
-                        >禁用</el-button>
-                        <el-button
-                            v-else
-                            type="success"
-                            @click="handleStatus(scope.$index, scope.row)"
-                        >启用</el-button>
-                        <el-button
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
-                        <el-button
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDel(scope.$index, scope.row)"
-                        >删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next, jumper"
-                    :current-page="pagination.page"
-                    :page-size="pagination.perPage"
-                    :total="pagination.pageTotal"
-                    @current-change="handlePageChange"
-                ></el-pagination>
-            </div>
+                    <el-button v-if="scope.row.status==1" type="text">启用中</el-button>
+                    <el-button v-else-if="scope.row.status==2" type="text" style="color:#E6A23C">冻结中</el-button>
+                    <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="360" align="center">
+                <template slot-scope="scope">
+                    <el-button
+                        type="warning"
+                        @click="resetUserPassword(scope.$index, scope.row)"
+                    >重置密码</el-button>
+                    <el-button
+                        v-if="scope.row.status==1"
+                        type="info"
+                        @click="handleStatus(scope.$index, scope.row)"
+                    >禁用</el-button>
+                    <el-button
+                        v-else
+                        type="success"
+                        @click="handleStatus(scope.$index, scope.row)"
+                    >启用</el-button>
+                    <el-button
+                        icon="el-icon-edit"
+                        @click="handleEdit(scope.$index, scope.row)"
+                    >编辑</el-button>
+                    <el-button
+                        icon="el-icon-delete"
+                        class="red"
+                        @click="handleDel(scope.$index, scope.row)"
+                    >删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="pagination">
+            <el-pagination
+                background
+                layout="total, prev, pager, next, jumper"
+                :current-page="pagination.page"
+                :page-size="pagination.perPage"
+                :total="pagination.pageTotal"
+                @current-change="handlePageChange"
+            ></el-pagination>
         </div>
 
         <!-- 新增编辑弹出框 -->
@@ -155,6 +160,8 @@
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </span>
         </el-dialog>
+    </div>
+    </div>
     </div>
 </template>
 
