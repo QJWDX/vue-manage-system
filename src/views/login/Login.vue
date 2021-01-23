@@ -170,7 +170,7 @@ export default {
     background-size: 100%;
 }
 .login-wrap .ms-login {
-    width: 25rem;
+    width: 28rem;
     height: 25rem;
     background-color: rgba(124, 141, 175, 0.3);
     box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
@@ -179,7 +179,7 @@ export default {
     top: 45%;
     margin-top: -14.625rem;
     left: 50%;
-    margin-left: -13rem;
+    margin-left: -14.6rem;
     padding: 0.625rem;
 }
 .login-wrap .ms-login .ms-title {
