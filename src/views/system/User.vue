@@ -7,161 +7,156 @@
         </div>
         <div class="tabs_content">
             <div class="tab-content">
-        <el-form :inline="true" :model="search" class="demo-form-inline">
-            <el-form-item>
-                <el-input v-model="search.username" placeholder="用户名"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-            </el-form-item>
-            <el-form-item class="">
-                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-            </el-form-item>
-            <el-form-item class="">
-                <el-button type="success" @click="changeStatus(1)">启用</el-button>
-            </el-form-item>
-            <el-form-item class="">
-                <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
-            </el-form-item>
-            <el-form-item class="">
-                <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-            </el-form-item>
-        </el-form>
-        <el-table
-            :data="tableData"
-            border
-            ref="multipleTable"
-            header-cell-class-name="table-header"
-            :cell-style="cellStyle"
-            :header-cell-style="rowClass"
-            @selection-change="handleSelectionChange"
-        >
-            <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-            <el-table-column prop="name" label="姓名"></el-table-column>
-            <el-table-column prop="username" label="用户名"></el-table-column>
-            <el-table-column prop="phone" label="联系方式"></el-table-column>
-            <el-table-column prop="email" label="邮箱"></el-table-column>
-            <el-table-column prop="sex" label="性别">
-                <template slot-scope="scope">
-                    <span v-if="scope.row.sex === 0">女</span>
-                    <span v-else-if="scope.row.sex === 1">男</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="created_at" label="注册时间"></el-table-column>
-            <el-table-column prop="status" label="状态">
-                    <template slot-scope="scope">
-                    <el-button v-if="scope.row.status==1" type="text">启用中</el-button>
-                    <el-button v-else-if="scope.row.status==2" type="text" style="color:#E6A23C">冻结中</el-button>
-                    <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" width="360" align="center">
-                <template slot-scope="scope">
-                    <el-button
-                        type="warning"
-                        @click="resetUserPassword(scope.$index, scope.row)"
-                    >重置密码</el-button>
-                    <el-button
-                        v-if="scope.row.status==1"
-                        type="info"
-                        @click="handleStatus(scope.$index, scope.row)"
-                    >禁用</el-button>
-                    <el-button
-                        v-else
-                        type="success"
-                        @click="handleStatus(scope.$index, scope.row)"
-                    >启用</el-button>
-                    <el-button
-                        icon="el-icon-edit"
-                        @click="handleEdit(scope.$index, scope.row)"
-                    >编辑</el-button>
-                    <el-button
-                        icon="el-icon-delete"
-                        class="red"
-                        @click="handleDel(scope.$index, scope.row)"
-                    >删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <div class="pagination">
-            <el-pagination
-                background
-                layout="total, prev, pager, next, jumper"
-                :current-page="pagination.page"
-                :page-size="pagination.perPage"
-                :total="pagination.pageTotal"
-                @current-change="handlePageChange"
-            ></el-pagination>
-        </div>
-
-        <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
-            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                <el-form-item label="用户头像" prop="avatar">
-                        <el-upload
-                        class="avatar-uploader"
-                        :on-success="handleUploadSuccess"
-                        :before-upload="beforeUpload"
-                        :action="uploadUrl"
-                        :headers="headers"
-                        >
-                        <img v-if="form.avatar" :src="form.avatar" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="用户名" prop="username">
-                    <el-input v-model="form.username" :disabled="usernameDisable"></el-input>
-                </el-form-item>
-                <el-form-item label="真实姓名" prop="name">
-                    <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="联系方式" prop="phone">
-                    <el-input v-model="form.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱地址" prop="email">
-                    <el-input v-model="form.email"></el-input>
-                </el-form-item>
-                <el-form-item label="出生日期" prop="birthday">
-                    <div class="block">
-                        <el-date-picker
-                            v-model="form.birthday"
-                            type="date"
-                            sie='small'
-                            placeholder="选择日期"
-                            format="yyyy 年 MM 月 dd 日"
-                            value-format="yyyy-MM-dd"
-                            :picker-options="expireTimeOption"
-                        >
-                        </el-date-picker>
+                <el-form :inline="true" :model="search">
+                    <el-form-item>
+                        <el-input v-model="search.username" placeholder="用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                    </el-form-item>
+                </el-form>
+                <div class="my-btn-group">
+                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+                     <el-button type="success" @click="changeStatus(1)">启用</el-button>
+                     <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
+                     <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
+                </div>
+                <div class="my-style-table">
+                     <el-table
+                        :data="tableData"
+                        border
+                        ref="multipleTable"
+                        header-cell-class-name="table-header"
+                        :cell-style="cellStyle"
+                        :header-cell-style="rowClass"
+                        @selection-change="handleSelectionChange"
+                    >
+                        <el-table-column type="selection" width="55" align="center"></el-table-column>
+                        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                        <el-table-column prop="name" label="姓名"></el-table-column>
+                        <el-table-column prop="username" label="用户名"></el-table-column>
+                        <el-table-column prop="phone" label="联系方式"></el-table-column>
+                        <el-table-column prop="email" label="邮箱"></el-table-column>
+                        <el-table-column prop="sex" label="性别">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.sex === 0">女</span>
+                                <span v-else-if="scope.row.sex === 1">男</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="created_at" label="注册时间"></el-table-column>
+                        <el-table-column prop="status" label="状态">
+                                <template slot-scope="scope">
+                                <el-button v-if="scope.row.status==1" type="text">启用中</el-button>
+                                <el-button v-else-if="scope.row.status==2" type="text" style="color:#E6A23C">冻结中</el-button>
+                                <el-button v-else type="text" style="color:#F56C6C">禁用中</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" width="360" align="center">
+                            <template slot-scope="scope">
+                                <el-button
+                                    type="warning"
+                                    @click="resetUserPassword(scope.$index, scope.row)"
+                                >重置密码</el-button>
+                                <el-button
+                                    v-if="scope.row.status==1"
+                                    type="info"
+                                    @click="handleStatus(scope.$index, scope.row)"
+                                >禁用</el-button>
+                                <el-button
+                                    v-else
+                                    type="success"
+                                    @click="handleStatus(scope.$index, scope.row)"
+                                >启用</el-button>
+                                <el-button
+                                    icon="el-icon-edit"
+                                    @click="handleEdit(scope.$index, scope.row)"
+                                >编辑</el-button>
+                                <el-button
+                                    icon="el-icon-delete"
+                                    class="red"
+                                    @click="handleDel(scope.$index, scope.row)"
+                                >删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                        <el-pagination
+                            background
+                            layout="total, prev, pager, next, jumper"
+                            :current-page="pagination.page"
+                            :page-size="pagination.perPage"
+                            :total="pagination.pageTotal"
+                            @current-change="handlePageChange"
+                        ></el-pagination>
                     </div>
-                </el-form-item>
-                <el-form-item label="用户性别" prop="sex">
-                    <el-radio-group v-model="form.sex">
-                        <el-radio :label="1" border>男</el-radio>
-                        <el-radio :label="0" border>女</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="身份证号" prop="id_card">
-                    <el-input v-model="form.id_card"></el-input>
-                </el-form-item>
-                <el-form-item label="用户地址" prop="address">
-                    <el-input v-model="form.address"></el-input>
-                </el-form-item>
-                <el-form-item label="用户简介" prop="description">
-                    <el-input type="textarea" v-model="form.description" rows="3"></el-input>
-                </el-form-item>
-           </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="callOf('form')">取 消</el-button>
-                <el-button type="primary" @click="submitForm">确 定</el-button>
-            </span>
-        </el-dialog>
-    </div>
-    </div>
+                </div>
+                <!-- 新增编辑弹出框 -->
+                <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
+                    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                        <el-form-item label="用户头像" prop="avatar">
+                                <el-upload
+                                class="avatar-uploader"
+                                :on-success="handleUploadSuccess"
+                                :before-upload="beforeUpload"
+                                :action="uploadUrl"
+                                :headers="headers"
+                                >
+                                <img v-if="form.avatar" :src="form.avatar" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="用户名" prop="username">
+                            <el-input v-model="form.username" :disabled="usernameDisable"></el-input>
+                        </el-form-item>
+                        <el-form-item label="真实姓名" prop="name">
+                            <el-input v-model="form.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="联系方式" prop="phone">
+                            <el-input v-model="form.phone"></el-input>
+                        </el-form-item>
+                        <el-form-item label="邮箱地址" prop="email">
+                            <el-input v-model="form.email"></el-input>
+                        </el-form-item>
+                        <el-form-item label="出生日期" prop="birthday">
+                            <div class="block">
+                                <el-date-picker
+                                    v-model="form.birthday"
+                                    type="date"
+                                    sie='small'
+                                    placeholder="选择日期"
+                                    format="yyyy 年 MM 月 dd 日"
+                                    value-format="yyyy-MM-dd"
+                                    :picker-options="expireTimeOption"
+                                >
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="用户性别" prop="sex">
+                            <el-radio-group v-model="form.sex">
+                                <el-radio :label="1" border>男</el-radio>
+                                <el-radio :label="0" border>女</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="身份证号" prop="id_card">
+                            <el-input v-model="form.id_card"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用户地址" prop="address">
+                            <el-input v-model="form.address"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用户简介" prop="description">
+                            <el-input type="textarea" v-model="form.description" rows="3"></el-input>
+                        </el-form-item>
+                </el-form>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="callOf('form')">取 消</el-button>
+                        <el-button type="primary" @click="submitForm">确 定</el-button>
+                    </span>
+                </el-dialog>
+            </div>
+        </div>
     </div>
 </template>
 

@@ -2,75 +2,76 @@
     <div class="container">
         <div class="tabs">
             <ul>
-                <li class="active">登录日志</li>
+                <li class="active">{{this.$route.meta.title}}</li>
             </ul>
         </div>
         <div class="tabs_content">
             <div class="tab-content">
-            <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form :inline="true" :model="search">
                 <el-form-item>
                     <el-input v-model="search.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
-                    <el-form-item>
-                            <el-date-picker
-                            @change="dateChange"
-                            v-model="timeSelect"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            :picker-options="expireTimeOption"
-                        >
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-                    </el-form-item>
-                    <el-form-item class="">
-                        <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-                    </el-form-item>
+                <el-form-item>
+                    <el-date-picker
+                        @change="dateChange"
+                        v-model="timeSelect"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :picker-options="expireTimeOption"
+                    >
+                </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                </el-form-item>
             </el-form>
-            <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="ID" align="center" width="120" prop="id">
-                </el-table-column>
-                <el-table-column label="用户名" align="center" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.user.username}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="ip" label="登录ip" align="center"></el-table-column>
-                <el-table-column prop="login_address" label="登录地址" align="center"></el-table-column>
-                <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
-                <el-table-column label="操作" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="danger"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDel(scope.$index, scope.row)"
-                        >删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next, jumper"
-                    :current-page="pagination.page"
-                    :page-size="pagination.perPage"
-                    :total="pagination.pageTotal"
-                    @current-change="handlePageChange"
-                ></el-pagination>
+            <div class="my-btn-group">
+                <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
+            </div>
+            <div class="my-style-table">
+                <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
+                    <el-table-column type="selection" width="55" align="center"></el-table-column>
+                    <el-table-column label="ID" align="center" width="120" prop="id">
+                    </el-table-column>
+                    <el-table-column label="用户名" align="center" :show-overflow-tooltip="true">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.user.username}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="ip" label="登录ip" align="center"></el-table-column>
+                    <el-table-column prop="login_address" label="登录地址" align="center"></el-table-column>
+                    <el-table-column prop="login_time" label="登陆时间" align="center"></el-table-column>
+                    <el-table-column label="操作" align="center">
+                        <template slot-scope="scope">
+                            <el-button
+                                type="danger"
+                                icon="el-icon-delete"
+                                class="red"
+                                @click="handleDel(scope.$index, scope.row)"
+                            >删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                 <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                    <el-pagination
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :current-page="pagination.page"
+                        :page-size="pagination.perPage"
+                        :total="pagination.pageTotal"
+                        @current-change="handlePageChange"
+                    ></el-pagination>
+                </div>
             </div>
         </div>
     </div>
 </div>
 </template>
-
 <script>
     export default {
         name: 'loginLog',

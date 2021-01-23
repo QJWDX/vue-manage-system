@@ -49,27 +49,81 @@ export default {
 };
 </script>
 <style>
+.my-btn-group{
+    padding-bottom: 15px;
+}
 /* el-table整理样式 */
- .el-table--border:after,.el-table--group:after,.el-table:before {
-    background-color: #999999;
+.my-style-table .header-class {
+    background-color: #f0f0f0;
+    height: 50px;
+    color: #2222227c;
+    font-size: 16px;
+    font-weight: bold;
 }
-.el-table--border,.el-table--group {
-    border-color: #999999;
+.my-style-table .total_num {
+    padding: 10px 0 0 20px;
+    font-size: 14px;
+    color: #333;
 }
-.el-table td,.el-table th.is-leaf {
-    border-bottom: 1px solid #999999;
+.my-style-table .total_num .pageListStyle {
+    margin-top: 0.25rem;
+    display: inline-block;
 }
-.el-table--border th,.el-table--border th.gutter:last-of-type {
-    border-bottom: 1px solid #999999;
+.my-style-table .total_num .perpageControl {
+    display: flex;
+    float: right;
+    justify-content: center;
+    align-items: center;
 }
-.el-table--border td,.el-table--border th {
+.my-style-table .pagination {
+    display: flex;
+    justify-content: center;
+}
+.my-style-table .pagination .jumper {
+    margin-left: 10px;
+}
+.my-style-table .el-pagination.is-background .btn-prev,
+.my-style-table .el-pagination.is-background .btn-next,
+.my-style-table .el-pagination.is-background .el-pager li {
+    border-radius: 50%;
+}
+.my-style-table .table-total-num {
+    font-size: 16px;
+    color: #222222;
+    font-weight: bold;
+    text-align: left;
+    padding-top: 10px;
+}
+.my-style-table .el-table tr {
+    height: 48px;
+}
+.my-style-table .el-table th,
+.my-style-table .el-table td {
+    padding: 3px 0;
+    text-align: center;
+}
+.my-style-table .el-table th {
+    background-color: #f0f0f0;
+}
+.my-style-table .el-table--border th,
+.my-style-table .el-table--border td {
     border-right: 1px solid #999999;
+}
+.my-style-table .el-table th.is-leaf,
+.my-style-table .el-table td {
+    border-bottom: 1px solid #999999;
+    font-size: 14px;
+    color: #444444d8;
+}
+.my-style-table .el-table--group,
+.my-style-table .el-table--border {
+    border: 1px solid #999999;
 }
 /* 弹框样式 */
 .el-dialog__header {
     padding:10px 20px;
     text-align: center;
-    background-color: rgb(50, 65, 87);
+    background-color: #38404f;
     color: #fff;
     font-weight: 500 !important;
     height: 28px;

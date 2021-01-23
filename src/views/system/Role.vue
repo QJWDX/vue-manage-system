@@ -7,113 +7,109 @@
         </div>
         <div class="tabs_content">
             <div class="tab-content">
-            <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form :inline="true" :model="search">
                 <el-form-item>
                     <el-input v-model="search.role_name" placeholder="角色名"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
                 </el-form-item>
-                <el-form-item class="">
-                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                </el-form-item>
-                <!-- <el-form-item class="">
-                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                </el-form-item> -->
-                <el-form-item class="">
-                    <el-button type="success" @click="refreshRolePermission">一键刷新权限</el-button>
-                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                 </el-form-item>
             </el-form>
-            <el-table
-                :data="tableData"
-                border
-                ref="multipleTable"
-                header-cell-class-name="table-header"
-                :cell-style="cellStyle"
-                :header-cell-style="rowClass"
-                @selection-change="handleSelectionChange"
-            >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="角色名称"></el-table-column>
-                <el-table-column prop="display_name" label="显示名称"></el-table-column>
-                <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="is_super" label="超级角色">
-                     <template slot-scope="scope">
-                         <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" disabled></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" width="400" align="center">
-                    <template slot-scope="scope">
-                        <el-button type="success" plain @click="handUser(scope.$index, scope.row)" v-show="superUser">权限用户</el-button>
-                        <el-button type="primary" plain @click="handleAuth(scope.$index, scope.row)" v-show="superUser">权限菜单</el-button>
-                        <el-button type="info" plain  icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="danger" plain icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" v-show="superUser">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next, jumper"
-                    :current-page="pagination.page"
-                    :page-size="pagination.perPage"
-                    :total="pagination.pageTotal"
-                    @current-change="handlePageChange"
-                ></el-pagination>
+            <div class="my-btn-group">
+                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+                <el-button type="success" @click="refreshRolePermission">一键刷新权限</el-button>
+                <!-- <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button> -->
             </div>
-
-        <!-- 新增编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
-            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                <el-form-item label="角色名称" prop="name">
-                    <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="显示名称" prop="display_name">
-                    <el-input v-model="form.display_name"></el-input>
-                </el-form-item>
-                <el-form-item label="角色备注" prop="remark">
-                    <el-input type="textarea" v-model="form.remark" :rows="4"></el-input>
-                </el-form-item>
-           </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="callOf('form')">取 消</el-button>
-                <el-button type="primary" @click="submitForm">确 定</el-button>
-            </span>
-        </el-dialog>
-        <!-- 角色菜单权限分配弹出框 -->
-        <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close="authVisible=false;checkMenus=[]">
-            <el-tree
-            :props="props"
-            :data="menus"
-            :default-expand-all="defaultExpand"
-            node-key="id"
-            ref="pageTree"
-            show-checkbox
-            :indent="indent"
-            :default-checked-keys="checkMenus"
-            @node-click="handleNodeClick"
-            @check-change="handleCheckChange"
-            >
-            </el-tree>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="authVisible=false;checkMenus=[]">取 消</el-button>
-                <el-button type="primary" @click="updateRoleMenus">确 定</el-button>
-            </span>
-        </el-dialog>
-
-        <!-- 用户管理弹出框 -->
-        <el-dialog title="角色用户配置" :visible.sync="userVisible" width="50%" @close="userVisible=false;">
-            <el-transfer filterable :filter-method="filterMethod" filter-placeholder="用户名" v-model="check_user" :data="all_user" width='100%' height='1000px' :titles="titles">
-            </el-transfer>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="userVisible=false">取 消</el-button>
-                <el-button type="primary" @click="updateRoleUsers">确 定</el-button>
-            </span>
-        </el-dialog>
+            <div class="my-style-table">
+                <el-table
+                    :data="tableData"
+                    border
+                    ref="multipleTable"
+                    header-cell-class-name="table-header"
+                    :cell-style="cellStyle"
+                    :header-cell-style="rowClass"
+                    @selection-change="handleSelectionChange"
+                >
+                    <el-table-column type="selection" width="55" align="center"></el-table-column>
+                    <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                    <el-table-column prop="name" label="角色名称"></el-table-column>
+                    <el-table-column prop="display_name" label="显示名称"></el-table-column>
+                    <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column prop="is_super" label="超级角色">
+                        <template slot-scope="scope">
+                            <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" disabled></el-switch>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" width="400" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="success" plain @click="handUser(scope.$index, scope.row)" v-show="superUser">权限用户</el-button>
+                            <el-button type="primary" plain @click="handleAuth(scope.$index, scope.row)" v-show="superUser">权限菜单</el-button>
+                            <el-button type="info" plain  icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                            <el-button type="danger" plain icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" v-show="superUser">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                    <el-pagination
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :current-page="pagination.page"
+                        :page-size="pagination.perPage"
+                        :total="pagination.pageTotal"
+                        @current-change="handlePageChange"
+                    ></el-pagination>
+                </div>
+            </div>
+            <!-- 新增编辑弹出框 -->
+            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
+                <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                    <el-form-item label="角色名称" prop="name">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="显示名称" prop="display_name">
+                        <el-input v-model="form.display_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="角色备注" prop="remark">
+                        <el-input type="textarea" v-model="form.remark" :rows="4"></el-input>
+                    </el-form-item>
+            </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="callOf('form')">取 消</el-button>
+                    <el-button type="primary" @click="submitForm">确 定</el-button>
+                </span>
+            </el-dialog>
+            <!-- 角色菜单权限分配弹出框 -->
+            <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close="authVisible=false;checkMenus=[]">
+                <el-tree
+                :props="props"
+                :data="menus"
+                :default-expand-all="defaultExpand"
+                node-key="id"
+                ref="pageTree"
+                show-checkbox
+                :indent="indent"
+                :default-checked-keys="checkMenus"
+                @node-click="handleNodeClick"
+                @check-change="handleCheckChange"
+                >
+                </el-tree>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="authVisible=false;checkMenus=[]">取 消</el-button>
+                    <el-button type="primary" @click="updateRoleMenus">确 定</el-button>
+                </span>
+            </el-dialog>
+            <!-- 用户管理弹出框 -->
+            <el-dialog title="角色用户配置" :visible.sync="userVisible" width="50%" @close="userVisible=false;">
+                <el-transfer filterable :filter-method="filterMethod" filter-placeholder="用户名" v-model="check_user" :data="all_user" width='100%' height='1000px' :titles="titles">
+                </el-transfer>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="userVisible=false">取 消</el-button>
+                    <el-button type="primary" @click="updateRoleUsers">确 定</el-button>
+                </span>
+            </el-dialog>
     </div>
 </div>
 </div>
