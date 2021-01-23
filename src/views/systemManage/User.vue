@@ -23,6 +23,7 @@
                      <el-button type="success" @click="changeStatus(1)">启用</el-button>
                      <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
                      <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
+                      <el-button type="primary" icon="el-icon-download">导出</el-button>
                 </div>
                 <div class="my-style-table">
                      <el-table

@@ -20,8 +20,8 @@
             </el-form>
             <div class="my-btn-group">
                 <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                <el-button type="success" @click="refreshRolePermission">一键刷新权限</el-button>
-                <!-- <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button> -->
+                <el-button type="success" @click="refreshRolePermission">刷新权限</el-button>
+                <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
             </div>
             <div class="my-style-table">
                 <el-table

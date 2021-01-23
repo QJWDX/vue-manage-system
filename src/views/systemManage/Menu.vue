@@ -8,20 +8,21 @@
         <div class="tabs_content">
             <div class="tab-content">
             <el-form :inline="true" :model="search">
-            <el-form-item>
-                <el-input v-model="search.name" placeholder="菜单名"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-            </el-form-item>
+                <el-form-item>
+                    <el-input v-model="search.name" placeholder="菜单名"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+                </el-form-item>
             </el-form>
-            <div class="my-btn-group">
-                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                <!-- <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button> -->
-            </div>
+            <!-- <div class="my-btn-group">
+            </div> -->
             <div class="my-style-table">
                 <el-table
                     :data="tableData"

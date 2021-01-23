@@ -149,22 +149,22 @@ export default {
     text-align: center;
 }
 /* 穿梭框样式 */
-    .el-transfer{
-        vertical-align: center;
-    }
-    .el-transfer-panel{
-        width: 42%;
-        min-height: 600px;
-    }
-    .el-transfer__buttons{
-         max-width: 8%;
-    }
-    .el-transfer-panel__list{
-        width: 100%;
-        min-height: 600px;
-    }
-    .el-transfer-panel__list.is-filterable{
-       width: 100%;
-       min-height: 600px;
-    }
+.el-transfer{
+    vertical-align: center;
+}
+.el-transfer-panel{
+    width: 42%;
+    min-height: 600px;
+}
+.el-transfer__buttons{
+        max-width: 8%;
+}
+.el-transfer-panel__list{
+    width: 100%;
+    min-height: 600px;
+}
+.el-transfer-panel__list.is-filterable{
+    width: 100%;
+    min-height: 600px;
+}
 </style>

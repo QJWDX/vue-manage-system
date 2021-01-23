@@ -1,6 +1,6 @@
 <template>
     <div class="tab-content">
-        <div class="form-box">
+        <div class="system-box">
             <el-form ref="form" :model="form" :rules="rules" label-width="120px">
                 <el-form-item label="系统名称" prop="system_name">
                     <el-input v-model="form.system_name"></el-input>
@@ -48,7 +48,6 @@
                     <el-input type="textarea" rows="5" v-model="form.system_remark"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="warning">取消设置</el-button>
                     <el-button type="primary" @click="onSubmit">保存设置</el-button>
                 </el-form-item>
             </el-form>
@@ -142,6 +141,14 @@ export default {
 };
 </script>
 <style>
+.system-box{
+    margin: auto;
+    border: 0.0625rem dashed #d7d7d7;
+    padding: 2.5rem;
+    color: #333333;
+    /* box-shadow: 0 0 0.25rem 0.25rem #dfdfdf; */
+    border-radius: 0.25rem;
+}
 .image-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 2px;

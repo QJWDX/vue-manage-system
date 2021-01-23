@@ -47,10 +47,64 @@ a {
     height: 100%;
     padding-top:10px;
 }
+/* 选项卡样式 */
+.tabs {
+	height: 52px;
+	margin-bottom: -0.25rem;
+}
+.tabs ul {
+	display: flex;
+	/* transform: translateX(0px);
+	white-space: nowrap;
+	position: relative;
+	transition: transform 0.3s;
+	float: left;
+	z-index: 2; */
+}
+.tabs ul li {
+  list-style:none;
+	width: 10.625rem;
+	font-weight: 600;
+	height: 3.125rem;
+	line-height: 3.125rem;
+	font-size: 1.125rem;
+	margin: 0;
+	text-align: center;
+	border: none;
+	color: #cccccc;
+	border-right-color: #fff;
+	border-left-color: #fff;
+	margin-top: 0.125rem;
+	margin-right: 0.125rem;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+	border: 0 solid transparent;
+	margin-top: -0.4rem;
+	color: #909399;
+}
+.tabs ul li.active {
+  border: none;
+  border-top: 0.3125rem solid #4aa8ff;
+  color: #222222;
+  /* margin-top: 0.125rem; */
+  border-right-color: #fff;
+  border-left-color: #fff;
+  background-color: #ffffff;
+}
+.tabs ul li:hover {
+  color: #4aa8ff;
+}
+.tabs_content {
+	height: calc(99% - 5rem);
+	position: relative;
+	padding: 0.9375rem 0;
+    background: #ffffff;
+    overflow: auto;
+}
 .tab-content {
     padding: 5px 20px;
     background: #fff;
-    height: 100%;
+
 }
 .crumbs {
     margin: 10px 0;
@@ -174,58 +228,4 @@ a {
 
 .v-note-wrapper .v-note-panel {
     min-height: 500px;
-}
-
-/* 选项卡样式 */
-.tabs {
-	height: 52px;
-	margin-bottom: -0.25rem;
-}
-.tabs ul {
-	display: flex;
-	/* transform: translateX(0px);
-	white-space: nowrap;
-	position: relative;
-	transition: transform 0.3s;
-	float: left;
-	z-index: 2; */
-}
-.tabs ul li {
-  list-style:none;
-	width: 10.625rem;
-	font-weight: 600;
-	height: 3.125rem;
-	line-height: 3.125rem;
-	font-size: 1.125rem;
-	margin: 0;
-	text-align: center;
-	border: none;
-	color: #cccccc;
-	border-right-color: #fff;
-	border-left-color: #fff;
-	margin-top: 0.125rem;
-	margin-right: 0.125rem;
-	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-	border: 0 solid transparent;
-	margin-top: -0.4rem;
-	color: #909399;
-}
-.tabs ul li.active {
-  border: none;
-  border-top: 0.3125rem solid #4aa8ff;
-  color: #222222;
-  /* margin-top: 0.125rem; */
-  border-right-color: #fff;
-  border-left-color: #fff;
-  background-color: #ffffff;
-}
-.tabs ul li:hover {
-  color: #4aa8ff;
-}
-.tabs_content {
-	height: calc(99% - 5rem);
-	position: relative;
-	padding: 0.9375rem 0;
-	background: #ffffff;
 }
