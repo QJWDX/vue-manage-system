@@ -29,10 +29,10 @@
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                 </el-form-item>
+                <el-form-item>
+                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
+                </el-form-item>
             </el-form>
-            <div class="my-btn-group">
-                <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
-            </div>
             <div class="my-style-table">
                 <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -57,7 +57,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                 <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
                     <el-pagination
                         background
                         layout="total, prev, pager, next, jumper"

@@ -32,7 +32,8 @@ export default {
      */
     getDefaultPerPage(){
         // 1024       1280          1366      1440       1680       1920 
-        return document.body.clientWidth > 1920 ? 15 : 10;
+        console.log(document.body.clientWidth);
+        return document.body.clientWidth > 1800 ? 15 : 10;
     },
     /**
      * 时间格式转换

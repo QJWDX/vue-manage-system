@@ -34,6 +34,7 @@
                 </el-form>
                 <div class="my-btn-group">
                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
+                    <el-button type="primary" icon="el-icon-voice" @click="handleSendMessage">发送消息</el-button>
                 </div>
                 <div class="my-style-table">
                     <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
@@ -78,6 +79,20 @@
                 </div>
             </div>
         </div>
+        <el-dialog :title="dialogTitle" :visible.sync="messageBox" width="32%" @close="callOf('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="消息标题" prop="title">
+                    <el-input v-model="form.title" size="large"></el-input>
+                </el-form-item>
+                <el-form-item label="消息内容" prop="content">
+                    <el-input type="textarea" v-model="form.content" :rows="8"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="callOf('form')">取 消</el-button>
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -102,6 +117,11 @@
                 tableData: [],
                 multipleSelection: [],
                 timeSelect: ['', ''],
+                messageBox: false,
+                form: {
+                    title:'',
+                    content:''
+                }
             }
         },
         inject: ['reload'],
@@ -126,7 +146,10 @@
                 }
             },
             getData() {
-                this.$apiList.notifications.notificationsList(this.search).then(res => {
+                const params = this.search;
+                params.page = this.pagination.page;
+                params.perPage = this.pagination.perPage;
+                this.$apiList.notifications.notificationsList(params).then(res => {
                 this.tableData = res.data.items || [];
                 this.pagination.pageTotal = parseInt(res.data.total);
                 this.pagination.perPage =  parseInt(res.data.per_page);
@@ -194,6 +217,9 @@
                     this.search.endTime = this.$fun.formatDateTime(val[1]);
                 }
             },
+            handleSendMessage(){
+                this.messageBox = true;
+            }
         }
     }
 

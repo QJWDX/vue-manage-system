@@ -20,6 +20,8 @@ import vHead from './Header.vue';
 import vSidebar from './Sidebar.vue';
 import vTags from './Tags.vue';
 import bus from './bus';
+import mqtt from 'mqtt';
+var client = null;
 export default {
     data() {
         return {
@@ -36,7 +38,6 @@ export default {
         bus.$on('collapse-content', msg => {
             this.collapse = msg;
         });
-
         // 只有在标签页列表里的页面才使用keep-alive，即关闭标签之后就不保存到内存中了。
         bus.$on('tags', msg => {
             let arr = [];
@@ -45,6 +46,42 @@ export default {
             }
             this.tagsList = arr;
         });
+        this.mqttConnect();
+    },
+    methods:{
+        mqttConnect(){
+             const options = {
+                connectTimeout: 40000,
+                clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
+                username: 'admin',
+                password: 'admin123',
+                clean: true
+            };
+            if(client == null){
+                client = mqtt.connect('ws://127.0.0.1:15675/ws', options);
+            }
+            client.on('connect', (e) => {
+                console.log("连接成功！！！")
+                client.subscribe('notification', {qos:1}, (error) => {
+                    if (error) {
+                       console.log('订阅失败')
+                    }
+                })
+            })
+            // 接收消息处理
+            client.on('message', (topic, message) => {
+                // console.log('收到来自', topic, '的消息', message.toString());
+                let msg = JSON.parse(message.toString());
+                let is_html = parseInt(msg.is_html) ? true : false;
+                 this.$notify({
+                    title: msg.title,
+                    message: msg.content,
+                    duration: 10000,
+                    dangerouslyUseHTMLString: is_html,
+                    offset: 100
+                });
+            })
+        }
     }
 };
 </script>
@@ -166,5 +203,12 @@ export default {
 .el-transfer-panel__list.is-filterable{
     width: 100%;
     min-height: 600px;
+}
+.el-textarea .el-textarea__inner{
+    padding: 15px !important;
+    font-size: 14px !important;
+    color: #606266 !important;
+    font-weight: 500 !important;
+    font-family: 'PingFang SC', "Helvetica Neue", Helvetica, "microsoft yahei", arial, STHeiTi, sans-serif;
 }
 </style>

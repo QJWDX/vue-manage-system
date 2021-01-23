@@ -86,16 +86,16 @@
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                     <el-form-item label="接口名称" prop="display_name">
-                        <el-input v-model="form.display_name"></el-input>
+                        <el-input v-model="form.display_name" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="权限名称" prop="name">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.name" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="接口路由" prop="path">
-                        <el-input v-model="form.path"></el-input>
+                        <el-input v-model="form.path" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="请求方式" prop="method">
-                        <el-select v-model="form.method" placeholder="请求方式">
+                        <el-select v-model="form.method" placeholder="请求方式" size="large">
                             <el-option label="GET" value="GET"></el-option>
                             <el-option label="POST" value="POST"></el-option>
                             <el-option label="PUT" value="PUT"></el-option>

@@ -110,16 +110,16 @@
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="用户名" prop="username">
-                            <el-input v-model="form.username" :disabled="usernameDisable"></el-input>
+                            <el-input v-model="form.username" :disabled="usernameDisable" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="真实姓名" prop="name">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.name" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="联系方式" prop="phone">
-                            <el-input v-model="form.phone"></el-input>
+                            <el-input v-model="form.phone" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="邮箱地址" prop="email">
-                            <el-input v-model="form.email"></el-input>
+                            <el-input v-model="form.email" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="出生日期" prop="birthday">
                             <div class="block">
@@ -131,6 +131,7 @@
                                     format="yyyy 年 MM 月 dd 日"
                                     value-format="yyyy-MM-dd"
                                     :picker-options="expireTimeOption"
+                                    size="large"
                                 >
                                 </el-date-picker>
                             </div>
@@ -142,10 +143,10 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="身份证号" prop="id_card">
-                            <el-input v-model="form.id_card"></el-input>
+                            <el-input v-model="form.id_card" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="用户地址" prop="address">
-                            <el-input v-model="form.address"></el-input>
+                            <el-input v-model="form.address" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="用户简介" prop="description">
                             <el-input type="textarea" v-model="form.description" rows="3"></el-input>

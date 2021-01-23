@@ -92,25 +92,25 @@
                 </div>
             </div>
             <!-- 新增编辑弹出框 -->
-            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
+            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                     <el-form-item label="菜单名称" prop="name">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.name" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="上级菜单">
-                        <el-select v-model="form.parent_id" placeholder="请选择父级菜单" style="width: 100%;" @change="change()">
+                        <el-select v-model="form.parent_id" placeholder="请选择父级菜单" style="width: 100%;" @change="change()" size="large">
                         <el-option label="一级菜单" value="0" ></el-option>
                         <el-option v-for="(item, index) in menus" :key="index" :label="item" :value="index" ></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="菜单路由" prop="path">
-                        <el-input v-model="form.path"></el-input>
+                        <el-input v-model="form.path" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="组件地址" prop="component">
-                        <el-input v-model="form.component"></el-input>
+                        <el-input v-model="form.component" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="菜单图标">
-                        <el-input v-model="form.icon" ></el-input>
+                        <el-input v-model="form.icon" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="是否展示">
                         <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
@@ -122,7 +122,7 @@
                         <el-switch v-model="form.is_default" :active-value="1" :inactive-value="0"></el-switch>
                     </el-form-item>
                     <el-form-item label="排序字段" prop="sort">
-                        <el-input v-model="form.sort" type="number" min="0" max="9999"></el-input>
+                        <el-input v-model="form.sort" type="number" min="0" max="9999" size="large"></el-input>
                     </el-form-item>
             </el-form>
                 <span slot="footer" class="dialog-footer">
@@ -144,7 +144,7 @@
 </template>
 <script>
 export default {
-    name: 'menu',
+    name: 'menus',
     data() {
         var checkPath = (rule, value, callback) => {
             if (parseInt(this.form.is_related_route)) {

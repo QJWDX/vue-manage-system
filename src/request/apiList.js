@@ -90,7 +90,7 @@ const api = {
         },
 
         roleStore(params){
-            return axios.post('api/setting/role');
+            return axios.post('api/setting/role', params);
         },
 
         roleInfo(id){
@@ -219,7 +219,10 @@ const api = {
         makeRead(params){
             return axios.get('api/Notification/makeRead', {params});
         },
-        
+
+        sendNotification(params){
+            return axios.post('api/Notification/sendNotification', params);
+        }
     },
     log:{
         // 登陆日志

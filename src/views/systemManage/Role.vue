@@ -64,13 +64,13 @@
                 </div>
             </div>
             <!-- 新增编辑弹出框 -->
-            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="callOf('form')">
+            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="32%" @close="callOf('form')">
                 <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                     <el-form-item label="角色名称" prop="name">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.name" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="显示名称" prop="display_name">
-                        <el-input v-model="form.display_name"></el-input>
+                        <el-input v-model="form.display_name" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="角色备注" prop="remark">
                         <el-input type="textarea" v-model="form.remark" :rows="4"></el-input>
@@ -179,7 +179,6 @@ export default {
     },
     computed: {
         superUser(){
-            console.log(this.$store.getters.user);
             return this.$store.getters.user.is_super;
         }
     },
