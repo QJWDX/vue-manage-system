@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Message} from 'element-ui';
+import {Message, MessageBox} from 'element-ui';
 import store from '../store';
 import {router} from '../router';
 const service = axios.create({
@@ -75,9 +75,17 @@ service.interceptors.response.use(
                     }
                     break
                 case 401:
-                    // token黑名单
-                    store.dispatch('delUserInfo');
-                    router.push('/login');
+                    MessageBox.alert(error.response.data.message, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                      }).then(() => {
+                        // token黑名单
+                        store.dispatch('delUserInfo');
+                        router.push('/login');
+                      }).catch(() => {
+                        console.log('取消重新登录');
+                      });
                     break;
                 case 403:
                     router.push('/403');

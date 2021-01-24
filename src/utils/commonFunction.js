@@ -331,7 +331,7 @@ export default {
         let link = document.createElement('a')
         link.href = url;
         link.download = fileName || url.substring(url.lastIndexOf('/')+1);
-        document.body.appendChild(a);
+        document.body.appendChild(link);
         link.click();
         link.remove();
     },

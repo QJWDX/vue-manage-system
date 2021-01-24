@@ -72,12 +72,12 @@ export default {
             client.on('message', (topic, message) => {
                 // console.log('收到来自', topic, '的消息', message.toString());
                 let msg = JSON.parse(message.toString());
-                let is_html = parseInt(msg.is_html) ? true : false;
                  this.$notify({
                     title: msg.title,
-                    message: msg.content,
-                    duration: 10000,
-                    dangerouslyUseHTMLString: is_html,
+                    message: msg.message,
+                    type: 'warning',
+                    duration: 5000,
+                    dangerouslyUseHTMLString: true,
                     offset: 100
                 });
             })
@@ -205,7 +205,7 @@ export default {
     min-height: 600px;
 }
 .el-textarea .el-textarea__inner{
-    padding: 15px !important;
+    /* padding: 15px !important; */
     font-size: 14px !important;
     color: #606266 !important;
     font-weight: 500 !important;

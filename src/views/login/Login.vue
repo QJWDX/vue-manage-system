@@ -22,7 +22,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="captcha_code" style="margin-bottom:0px;">
-                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:60%;"  size="medium">
+                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:65%;"  size="medium">
                         <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
                     </el-input>
                     <img :src="catcha_img" alt="" @click="getCaptchaInfo" class="catcha">
@@ -170,8 +170,8 @@ export default {
     background-size: 100%;
 }
 .login-wrap .ms-login {
-    width: 28rem;
-    height: 25rem;
+    width: 26rem;
+    height: 24rem;
     background-color: rgba(124, 141, 175, 0.3);
     box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
     border-radius: 0.125rem;
@@ -179,7 +179,7 @@ export default {
     top: 45%;
     margin-top: -14.625rem;
     left: 50%;
-    margin-left: -14.6rem;
+    margin-left: -13rem;
     padding: 0.625rem;
 }
 .login-wrap .ms-login .ms-title {
@@ -251,7 +251,7 @@ export default {
 }
 .catcha{
     display: inline-block;
-    margin-left: 0.625rem;
+    margin-left: 0.25rem;
     flex: 1;
     height: 40px !important;
 }

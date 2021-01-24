@@ -8,10 +8,10 @@
         <div class="tabs_content">
             <div class="tab-content">
                 <el-form :inline="true" :model="search">
-                    <el-form-item>
+                    <el-form-item label="用户名">
                         <el-input v-model="search.username" placeholder="请输入用户名"></el-input>
                     </el-form-item>
-                        <el-form-item>
+                    <el-form-item label="时间区间">
                                 <el-date-picker
                                 @change="dateChange"
                                 v-model="timeSelect"
@@ -22,16 +22,16 @@
                                 :picker-options="expireTimeOption"
                             >
                             </el-date-picker>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-                        </el-form-item>
-                        <!-- <el-form-item class="">
-                            <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                        </el-form-item> -->
-                        <el-form-item>
-                            <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-                        </el-form-item>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                    </el-form-item>
+                    <!-- <el-form-item class="">
+                        <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
+                    </el-form-item> -->
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                    </el-form-item>
                 </el-form>
                 <div class="my-style-table">
                     <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">

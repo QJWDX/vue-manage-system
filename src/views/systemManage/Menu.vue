@@ -8,8 +8,8 @@
         <div class="tabs_content">
             <div class="tab-content">
             <el-form :inline="true" :model="search">
-                <el-form-item>
-                    <el-input v-model="search.name" placeholder="菜单名"></el-input>
+                <el-form-item label="菜单名">
+                    <el-input v-model="search.name" placeholder="请输入菜单名"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>

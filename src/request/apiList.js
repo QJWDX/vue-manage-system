@@ -63,7 +63,7 @@ const api = {
 
         // 禁用启用冻结用户
         changeUserStatus(params){
-            return axios.get('api/setting/changeUserStatus');
+            return axios.get('api/setting/changeUserStatus', {params});
         },
 
         /**
@@ -222,6 +222,10 @@ const api = {
 
         sendNotification(params){
             return axios.post('api/Notification/sendNotification', params);
+        },
+
+        notificationType(){
+            return axios.get('api/Notification/notificationType');
         }
     },
     log:{
@@ -240,7 +244,7 @@ const api = {
     },
     files:{
         fileList(params){
-            return axios.get('api/File/files');
+            return axios.get('api/File/files', {params});
         },
         
         fileInfo(id){

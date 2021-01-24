@@ -9,7 +9,7 @@
             <div class="tab-content">
                 <el-form :inline="true" :model="search">
                 <el-form-item label="文件标题">
-                    <el-input v-model="search.title" placeholder="标题"></el-input>
+                    <el-input v-model="search.title" placeholder="请输入文件标题"></el-input>
                 </el-form-item>
                 <el-form-item label="文件类型">
                     <el-select v-model="search.type" style="width:100px;">
@@ -42,23 +42,28 @@
             <div class="my-style-table">
                 <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
-                    <el-table-column label="标题" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
-                    <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"></el-table-column>
-                    <el-table-column label="文件夹" align="center" prop="folder"></el-table-column>
-                    <el-table-column label="磁盘" align="center" prop="disks"></el-table-column>
-                    <el-table-column label="宽高" align="center">
-                            <template slot-scope="scope">
-                                <span>{{scope.row.width}}*{{scope.row.height}}px</span>
+                    <el-table-column label="文件编号" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="文件标题" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="文件类型" align="center" prop="type">
+                        <template slot-scope="scope">
+                            <i :class="typeIcon(scope.row.type).icon" :style="typeIcon(scope.row.type).style"></i>
                         </template>
                     </el-table-column>
-                    <el-table-column label="大小" align="center" prop="size" :formatter="formatSize"></el-table-column>
+                    <!-- <el-table-column label="文件夹" align="center" prop="folder"></el-table-column>
+                    <el-table-column label="磁盘" align="center" prop="disks"></el-table-column> -->
+                    <el-table-column label="宽高" align="center">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.width}}*{{scope.row.height}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="文件大小" align="center" prop="size" :formatter="formatSize"></el-table-column>
                     <el-table-column label="mime_type" align="center" prop="mime_type"></el-table-column>
                     <!-- <el-table-column label="路径" align="center" prop="path" :show-overflow-tooltip="true"></el-table-column> -->
                     <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
-                            <el-button type="text" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
+                            <el-button type="success" icon="el-icon-download" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
+                            <el-button type="danger" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -248,8 +253,33 @@
             handleDownload(index, row){
                 this.$fun.downloadFile(row.download_url);
             },
-            typeFormat(row, column){
-                return this.types[row.type];
+            typeIcon(type){
+                let style = 'font-size:28px;color:';
+                let icon = '';
+                let color = '';
+                switch(type){
+                    case 'image':
+                        icon = 'el-icon-lx-picfill';
+                        color = '#67C23A';
+                        break;
+                    case 'annex':
+                        icon = 'el-icon-folder-checked';
+                        color = '#E6A23C';
+                        break;
+                    case 'file':
+                        icon = 'el-icon-lx-file';
+                        color = '#909399';
+                        break;
+                    case 'audio':
+                        icon = 'el-icon-lx-notificationfill';
+                        color = '#409EFF';
+                        break;
+                    case 'video':
+                        icon = 'el-icon-lx-recordfill';
+                        color = '#909399';
+                        break;
+                }
+                return {icon:icon,style:style + color};
             },
             formatSize(row){
                 return this.$fun.formatSize(row.size, 'Kb');

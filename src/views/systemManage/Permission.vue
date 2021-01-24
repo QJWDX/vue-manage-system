@@ -8,14 +8,15 @@
         <div class="tabs_content">
             <div class="tab-content">
                 <el-form :inline="true" :model="search">
-                    <el-form-item>
-                        <el-input v-model="search.name" placeholder="接口名称"></el-input>
+                    <el-form-item label="接口名称">
+                        <el-input v-model="search.name" placeholder="请输入接口名称"></el-input>
                     </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="search.path" placeholder="接口路由"></el-input>
+                    <el-form-item label="接口路由">
+                        <el-input v-model="search.path" placeholder="请输入接口路由"></el-input>
                     </el-form-item>
-                    <el-form-item>
-                        <el-select v-model="search.method" placeholder="请求方式">
+                    <el-form-item label="请求方式">
+                        <el-select v-model="search.method" placeholder="请选择">
+                            <el-option label="全部" value="0"></el-option>
                             <el-option label="GET" value="GET"></el-option>
                             <el-option label="POST" value="POST"></el-option>
                             <el-option label="PUT" value="PUT"></el-option>
@@ -140,7 +141,7 @@ export default {
             search: {
                 name: '',
                 path: '',
-                method: ''
+                method: '0'
             },
             pagination: {
                 page: 1,

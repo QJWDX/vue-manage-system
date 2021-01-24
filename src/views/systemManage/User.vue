@@ -7,9 +7,30 @@
         </div>
         <div class="tabs_content">
             <div class="tab-content">
-                <el-form :inline="true" :model="search">
-                    <el-form-item>
-                        <el-input v-model="search.username" placeholder="用户名"></el-input>
+                <el-form :inline="true" :model="search" label-position="left" size="small">
+                    <el-form-item label="账户姓名">
+                        <el-input v-model="search.name" placeholder="请输入账户姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="用户名">
+                        <el-input v-model="search.username" placeholder="请输入用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号">
+                        <el-input v-model="search.phone" placeholder="请输入手机号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-select v-model="search.status" placeholder="状态">
+                            <el-option label="全部" value="-1"></el-option>
+                            <el-option label="启用" value="1"></el-option>
+                            <el-option label="禁用" value="0"></el-option>
+                            <el-option label="冻结" value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="性别">
+                        <el-select v-model="search.sex" placeholder="性别">
+                            <el-option label="全部" value="-1"></el-option>
+                            <el-option label="男" value="1"></el-option>
+                            <el-option label="女" value="0"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -23,7 +44,7 @@
                      <el-button type="success" @click="changeStatus(1)">启用</el-button>
                      <el-button type="danger" @click="changeStatus(0)">禁用</el-button>
                      <el-button type="warning" @click="changeStatus(2)">冻结</el-button>
-                      <el-button type="primary" icon="el-icon-download">导出</el-button>
+                    <!-- <el-button type="primary" icon="el-icon-download">导出</el-button> -->
                 </div>
                 <div class="my-style-table">
                      <el-table
@@ -37,7 +58,7 @@
                     >
                         <el-table-column type="selection" width="55" align="center"></el-table-column>
                         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                        <el-table-column prop="name" label="姓名"></el-table-column>
+                        <el-table-column prop="name" label="账户姓名"></el-table-column>
                         <el-table-column prop="username" label="用户名"></el-table-column>
                         <el-table-column prop="phone" label="联系方式"></el-table-column>
                         <el-table-column prop="email" label="邮箱"></el-table-column>
@@ -112,7 +133,7 @@
                         <el-form-item label="用户名" prop="username">
                             <el-input v-model="form.username" :disabled="usernameDisable" size="large"></el-input>
                         </el-form-item>
-                        <el-form-item label="真实姓名" prop="name">
+                        <el-form-item label="账户姓名" prop="name">
                             <el-input v-model="form.name" size="large"></el-input>
                         </el-form-item>
                         <el-form-item label="联系方式" prop="phone">
@@ -211,6 +232,10 @@ export default {
         return {
             search: {
                 username: '',
+                name: '',
+                phone: '',
+                sex: '-1',
+                status: '-1'
             },
             pagination: {
                 page: 1,
