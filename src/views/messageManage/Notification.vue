@@ -46,7 +46,7 @@
                 <div class="my-style-table">
                     <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                         <el-table-column type="selection" width="55" align="center"></el-table-column>
-                        <el-table-column label="消息编号" align="center" prop="id">
+                        <el-table-column label="消息编号" align="center" prop="id" :show-overflow-tooltip="true">
                         </el-table-column>
                          <el-table-column label="消息类型" align="center" prop="type" :show-overflow-tooltip="true">
                         </el-table-column>
@@ -63,11 +63,11 @@
                         <el-table-column prop="created_at" label="发送时间" align="center"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
-                                <el-button size="small" @click="handleView(scope.$index, scope.row)" type="info">查看</el-button>
-                                <el-button size="small" disabled v-if="scope.row.read_at">消息已读</el-button>
-                                <el-button size="small" @click="handleRead(scope.$index, scope.row)" type="warning" v-else>标为已读</el-button>
+                                <el-button size="small" @click="handleView(scope.$index, scope.row)" type="text">查看</el-button>
+                                <el-button size="small" disabled v-if="scope.row.read_at" type="text">消息已读</el-button>
+                                <el-button size="small" @click="handleRead(scope.$index, scope.row)" type="text" v-else >标为已读</el-button>
                                 <el-button
-                                    type="danger"
+                                    type="text"
                                     size="small"
                                     icon="el-icon-delete"
                                     class="red"

@@ -53,12 +53,12 @@ export default {
              const options = {
                 connectTimeout: 40000,
                 clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
-                username: 'admin',
-                password: 'admin123',
+                username: 'mqtt',
+                password: 'mqtt',
                 clean: true
             };
             if(client == null){
-                client = mqtt.connect('ws://127.0.0.1:15675/ws', options);
+                client = mqtt.connect('ws://www.hhdxdx.cn:15675/ws', options);
             }
             client.on('connect', (e) => {
                 console.log("连接成功！！！")

@@ -79,24 +79,26 @@
                         <el-table-column label="操作" width="360" align="center">
                             <template slot-scope="scope">
                                 <el-button
-                                    type="warning"
+                                    type="text"
                                     @click="resetUserPassword(scope.$index, scope.row)"
                                 >重置密码</el-button>
                                 <el-button
                                     v-if="scope.row.status==1"
-                                    type="info"
+                                    type="text"
                                     @click="handleStatus(scope.$index, scope.row)"
                                 >禁用</el-button>
                                 <el-button
                                     v-else
-                                    type="success"
+                                    type="text"
                                     @click="handleStatus(scope.$index, scope.row)"
                                 >启用</el-button>
                                 <el-button
+                                    type="text"
                                     icon="el-icon-edit"
                                     @click="handleEdit(scope.$index, scope.row)"
                                 >编辑</el-button>
                                 <el-button
+                                    type="text"
                                     icon="el-icon-delete"
                                     class="red"
                                     @click="handleDel(scope.$index, scope.row)"

@@ -31,9 +31,29 @@ export default {
      * 默认分页
      */
     getDefaultPerPage(){
-        // 1024       1280          1366      1440       1680       1920 
-        console.log(document.body.clientWidth);
-        return document.body.clientWidth > 1800 ? 15 : 10;
+        let width = document.body.clientWidth;
+        let perPage = 10;
+        switch(width){
+            case 4096:
+                perPage = 20;
+                break;
+            case 2560:
+                perPage = 15;
+                break;
+            case 1920:
+                perPage = 10;
+                break;
+            case 1680:
+                perPage = 5;
+                break;
+            case 1440:
+                perPage = 5;
+                break;
+            default:
+                perPage = 10;
+                break;
+        }
+        return perPage;
     },
     /**
      * 时间格式转换
