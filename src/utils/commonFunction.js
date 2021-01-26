@@ -1,6 +1,22 @@
 import {JSEncrypt} from 'jsencrypt';
 import {Message} from 'element-ui';
 export default {
+    mqttUrl(){
+        let url = '127.0.0.1';
+        let protocol = window.location.protocol; //协议
+        let host = window.location.host; //主机
+        let reg = /^localhost+/;
+        let mq_port = 15675;
+        let mq_protocol = 'ws';
+        if(!reg.test(host)){
+            url = 'www.hhdxdx.cn';
+        }
+        if(protocol.search('https') != -1){
+            mq_port = 15676;
+            mq_protocol = 'wss'
+        }
+        return mq_protocol + '://' + url + ':' + mq_port + '/ws';
+    },
 
     baseUrl(){
         let protocol = window.location.protocol; //协议

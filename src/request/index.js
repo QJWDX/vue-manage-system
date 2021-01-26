@@ -6,11 +6,13 @@ const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     timeout: 5000
 });
-
-// let protocol = window.location.protocol; //协议
-// let host = window.location.host; //主机
-// let reg = /^localhost+/;
-// service.defaults.baseURL = reg.test(host) ? protocol + '//127.0.0.1' : protocol + '//www.hhdxdx.cn';
+let production = true;
+if(production){
+    let protocol = window.location.protocol; //协议
+    let host = window.location.host; //主机
+    let reg = /^localhost+/;
+    service.defaults.baseURL = reg.test(host) ? protocol + '//127.0.0.1' : protocol + '//www.hhdxdx.cn';
+}
 // 请求拦截器
 service.interceptors.request.use(
     config => {

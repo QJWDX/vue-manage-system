@@ -50,7 +50,8 @@ export default {
     },
     methods:{
         mqttConnect(){
-             const options = {
+            let mqtt_url = this.$fun.mqttUrl();
+            const options = {
                 connectTimeout: 40000,
                 clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
                 username: 'mqtt',
@@ -58,11 +59,13 @@ export default {
                 clean: true
             };
             if(client == null){
-                client = mqtt.connect('ws://www.hhdxdx.cn:15675/ws', options);
+                client = mqtt.connect(mqtt_url, options);
             }
             client.on('connect', (e) => {
                 console.log("连接成功！！！")
-                client.subscribe('notification', {qos:1}, (error) => {
+                let routing_key = 'notification_user_id_' + this.$store.getters.user.id;
+                console.log(routing_key);
+                client.subscribe(routing_key, {qos:1}, (error) => {
                     if (error) {
                        console.log('订阅失败')
                     }
@@ -70,7 +73,7 @@ export default {
             })
             // 接收消息处理
             client.on('message', (topic, message) => {
-                // console.log('收到来自', topic, '的消息', message.toString());
+                console.log('收到来自', topic, '的消息', message.toString());
                 let msg = JSON.parse(message.toString());
                  this.$notify({
                     title: msg.title,
