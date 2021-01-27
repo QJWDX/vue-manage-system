@@ -1,6 +1,13 @@
 import axios from '@/request/index';
 import qs from 'qs';
 const api = {
+    downloadVideo (url){
+        return axios({
+            method: 'get',
+            url:url,
+            responseType: 'blob'
+        });
+    },
     login:{
         login(params, headers){
             return axios.post('auth/user/login', qs.stringify(params), {headers:headers});
@@ -271,6 +278,13 @@ const api = {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
+            });
+        },
+        download(params){
+            return axios({
+                url: 'api/File/download',
+                method: 'post',
+                data: params
             });
         }
     },

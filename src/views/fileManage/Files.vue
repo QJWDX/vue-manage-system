@@ -8,8 +8,8 @@
         <div class="tabs_content">
             <div class="tab-content">
                 <el-form :inline="true" :model="search">
-                <el-form-item label="文件标题">
-                    <el-input v-model="search.title" placeholder="请输入文件标题"></el-input>
+                <el-form-item label="文件名">
+                    <el-input v-model="search.title" placeholder="请输入文件名"></el-input>
                 </el-form-item>
                 <el-form-item label="文件类型">
                     <el-select v-model="search.type" style="width:100px;">
@@ -43,7 +43,7 @@
                 <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column label="文件编号" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column>
-                    <el-table-column label="文件标题" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="文件名" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column label="文件类型" align="center" prop="type">
                         <template slot-scope="scope">
                             <i :class="typeIcon(scope.row.type).icon" :style="typeIcon(scope.row.type).style"></i>
@@ -62,8 +62,8 @@
                     <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button type="success" icon="el-icon-download" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
-                            <el-button type="danger" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
+                            <el-button type="text" icon="el-icon-download" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
+                            <el-button type="text" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -81,22 +81,22 @@
             <!-- 文件上传 -->
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close="callOf('form')">
                 <el-form ref="form" :model="form" label-width="100px">
-                    <el-form-item label="文件标题" prop="title">
-                        <el-input v-model="form.title"></el-input>
+                    <el-form-item label="文件名称" prop="title">
+                        <el-input v-model="form.title" size="large"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型" prop="type">
-                            <el-select v-model="form.type" @change="handTypeChange" style="width:100%">
+                            <el-select v-model="form.type" @change="handTypeChange" style="width:100%" size="large">
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="存储文件夹" prop="folder">
-                            <el-select v-model="form.folder" style="width:100%">
+                    <el-form-item label="存储位置" prop="folder">
+                            <el-select v-model="form.folder" style="width:100%" size="large">
                             <el-option :label="item" :value="item" v-for="(item, key) in folders" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="请选择文件">
+                    <el-form-item label="选择文件">
                         <el-upload :on-change="fileChange" action="#" :on-remove="removeFile" :http-request="httpRequest">
-                            <el-button type='warning'>点击上传</el-button>
+                            <el-button type='warning' size="large">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -251,6 +251,22 @@
                 this.dialogVisible = true;
             },
             handleDownload(index, row){
+                console.log(row);
+                if(row.type == 'audio' || row.type == 'video'){
+                    this.$apiList.files.download({id:row.id}).then(res => {
+                        let fileName = '1.mp3';
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            navigator.msSaveBlob(res, fileName);
+                        } else {
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(res);
+                            link.download = fileName;
+                            link.click();
+                            window.URL.revokeObjectURL(link.href);
+                        }
+                    })
+                    return;
+                }
                 this.$fun.downloadFile(row.download_url);
             },
             typeIcon(type){

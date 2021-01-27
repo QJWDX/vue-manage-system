@@ -139,7 +139,7 @@
                 dialogVisible: false,
                 form: {
                     type: 0,
-                    title:'您有一条新消息，详情请在消息通知中查看！',
+                    title:'您有一条新消息，请在消息通知中查看！',
                     content:''
                 },
                  rules: {
@@ -285,7 +285,6 @@
                     if (valid) {
                         this.$apiList.notifications.sendNotification(this.form).then(res => {
                             if(res){
-                                this.$fun.msg(res.message);
                                 this.checkList = [];
                                 this.callOf('form');
                                 this.getData();
@@ -299,7 +298,7 @@
             callOf(formName){
                 this.form =  {
                     type: 0,
-                    title:'您有一条新消息，详情请在消息通知中查看！',
+                    title:'您有一条新消息，请在消息通知中查看！',
                     content:''
                 };
                 this.title = '消息通知发送';

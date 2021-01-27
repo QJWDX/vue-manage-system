@@ -6,7 +6,7 @@ const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     timeout: 5000
 });
-let production = true;
+let production = false;
 if(production){
     let protocol = window.location.protocol; //协议
     let host = window.location.host; //主机
@@ -34,11 +34,13 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     response => {
+        console.log(response);
         switch(response.status){
             case 200:
                 if(response.data.code === 200){
                     return response.data;
                 }else{
+                    return response;
                     Message({
                         'message':response.data.message,
                         'type':'error',

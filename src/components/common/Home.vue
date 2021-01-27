@@ -54,8 +54,8 @@ export default {
             const options = {
                 connectTimeout: 40000,
                 clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
-                username: 'mqtt',
-                password: 'mqtt',
+                username: 'admin',
+                password: 'admin123',
                 clean: true
             };
             if(client == null){
@@ -63,8 +63,7 @@ export default {
             }
             client.on('connect', (e) => {
                 console.log("连接成功！！！")
-                let routing_key = 'notification_user_id_' + this.$store.getters.user.id;
-                console.log(routing_key);
+                let routing_key = "notification_user_id_" + this.$store.getters.user.id;
                 client.subscribe(routing_key, {qos:1}, (error) => {
                     if (error) {
                        console.log('订阅失败')
@@ -73,8 +72,8 @@ export default {
             })
             // 接收消息处理
             client.on('message', (topic, message) => {
-                console.log('收到来自', topic, '的消息', message.toString());
-                let msg = JSON.parse(message.toString());
+                // console.log(topic,message.toString());
+                 let msg = JSON.parse(message.toString());
                  this.$notify({
                     title: msg.title,
                     message: msg.message,
