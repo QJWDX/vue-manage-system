@@ -537,5 +537,24 @@ export default {
         arr = dateArr;
         arr.push(value2);
         return arr;
+      },
+      /**
+       * 复制到粘贴板
+       * @param {*} data 
+       */
+      copyToClipboard(data){
+        if(!data){
+            this.msg('复制失败');
+            return;
+        }
+        const input = document.createElement('input');
+        input.value = data;
+        document.body.appendChild(input);
+        input.select();
+        if (document.execCommand('Copy')) {
+            document.execCommand('Copy');
+        }
+        input.remove();
+        this.msg('已复制链接至剪贴板中，请粘贴操作!');
       }
 }

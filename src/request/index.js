@@ -36,15 +36,24 @@ service.interceptors.response.use(
     response => {
         switch(response.status){
             case 200:
-                if(response.data.code === 200){
-                    return response.data;
-                }else{
-                    return response;
-                    Message({
-                        'message':response.data.message,
-                        'type':'error',
-                        'center': true
-                    });
+                switch(response.data.code){
+                    case 200:
+                        return response.data;
+                        break;
+                    case 500:
+                        Message({
+                            'message':response.data.message,
+                            'type':'error',
+                            'center': true
+                        });
+                        break;
+                    default:
+                        Message({
+                            'message':'系统错误',
+                            'type':'error',
+                            'center': true
+                        });
+                        break;
                 }
                 break;
             case 201:
@@ -86,6 +95,7 @@ service.interceptors.response.use(
                         // token黑名单
                         store.dispatch('delUserInfo');
                         router.push('/login');
+                        return;
                       }).catch(() => {
                         console.log('取消重新登录');
                       });

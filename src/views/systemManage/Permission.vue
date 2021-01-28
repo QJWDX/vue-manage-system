@@ -225,18 +225,15 @@ export default {
         // 编辑操作
         handleEdit(index, row) {
             this.$apiList.setting.permissionInfo(row.id).then(res => {
-                console.log(res);
-                if(res){
-                    this.id = res.data.id;
-                    this.form.name = res.data.name,
-                    this.form.display_name =  res.data.display_name,
-                    this.form.path = res.data.path,
-                    this.form.method = res.data.method,
-                    this.form.is_show = res.data.is_show,
-                    this.dialogType = 'edit';
-                    this.dialogTitle = '编辑接口';
-                    this.dialogVisible = true;
-                }
+                this.id = res.data.id;
+                this.form.name = res.data.name,
+                this.form.display_name =  res.data.display_name,
+                this.form.path = res.data.path,
+                this.form.method = res.data.method,
+                this.form.is_show = res.data.is_show,
+                this.dialogType = 'edit';
+                this.dialogTitle = '编辑接口';
+                this.dialogVisible = true;
             });
         },
         submitForm(){
@@ -246,13 +243,13 @@ export default {
                         case 'add':
                             this.$apiList.setting.permissionStore(this.form).then(res => {
                                 this.$fun.msg(res.message);
-                                this.reload();
+                                this.getData();
                             });
                             break;
                         case 'edit':
                             this.$apiList.setting.permissionUpdate(this.id, this.form).then(res => {
                                 this.$fun.msg(res.message);
-                                this.reload();
+                                this.getData();
                             });
                             break;
                         default:
@@ -271,7 +268,7 @@ export default {
             }).then(() => {
                 this.$apiList.setting.permissionDelete(row.id).then(res => {
                     this.$fun.msg(res.message);
-                    this.reload();
+                    this.getData();
                 });
             }).catch(() => {});
         },

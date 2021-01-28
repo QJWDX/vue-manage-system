@@ -298,13 +298,13 @@ export default {
                         case 'add':
                             this.$apiList.setting.menuStore(this.form).then(res => {    
                                 this.$fun.msg(res.message);
-                                this.reload();
+                                this.getData();
                             });
                             break;
                         case 'edit':
                              this.$apiList.setting.menuUpdate(this.id, this.form).then(res => {
                                 this.$fun.msg(res.message);
-                                this.reload();
+                                this.getData();
                             });
                             break;
                         default:
@@ -323,7 +323,7 @@ export default {
             }).then(() => {
                 this.$apiList.setting.menuDelete(row.id).then(res => {
                     this.$fun.msg(res.message);
-                    this.reload();
+                    this.getData();
                 });
             }).catch(() => {});
         },

@@ -26,13 +26,13 @@
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
                     </el-form-item>
-                    <!-- <el-form-item class="">
-                        <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">批量删除</el-button>
-                    </el-form-item> -->
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                     </el-form-item>
                 </el-form>
+                <div class="my-btn-group">
+                     <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
+                </div>
                 <div class="my-style-table">
                     <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
                         <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -48,16 +48,19 @@
                         <el-table-column prop="ip" label="ip" align="center"></el-table-column>
                         <el-table-column prop="input" label="请求字段" align="center" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="sql" label="sql" align="center" :show-overflow-tooltip="true"></el-table-column>
-                        <!-- <el-table-column label="操作" align="center">
+                        <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
                                 <el-button
-                                    type="danger"
+                                    type="text"
+                                    @click="handleView(scope.row)"
+                                >查看SQL</el-button>
+                                 <el-button
+                                    type="text"
                                     icon="el-icon-delete"
-                                    class="red"
-                                    @click="handleDel(scope.$index, scope.row)"
+                                    @click="handleDel(scope.row)"
                                 >删除</el-button>
                             </template>
-                        </el-table-column> -->
+                        </el-table-column>
                     </el-table>
                     <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
                         <el-pagination
@@ -72,6 +75,12 @@
                 </div>
             </div>
         </div>
+        <el-dialog title="请求SQL语句" :visible.sync="view" width="40%">
+            <el-input type="textarea" v-model="sql" rows="20"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="brige" @click="handleCopy">一键复制</el-button>
+            </span>
+    </el-dialog>
     </div>
 </template>
 
@@ -110,7 +119,9 @@
                         var js = end.getTime(end)
                         return   time.getTime() > js || time.getTime() < ks-60*60*24*1000
                     }
-                }
+                },
+                sql:'',
+                view: false
             }
         },
         inject: ['reload'],
@@ -147,14 +158,12 @@
             del(){
                 let params = {ids: this.multipleSelection};
                 this.$apiList.log.operationLogDelete(params).then(res => {
-                    if(res){
-                        this.$fun.msg(res.message);
-                        this.multipleSelection = [];
-                        this.getData();
-                    }
+                    this.$fun.msg(res.message);
+                    this.getData();
                 });
+                this.multipleSelection = [];
             },
-            handleDel(index, row) {
+            handleDel(row) {
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
@@ -164,7 +173,7 @@
             },
             handleAllDel() {
                 if(this.multipleSelection.length == 0){
-                    this.$fun.msg('删除项还未选择', 0);
+                    this.$fun.msg('没有选择项', 0);
                     return;
                 }
                 this.$confirm('确定要删除吗？', '提示', {
@@ -172,6 +181,13 @@
                 }).then(() => {
                     this.del();
                 }).catch(() => {});
+            },
+            handleView(row){
+                this.sql = row.sql;
+                this.view = true;
+            },
+            handleCopy() {
+                this.$fun.copyToClipboard(this.sql);
             },
             handleSelectionChange(val) {
                 this.multipleSelection = [];

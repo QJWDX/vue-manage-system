@@ -48,6 +48,11 @@ export default {
         });
         this.mqttConnect();
     },
+    destroyed(){
+        if(client){
+            client.end();  
+        }
+    },
     methods:{
         mqttConnect(){
             let mqtt_url = this.$fun.mqttUrl();
@@ -72,16 +77,18 @@ export default {
             })
             // 接收消息处理
             client.on('message', (topic, message) => {
-                // console.log(topic,message.toString());
+                // console.log(message.toString());
                  let msg = JSON.parse(message.toString());
                  this.$notify({
                     title: msg.title,
                     message: msg.message,
                     type: 'warning',
-                    duration: 5000,
+                    duration: 2000,
                     dangerouslyUseHTMLString: true,
                     offset: 100
                 });
+                // 消息通知加一
+                this.$store.dispatch('setUnreadNumber', parseInt(this.$store.getters.unreadNumber) + 1);
             })
         }
     }

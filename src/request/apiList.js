@@ -207,7 +207,7 @@ const api = {
         },
 
         loginLogDelete(params){
-            return axios.get('api/setting/delLoginLog', {params});
+            return axios.delete('api/setting/delLoginLog', {params});
         }
     },
     notifications:{
@@ -216,6 +216,7 @@ const api = {
         },
         
         delNotification(params){
+            console.log(1111)
             return axios.delete('api/Notification/delNotifications', {params});
         },
         
@@ -246,7 +247,7 @@ const api = {
         },
 
         operationLogDelete(params){
-            return axios.delete('api/log/log/delOperationLog', {params});
+            return axios.delete('api/log/delOperationLog', {params});
         }
     },
     files:{

@@ -29,10 +29,10 @@
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
-                </el-form-item>
             </el-form>
+            <div class="my-btn-group">
+                <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
+            </div>
             <div class="my-style-table">
                 <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -49,7 +49,7 @@
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
                             <el-button
-                                type="danger"
+                                type="text"
                                 icon="el-icon-delete"
                                 class="red"
                                 @click="handleDel(scope.$index, scope.row)"
@@ -132,12 +132,10 @@
             del(){
                 let params = {ids: this.multipleSelection};
                 this.$apiList.setting.loginLogDelete(params).then(res => {
-                    if(res){
-                        this.$fun.msg(res.message);
-                        this.multipleSelection = [];
-                        this.getData();
-                    }
+                    this.$fun.msg(res.message);
+                    this.getData();
                 });
+                this.multipleSelection = [];
             },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
@@ -149,7 +147,7 @@
             },
             handleAllDel() {
                 if(this.multipleSelection.length == 0){
-                    this.$fun.msg('删除项还未选择', 0);
+                    this.$fun.msg('没有选择项', 0);
                     return;
                 }
                 this.$confirm('确定要删除吗？', '提示', {

@@ -380,7 +380,7 @@ export default {
                             this.$apiList.setting.userStore(params).then(res => {
                                 if(res){
                                     this.$fun.msg(res.message);
-                                    this.reload();
+                                    this.getData();
                                 }
                             });
                             break;
@@ -388,7 +388,7 @@ export default {
                             this.$apiList.setting.userUpate(this.id, params).then(res => {
                                 if(res){
                                     this.$fun.msg(res.message);
-                                    this.reload();
+                                    this.getData();
                                 }
                                 this.usernameDisable = false;
                             });
@@ -411,7 +411,7 @@ export default {
                     if(res){
                          this.$fun.msg(res.message);
                         this.tableData.splice(index, 1);
-                        this.reload();
+                        this.getData();
                     }
                 });
             }).catch(() => {});

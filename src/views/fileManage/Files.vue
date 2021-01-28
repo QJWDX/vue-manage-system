@@ -18,10 +18,11 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="上传时间">
-                        <el-date-picker
+                    <el-date-picker
                         @change="dateChange"
                         v-model="timeSelect"
                         type="datetimerange"
+                        :picker-options="expireTimeOption"
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
@@ -82,7 +83,7 @@
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close="callOf('form')">
                 <el-form ref="form" :model="form" label-width="100px">
                     <el-form-item label="文件名称" prop="title">
-                        <el-input v-model="form.title" size="large"></el-input>
+                        <el-input v-model="form.title" size="large" placeholder="自定义文件名称，非必填"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型" prop="type">
                             <el-select v-model="form.type" @change="handTypeChange" style="width:100%" size="large">
@@ -108,7 +109,7 @@
 
             <el-dialog
                 title="创建文件分享链接"
-                width="45%"
+                width="35%"
                 :visible.sync="fileShareStatus"
                 >
                 <div v-loading="fileShareLoading">
@@ -174,6 +175,12 @@
                     type: '',
                     folder: '',
                     files: [],
+                },
+                expireTimeOption: {
+                    disabledDate(date) {
+                        //disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
+                        return date.getTime() > Date.now();
+                    }
                 }
             }
         },
@@ -201,8 +208,11 @@
                     txt: require('@/assets/img/serviceDeploy/txt.png')
                 };
                 let temp = data.split('.').reverse();
-                console.log(temp);
-                return fileIcon[temp[0]];
+                let icon = fileIcon[temp[0]];
+                if(!icon){
+                    icon = fileIcon['doc'];
+                }
+                return icon;
             },
         },
         methods: {
@@ -244,10 +254,10 @@
             del(){
                 let params = {ids: this.multipleSelection};
                  this.$apiList.files.delFile(params).then(res => {
-                    this.multipleSelection = [];
                     this.$fun.msg(res.message);
                     this.reload();
                 });
+                this.multipleSelection = [];
             },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
@@ -323,23 +333,13 @@
             },
             refreshShareLink(){
                 this.$apiList.files.refreshShareLink({resource_type:'file',resource_id:this.shareId}).then(res => {
-                    if(res.code == 200){
-                        this.$fun.msg(res.message);
-                    }
-                    this.$fun.msg(res.message, 0);
+                    this.$fun.msg(res.message);
+                    return;
                 });
             },
             //鼠标点击复制到粘贴板
             handleCopy(data) {
-                const input = document.createElement('input');
-                input.value = data;
-                document.body.appendChild(input);
-                input.select();
-                if (document.execCommand('Copy')) {
-                    document.execCommand('Copy');
-                }
-                input.remove();
-                this.$fun.msg('已复制链接至剪贴板中，请粘贴操作!');
+                this.$fun.copyToClipboard(data);
             },
             typeIcon(type){
                 let style = 'font-size:28px;color:';

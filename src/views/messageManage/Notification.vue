@@ -13,6 +13,7 @@
                                 @change="dateChange"
                                 v-model="timeSelect"
                                 type="datetimerange"
+                                :picker-options="expireTimeOption"
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
@@ -155,6 +156,12 @@
                         { min:5 , max:255, message: '消息内容长度为5-30个字符', trigger: 'blur'}
                     ]
                 },
+                expireTimeOption: {
+                    disabledDate(date) {
+                        //disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
+                        return date.getTime() > Date.now();
+                    }
+                }
             }
         },
         inject: ['reload'],
@@ -184,10 +191,10 @@
                 params.page = this.pagination.page;
                 params.perPage = this.pagination.perPage;
                 this.$apiList.notifications.notificationsList(params).then(res => {
-                this.tableData = res.data.items || [];
-                this.pagination.pageTotal = parseInt(res.data.total);
-                this.pagination.perPage =  parseInt(res.data.per_page);
-                this.pagination.page =  parseInt(res.data.current_page);
+                    this.tableData = res.data.items || [];
+                    this.pagination.pageTotal = parseInt(res.data.total);
+                    this.pagination.perPage =  parseInt(res.data.per_page);
+                    this.pagination.page =  parseInt(res.data.current_page);
                 });
             },
             handleRead(index, row) {
@@ -203,26 +210,27 @@
                     return;
                 }
                 this.$apiList.notifications.makeRead({ids: this.multipleSelection}).then(res => {
-                    this.$store.dispatch('setUnreadNumber', this.$store.getters.unreadNumber-this.multipleSelection.length);
-                    this.multipleSelection = [];
-                    this.reload();
+                    this.getData();
+                    this.$fun.msg(res.message);
+                    this.$apiList.notifications.getNotificationCount().then(res => {
+                        this.$store.dispatch('setUnreadNumber', res.data.unread);
+                    });
                 })
+                this.multipleSelection = [];
             },
             del(){
                 let params = {ids: this.multipleSelection};
-                this.$apiList.notifications.delNotifications(params).then(res => {
-                    if(res){
-                        this.$fun.msg(res.message);
-                        this.checkList = [];
-                        this.getData();
-                    }
+                this.$apiList.notifications.delNotification(params).then(res => {
+                    this.$fun.msg(res.message);
+                    this.multipleSelection = [];
+                    this.getData();
                 });
             },
             handleDel(index, row) {
                 this.$confirm('确定要删除吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.checkList = [row.id];
+                    this.multipleSelection = [row.id];
                     this.del();
                 }).catch(() => {});
             },
@@ -263,10 +271,7 @@
             },
             getnNotificationType(){
                  this.$apiList.notifications.notificationType().then(res => {
-                    if(res){
-                        this.types = res.data || [];
-                        console.log(this.types)
-                    }
+                    this.types = res.data || [];
                 });
             },
             handleView(index, row){
