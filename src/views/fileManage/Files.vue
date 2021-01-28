@@ -164,9 +164,9 @@
                 fileUids:[],
                 dialogVisible: false,
                 dialogTitle: '文件上传',
-                fileShareStatus:0,
+                fileShareStatus:false,
                 shareFileData:[],
-                shareLink: '',
+                shareLink: null,
                 shareId: 0,
                 fileShareLoading:false,
                 form: {
@@ -186,6 +186,24 @@
         },
         destroyed() {
             window.removeEventListener("keydown", this.handleKeyDown, true);
+        },
+        filters: {
+           fiterImg: function(data) {
+                //分件类型图标
+                let fileIcon = {
+                    doc: require('@/assets/img/serviceDeploy/doc.png'),
+                    docx: require('@/assets/img/serviceDeploy/doc.png'),
+                    xlsx: require('@/assets/img/serviceDeploy/excel.png'),
+                    xls: require('@/assets/img/serviceDeploy/excel.png'),
+                    jpg: require('@/assets/img/serviceDeploy/jpg.png'),
+                    png: require('@/assets/img/serviceDeploy/jpg.png'),
+                    pdf: require('@/assets/img/serviceDeploy/pdf.png'),
+                    txt: require('@/assets/img/serviceDeploy/txt.png')
+                };
+                let temp = data.split('.').reverse();
+                console.log(temp);
+                return fileIcon[temp[0]];
+            },
         },
         methods: {
             httpRequest(){
@@ -295,11 +313,11 @@
                     if(res.code == 200){
                         this.shareLink = res.data.url;
                         this.shareFileData = res.data.files;
-                        this.fileShareStatus = 1;
+                        this.fileShareStatus = true;
                         this.fileShareLoading = false;
                         return;
                     }
-                    thi.shareId = 0;
+                    thi.shareId = null;
                     this.$fun.msg(res.message, 0);
                 });
             },
