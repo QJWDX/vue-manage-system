@@ -286,7 +286,13 @@ const api = {
                 method: 'post',
                 data: params
             });
-        }
+        },
+        getShareLink(params){
+            return axios.get('api/File/getShareLink', {params});
+        },
+        refreshShareLink(params){
+            return axios.put('api/File/refreshShareLink', params);
+        },
     },
     statistics:{
         // 访问分析

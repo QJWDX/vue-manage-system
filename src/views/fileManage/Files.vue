@@ -62,7 +62,7 @@
                     <el-table-column prop="created_at" label="上传时间" align="center"></el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" icon="el-icon-download" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
+                            <el-button type="text" @click="handleShare(scope.$index,scope.row)">文件分享</el-button>
                             <el-button type="text" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" >删除</el-button>
                         </template>
                     </el-table-column>
@@ -105,6 +105,36 @@
                     <el-button type="primary" @click="submitForm()">确 定</el-button>
                 </span>
             </el-dialog>
+
+            <el-dialog
+                title="创建文件分享链接"
+                width="45%"
+                :visible.sync="fileShareStatus"
+                >
+                <div v-loading="fileShareLoading">
+                    <div class="share_tips">分享文件列表</div>
+                    <div class="share_lists">
+                    <span
+                        v-for="(item, index) in shareFileData"
+                        :key="index + 'jjjd'"
+                    >
+                        <img :src="item | fiterImg" alt="" />
+                        <span>{{ item }}</span>
+                    </span>
+                    </div>
+                    <div class="share_tips">创建分享链接</div>
+                    <div class="share_link">
+                    <span>{{ shareLink }}</span>
+                    <div class="link_button">
+                        <el-button type="text" @click="refreshShareLink">刷新</el-button>
+                        <el-button type="text" @click="handleCopy(shareLink)"
+                        >复制</el-button
+                        >
+                    </div>
+                    </div>
+                    <div class="share_warn">*备注：此分享链接七天有效</div>
+                </div>
+            </el-dialog>
         </div>
     </div>
 </div>
@@ -134,6 +164,11 @@
                 fileUids:[],
                 dialogVisible: false,
                 dialogTitle: '文件上传',
+                fileShareStatus:0,
+                shareFileData:[],
+                shareLink: '',
+                shareId: 0,
+                fileShareLoading:false,
                 form: {
                     title: '',
                     type: '',
@@ -251,23 +286,42 @@
                 this.dialogVisible = true;
             },
             handleDownload(index, row){
-                console.log(row);
-                if(row.type == 'audio' || row.type == 'video'){
-                    this.$apiList.files.download({id:row.id}).then(res => {
-                        let fileName = '1.mp3';
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            navigator.msSaveBlob(res, fileName);
-                        } else {
-                            var link = document.createElement('a');
-                            link.href = window.URL.createObjectURL(res);
-                            link.download = fileName;
-                            link.click();
-                            window.URL.revokeObjectURL(link.href);
-                        }
-                    })
-                    return;
-                }
                 this.$fun.downloadFile(row.download_url);
+            },
+            handleShare(index, row){
+                this.fileShareLoading = true
+                this.shareId = row.id;
+                this.$apiList.files.getShareLink({resource_type:'file',resource_id:this.shareId}).then(res => {
+                    if(res.code == 200){
+                        this.shareLink = res.data.url;
+                        this.shareFileData = res.data.files;
+                        this.fileShareStatus = 1;
+                        this.fileShareLoading = false;
+                        return;
+                    }
+                    thi.shareId = 0;
+                    this.$fun.msg(res.message, 0);
+                });
+            },
+            refreshShareLink(){
+                this.$apiList.files.refreshShareLink({resource_type:'file',resource_id:this.shareId}).then(res => {
+                    if(res.code == 200){
+                        this.$fun.msg(res.message);
+                    }
+                    this.$fun.msg(res.message, 0);
+                });
+            },
+            //鼠标点击复制到粘贴板
+            handleCopy(data) {
+                const input = document.createElement('input');
+                input.value = data;
+                document.body.appendChild(input);
+                input.select();
+                if (document.execCommand('Copy')) {
+                    document.execCommand('Copy');
+                }
+                input.remove();
+                this.$fun.msg('已复制链接至剪贴板中，请粘贴操作!');
             },
             typeIcon(type){
                 let style = 'font-size:28px;color:';
@@ -332,4 +386,63 @@
         }
     }
 </script>
-
+<style>
+.wrap_share::v-deep  .el-dialog__body{
+    background-color: #fff;
+}
+.share_tips {
+    margin: 20px 0;
+    padding-left: 12px;
+    position: relative;
+    color: #1e1e1e;
+    font-weight: bold;
+    font-size: 16px;
+}
+.share_tips ::before {
+    position: absolute;
+    content: '';
+    background-color: #0099ff;
+    height: 100%;
+    width: 3px;
+    border-radius: 2px;
+    top: 0;
+    left: 0;
+}
+.share_lists {
+    background-color: #f6f6f7;
+    border-radius: 4px;
+    padding: 20px;
+}
+.share_lists span {
+    display: inline-block;
+    color: #222222;
+    padding: 5px;
+    border-radius: 4px;
+}
+.share_lists span span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.share_lists span img {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 15px;
+}
+.share_link {
+    background-color: #f7f7f8;
+    border: 1px solid #edeeef;
+    padding: 15px 12px;
+    color: #222;
+    position: relative;
+}
+.share_link .link_button {
+    position: absolute;
+    top: 2px;
+    right: 12px;
+}
+.share_warn {
+    color: #e52828;
+    font-size: 12px;
+    margin-top: 10px;
+}
+</style>

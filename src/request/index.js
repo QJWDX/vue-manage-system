@@ -34,7 +34,6 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     response => {
-        console.log(response);
         switch(response.status){
             case 200:
                 if(response.data.code === 200){
