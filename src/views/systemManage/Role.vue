@@ -45,8 +45,8 @@
                     </el-table-column>
                     <el-table-column label="操作" width="400" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="handUser(scope.$index, scope.row)" v-show="superUser">权限用户</el-button>
-                            <el-button type="text" @click="handleAuth(scope.$index, scope.row)" v-show="superUser">权限菜单</el-button>
+                            <el-button type="text" @click="handUser(scope.$index, scope.row)" v-show="superUser">用户管理</el-button>
+                            <el-button type="text" @click="handleAuth(scope.$index, scope.row)" v-show="superUser">菜单管理</el-button>
                             <el-button type="text"  icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="text" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)" v-show="superUser">删除</el-button>
                         </template>
@@ -82,7 +82,7 @@
                 </span>
             </el-dialog>
             <!-- 角色菜单权限分配弹出框 -->
-            <el-dialog title="角色菜单权限" :visible.sync="authVisible" width="40%" @close="authVisible=false;checkMenus=[]">
+            <el-dialog title="角色菜单配置" :visible.sync="authVisible" width="40%" @close="authVisible=false;checkMenus=[]">
                 <el-tree
                 :props="props"
                 :data="menus"
@@ -145,7 +145,7 @@ export default {
             indent:24,
             menus: [],
             users:[],
-            defaultExpand: false,
+            defaultExpand: true,
             checkMenus:[],
             all_user: [],
             check_user: [],

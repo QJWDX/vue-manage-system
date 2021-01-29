@@ -4,36 +4,34 @@
             <div class="ms-title">
                 <img :src="systemLogo">
                 <span>{{systemName}}</span>
-                </div>
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content" size="medium">
-                <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username"  size="medium">
-                        <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input
-                        type="password"
-                        placeholder="password"
-                        v-model="param.password"
-                        size="medium"
-                    >
-                        <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="captcha_code" style="margin-bottom:0px;">
-                    <el-input v-model="param.captcha_code" placeholder="验证码" style="width:65%;"  size="medium">
-                        <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
-                    </el-input>
-                    <img :src="catcha_img" alt="" @click="getCaptchaInfo" class="catcha">
-                </el-form-item>
-                <div class="wrap_find">
-                    <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
-                    <span class="findPassword" @click="recoverPassword=true">找回密码</span>
-                </div>
-                <el-button type="primary" class="login-btn" @click="submitForm()" :disabled="disable" @keyup.enter.native="submitForm()">登录</el-button>
-                <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
-            </el-form>
+            </div>
+            <div class="ms-content">
+                <el-form :model="param" :rules="rules" ref="login" label-width="0px" size="large">
+                    <el-form-item prop="username">
+                        <el-input v-model="param.username" placeholder="username">
+                            <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input type="password" placeholder="password" v-model="param.password">
+                            <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="captcha_code" style="margin-bottom:0px;">
+                        <el-input v-model="param.captcha_code" placeholder="验证码" style="width:60%;">
+                            <el-button slot="prepend" icon="el-icon-lx-edit"></el-button>
+                        </el-input>
+                        <img :src="catcha_img" alt="" @click="getCaptchaInfo" class="catcha">
+                    </el-form-item>
+                    <div class="wrap_find">
+                        <el-checkbox v-model="remember"><span style="color:#ffffff;">记住密码</span></el-checkbox>
+                        <span class="findPassword" @click="recoverPassword=true">找回密码</span>
+                    </div>
+                    <el-button type="primary" class="login-btn" @click="submitForm()" :disabled="disable" @keyup.enter.native="submitForm()">登录</el-button>
+                    <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
+                </el-form>
+            </div>
+            
             <!-- 找回密码弹框 -->
             <div class="login_dailog">
             <el-dialog title="找回密码" :visible.sync="recoverPassword" :close-on-click-modal="false">
@@ -42,7 +40,7 @@
                     <el-col :span="22"><div class="dailog_tips">请验证本人身份信息</div></el-col>
                     </el-row>
                     <div class="wrap_form">
-                    <el-form label-position="top" v-if="recoverStep==1">
+                    <el-form label-position="top" v-if="recoverStep==1" size="large">
                         <el-form-item label="请输入账号">
                         <el-input autocomplete="off" v-model="account_num" placeholder="请输入您的账号" @change="verifyNext"></el-input>
                         </el-form-item>
@@ -50,7 +48,7 @@
                         <el-button type="primary" class="verify_login login-bnt" @click="verifyNext">下一步</el-button>
                         </el-form-item>
                     </el-form>
-                    <el-form label-position="top" :model="emailForm" ref="emailRef" v-else-if="recoverStep==2">
+                    <el-form label-position="top" :model="emailForm" ref="emailRef" v-else-if="recoverStep==2" size="large">
                         <el-form-item label="该账号绑定的邮箱为">
                             <el-input autocomplete="off" v-model="emailForm.email" @change="checkAcountEmail" @input="checkFail=false"></el-input>
                             <div class="isTrue" v-show="isCheck"><img src="@/assets/img/normal.png"/></div>
@@ -64,7 +62,7 @@
                         <el-button type="primary" class="verify_login login-bnt" @click="verifyLogin">验证身份信息</el-button>
                         </el-form-item>
                     </el-form>
-                    <el-form label-position="top" :model="verifyForm" :rules="verifyRules" ref="ruleVerify" v-else-if="recoverStep==3" key="onlyform">
+                    <el-form label-position="top" :model="verifyForm" :rules="verifyRules" ref="ruleVerify" v-else-if="recoverStep==3" key="onlyform" size="large">
                         <el-form-item label="请输入新密码" prop="pass">
                         <el-input autocomplete="off" type="password"  v-model="verifyForm.pass"></el-input>
                         </el-form-item>
@@ -170,6 +168,7 @@ export default {
             },
         };
     },
+    inject: ['reload'],
     created(){
         this.$store.dispatch('getSystemConfig');
         this.getCaptchaInfo();
@@ -342,15 +341,17 @@ export default {
                             encryptKey: key
                         }
                         this.$apiList.login.resetPassword(params, headerinfo).then(res => {
-                            if (res.code == 200) {
+                            if(res.code == 200){
                                 this.recoverStep = 4
                                 this.account_num = ''
-                                this.$refs['ruleVerify'].resetFields()
-                                this.$refs['emailRef'].resetFields()
+                                if (this.$refs['ruleVerify'] !== undefined) {
+                                    this.$refs['ruleVerify'].resetFields();
+                                }
+                                if (this.$refs['emailRef'] !== undefined) {
+                                    this.$refs['emailRef'].resetFields();
+                                }
                             }
-                        }).catch(res => {
-                            this.$fun.msg(res.messge, 0)
-                        })
+                        });
                     })
                 } else {
                     return false
@@ -368,6 +369,8 @@ export default {
             this.param.captcha_code = ''
             this.param.captcha_key = ''
             this.recoverPassword = false
+            this.recoverStep = 1
+            this.reload();
         },
     },
 };
@@ -383,19 +386,19 @@ export default {
     box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
 }
 .ms-login {
-    width: 28rem;
-    height: 24rem;
+    width: 24rem;
+    height: 28rem;
     background-color: rgba(124, 141, 175, 0.3);
     box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
     border-radius: 0.125rem;
     position: absolute;
-    top: 45%;
+    top: 40%;
     margin-top: -14.625rem;
     left: 50%;
-    margin-left: -14rem;
+    margin-left: -12.5rem;
     padding: 0.625rem;
 }
-.ms-login .ms-title {
+.ms-title {
     width: 100%;
     line-height: 60px;
     text-align: center;
@@ -405,13 +408,12 @@ export default {
     border-bottom: 0.0625rem solid #d3d3d3;
     margin-bottom: 10px;
 }
-.ms-login .ms-title img {
+.ms-title img {
     vertical-align: middle;
-    width: 2.625rem;
-    margin-right: 0.3125rem;
+    /* width: 60px; */
 }
 
-.ms-login .ms-content {
+.ms-content {
     padding: 15px 30px;
 }
 .login-btn{
@@ -426,15 +428,6 @@ export default {
     font-size: 1rem;
     color: #ffffff;
     margin-top: 5px;
-}
-.ms-login  .el-input >>> .el-input__inner{
-    height: 40px;
-    line-height: 40px;
-    font-size: 14px;
-    border-radius: 0px;
-}
-.ms-login  .el-input >>> .el-input-group__prepend{
-     border-radius: 0px;
 }
 .ms-login .wrap_find{
     display: flex;

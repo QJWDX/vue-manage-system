@@ -47,7 +47,7 @@
                         <el-table-column prop="method" label="请求方式" align="center"></el-table-column>
                         <el-table-column prop="ip" label="ip" align="center"></el-table-column>
                         <el-table-column prop="input" label="请求字段" align="center" :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column prop="sql" label="sql" align="center" :show-overflow-tooltip="true"></el-table-column>
+                        <!-- <el-table-column prop="sql" label="sql" align="center" :show-overflow-tooltip="true"></el-table-column> -->
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
                                 <el-button
