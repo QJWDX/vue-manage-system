@@ -57,7 +57,7 @@
                         </el-form-item>
                         <el-form-item label="请输入邮箱密令" class="code">
                         <el-input autocomplete="off" v-model="emailForm.code"></el-input>
-                        <el-button v-if="readysend" class="login-bnt send" @click="senddDynamicPass">获取动态密码</el-button>
+                        <el-button type="primary" v-if="readysend" class="login-bnt send" @click="senddDynamicPass">获取动态密码</el-button>
                         <el-button v-else plain disabled>{{countdown}}s后重新获取</el-button>
                         </el-form-item>
                         <el-form-item>
@@ -380,9 +380,10 @@ export default {
     height: 100%;
     background-image: url(../../assets/img/login-bg1.png);
     background-size: 100%;
+    box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
 }
-.login-wrap .ms-login {
-    width: 26rem;
+.ms-login {
+    width: 28rem;
     height: 24rem;
     background-color: rgba(124, 141, 175, 0.3);
     box-shadow: 0 0.1875rem 1.3125rem 0 rgba(31, 58, 96, 0.2);
@@ -391,23 +392,25 @@ export default {
     top: 45%;
     margin-top: -14.625rem;
     left: 50%;
-    margin-left: -13rem;
+    margin-left: -14rem;
     padding: 0.625rem;
 }
-.login-wrap .ms-login .ms-title {
+.ms-login .ms-title {
     width: 100%;
     line-height: 60px;
     text-align: center;
     font-size: 24px;
-    color: #fff;
+    font-weight: bold;
+    color: #2983e3;
+    border-bottom: 0.0625rem solid #d3d3d3;
 }
-.login-wrap .ms-login .ms-title img {
+.ms-login .ms-title img {
     vertical-align: middle;
     width: 2.625rem;
     margin-right: 0.3125rem;
 }
 
-.login-wrap .ms-login .ms-content {
+.ms-login .ms-content {
     padding: 15px 30px;
 }
 .login-btn{
@@ -423,22 +426,22 @@ export default {
     color: #ffffff;
     margin-top: 5px;
 }
-.login-wrap .el-input >>> .el-input__inner{
+.ms-login  .el-input >>> .el-input__inner{
     height: 40px;
     line-height: 40px;
     font-size: 14px;
     border-radius: 0px;
 }
-.login-wrap .el-input >>> .el-input-group__prepend{
+.ms-login  .el-input >>> .el-input-group__prepend{
      border-radius: 0px;
 }
-.login-wrap .ms-login .wrap_find{
+.ms-login .wrap_find{
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding: 0.3125rem 0;
 }
-.login-wrap .ms-login .wrap_find /deep/ .el-checkbox {
+.ms-login .wrap_find /deep/ .el-checkbox {
     color: #606266;
     font-weight: 500;
     font-size: 0.875rem !important;
@@ -450,12 +453,12 @@ export default {
     margin-right: 1.875rem;
 }
 
-.login-wrap .ms-login .wrap_find /deep/ .el-checkbox__label{
+.ms-login .wrap_find /deep/ .el-checkbox__label{
     font-size: 0.875rem !important;
 }
-.login-wrap .ms-login .findPassword{
+.ms-login .findPassword{
     font-size: 0.875rem;
-    color: white;
+    color: #ffffff;
     margin-left: 0.9375rem;
     cursor: pointer;
     line-height: 1.1875rem;
