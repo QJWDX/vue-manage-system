@@ -403,6 +403,7 @@ export default {
     font-weight: bold;
     color: #2983e3;
     border-bottom: 0.0625rem solid #d3d3d3;
+    margin-bottom: 10px;
 }
 .ms-login .ms-title img {
     vertical-align: middle;
