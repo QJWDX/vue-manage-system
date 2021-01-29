@@ -23,18 +23,30 @@ const api = {
         
         getRsaPublicKey(){
             return axios.post('auth/user/getRsaPublicKey');
+        },
+        checkEmail(params){
+            return axios.get('auth/user/checkEmail', {params});
+        },
+        sendResetPasswordEmail(params){
+            return axios.post('auth/user/sendResetPasswordEmail', params);
+        },
+        checkEmailCode(params){
+            return axios.post('auth/user/checkEmailCode', params);
+        },
+        resetPassword(params, headers){
+            return axios.post('auth/user/resetPassword', qs.stringify(params), {headers:headers});
         }
     },
     system:{
         getSystemConfig(){
-            return axios('api/system/getSystemConfig');
+            return axios.get('api/system/getSystemConfig');
         },
         
         setSystemConfig(params){
             return axios.put('api/system/setSystemConfig', params);
         },
         system(){
-            return axios('api/system/system');
+            return axios.get('api/system/system');
         }
     },
     setting:{
