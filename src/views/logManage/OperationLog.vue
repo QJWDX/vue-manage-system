@@ -34,7 +34,7 @@
                      <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
                 </div>
                 <div class="my-style-table">
-                    <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table">
+                    <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" class="my_table" v-loading="loadingtable" element-loading-text="拼命加载中...">
                         <el-table-column type="selection" width="55" align="center"></el-table-column>
                         <el-table-column label="ID" align="center" width="120" prop="id">
                         </el-table-column>
@@ -100,6 +100,7 @@
                     pageTotal: 0
                 },
                 tableData: [],
+                loadingtable:false,
                 multipleSelection: [],
                 timeSelect: ['', ''],
                 expireTimeOption: {
@@ -145,6 +146,7 @@
                 }
             },
             getData() {
+                this.loadingtable = true;
                 const params = this.search;
                 params.page = this.pagination.page;
                 params.perPage = this.pagination.perPage;
@@ -153,6 +155,7 @@
                     this.pagination.pageTotal = parseInt(res.data.total);
                     this.pagination.perPage =  parseInt(res.data.per_page);
                     this.pagination.page =  parseInt(res.data.current_page);
+                    this.loadingtable = false;
                 });
             },
             del(){

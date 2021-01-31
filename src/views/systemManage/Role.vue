@@ -191,6 +191,7 @@ export default {
         },
         //获取列表数据
         getData() {
+            this.loadingtable = true;
             const params = this.search;
             params.page = this.pagination.page;
             params.perPage = this.pagination.perPage;
@@ -199,6 +200,7 @@ export default {
                 this.pagination.pageTotal = parseInt(res.data.total);
                 this.pagination.perPage =  parseInt(res.data.per_page);
                 this.pagination.page =  parseInt(res.data.current_page);
+                this.loadingtable = false;
             });
         },
         // 触发搜索按钮

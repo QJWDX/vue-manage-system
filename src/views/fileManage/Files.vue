@@ -41,7 +41,7 @@
                 <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button>
             </div>
             <div class="my-style-table">
-                <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
+                <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" v-loading="loadingtable" element-loading-text="拼命加载中...">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column label="文件编号" align="center" prop="uid" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column label="文件名" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
@@ -230,6 +230,7 @@
                 }
             },
             getData() {
+                this.loadingtable = true;
                 const params = this.search;
                 params.page = this.pagination.page;
                 params.perPage = this.pagination.perPage;
@@ -240,10 +241,11 @@
                         this.$fun.msg('导出成功')
                         return;
                     }
-                this.tableData = res.data.items || [];
-                this.pagination.pageTotal = parseInt(res.data.total);
-                this.pagination.perPage =  parseInt(res.data.per_page);
-                this.pagination.page =  parseInt(res.data.current_page);
+                    this.tableData = res.data.items || [];
+                    this.pagination.pageTotal = parseInt(res.data.total);
+                    this.pagination.perPage =  parseInt(res.data.per_page);
+                    this.pagination.page =  parseInt(res.data.current_page);
+                     this.loadingtable = false;
                 });
             },
             initData(){

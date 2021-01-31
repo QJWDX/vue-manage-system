@@ -45,7 +45,7 @@
                     <el-button type="primary" icon="el-icon-lx-message" @click="handleSendMessage">发送消息</el-button>
                 </div>
                 <div class="my-style-table">
-                    <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange">
+                    <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" v-loading="loadingtable" element-loading-text="拼命加载中...">
                         <el-table-column type="selection" width="55" align="center"></el-table-column>
                         <el-table-column label="消息编号" align="center" prop="id" :show-overflow-tooltip="true">
                         </el-table-column>
@@ -135,6 +135,7 @@
                 notification: [],
                 types:[],
                 tableData: [],
+                loadingtable:false,
                 multipleSelection: [],
                 timeSelect: ['', ''],
                 dialogVisible: false,
@@ -187,6 +188,7 @@
                 }
             },
             getData() {
+                this.loadingtable = true;
                 const params = this.search;
                 params.page = this.pagination.page;
                 params.perPage = this.pagination.perPage;
@@ -195,6 +197,7 @@
                     this.pagination.pageTotal = parseInt(res.data.total);
                     this.pagination.perPage =  parseInt(res.data.per_page);
                     this.pagination.page =  parseInt(res.data.current_page);
+                    this.loadingtable = false;
                 });
             },
             handleRead(index, row) {

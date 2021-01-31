@@ -32,6 +32,8 @@
                     :cell-style="cellStyle"
                     :header-cell-style="rowClass"
                     @selection-change="handleSelectionChange"
+                    v-loading="loadingtable" 
+                    element-loading-text="拼命加载中..."
                 >
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
@@ -180,6 +182,7 @@ export default {
                 pageTotal: 0
             },
             tableData: [],
+            loadingtable:false,
             multipleSelection: [],
             dialogVisible: false,
             permissionVisible: false,
@@ -245,6 +248,7 @@ export default {
              return 'text-align:center';
         },
         getData() {
+            this.loadingtable = true;
             const params = this.search;
             params.page = this.pagination.page;
             params.perPage = this.pagination.perPage;
@@ -253,6 +257,7 @@ export default {
                 this.pagination.pageTotal = parseInt(res.data.total);
                 this.pagination.perPage =  parseInt(res.data.per_page);
                 this.pagination.page =  parseInt(res.data.current_page);
+                this.loadingtable = false;
             });
         },
         getMenuSelect(){
