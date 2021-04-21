@@ -2,7 +2,7 @@
     <div class="login-wrap">
         <div class="ms-login">
             <div class="ms-title">
-                <img :src="systemLogo">
+                <!-- <img :src="systemLogo"> -->
                 <span>{{systemName}}</span>
             </div>
             <div class="ms-content">

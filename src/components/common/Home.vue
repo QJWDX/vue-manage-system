@@ -46,7 +46,7 @@ export default {
             }
             this.tagsList = arr;
         });
-        this.mqttConnect();
+        // this.mqttConnect();
     },
     destroyed(){
         if(client){
@@ -55,16 +55,15 @@ export default {
     },
     methods:{
         mqttConnect(){
-            let mqtt_url = this.$fun.mqttUrl();
             const options = {
                 connectTimeout: 40000,
                 clientId: 'myclientid_' + parseInt(Math.random() * 100, 10),
-                username: 'admin',
-                password: 'admin123',
+                username: this.$apiList.mqttObj.user,
+                password: this.$apiList.mqttObj.pwd,
                 clean: true
             };
             if(client == null){
-                client = mqtt.connect(mqtt_url, options);
+                client = mqtt.connect(this.$apiList.mqttObj.url, options);
             }
             client.on('connect', (e) => {
                 console.log("连接成功！！！")

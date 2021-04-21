@@ -8,7 +8,7 @@ function resolve(dir) {
 
 const name = "后台框架";
 module.exports = {
-    baseUrl: './',
+    publicPath: './',
     assetsDir: 'static',
     productionSourceMap: false,
     lintOnSave: process.env.NODE_ENV === "development",
@@ -36,14 +36,40 @@ module.exports = {
         ]
     },
     devServer: {
-        open: true,
+        open: false, // 打开页面
+        host: '0.0.0.0', // 域名   127.0.0.0本机    0.0.0.0真机测试
+        port: '8198', // 端口号
+        https: false, // 是否使用https
+        hotOnly: false, // 热更新
         proxy: {
-            '/':{
-                target:'http://127.0.0.1',
-                // target:'https:/www.hhdxdx.cn',
+            '/api':{
+                // target:'http://127.0.0.1',
+                target:'http://www.hhdxdx.cn/',
+                ws: true, // 是否跨域
+                logLevel: 'debug',
                 changeOrigin:true,
                 // pathRewrite:{
-                //     '/api':''
+                //     '*/api':''
+                // }
+            },
+            '/auth':{
+                // target:'http://127.0.0.1',
+                target:'http://www.hhdxdx.cn/',
+                ws: true, // 是否跨域
+                logLevel: 'debug',
+                changeOrigin:true,
+                // pathRewrite:{
+                //     '*/auth':''
+                // }
+            },
+            '/system':{
+                // target:'http://127.0.0.1',
+                target:'http://www.hhdxdx.cn/',
+                ws: true, // 是否跨域
+                logLevel: 'debug',
+                changeOrigin:true,
+                // pathRewrite:{
+                //     '*/auth':''
                 // }
             }
         }

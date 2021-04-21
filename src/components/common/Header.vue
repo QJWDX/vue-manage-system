@@ -6,7 +6,7 @@
             <i v-else class="el-icon-s-unfold"></i>
         </div>
         <div class="logo">
-            <img :src="systemLogo">
+            <!-- <img :src="systemLogo"> -->
             <span>{{systemName}}</span>
         </div>
         <div class="header-right">

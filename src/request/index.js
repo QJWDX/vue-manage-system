@@ -2,19 +2,18 @@ import axios from 'axios';
 import {Message, MessageBox} from 'element-ui';
 import store from '../store';
 import {router} from '../router';
-const service = axios.create({
-    // process.env.NODE_ENV === 'development' 来判断是否开发环境
-    timeout: 5000
+const instance = axios.create({
+    timeout: 1000*5
 });
-let production = false;
-if(production){
-    let protocol = window.location.protocol; //协议
-    let host = window.location.host; //主机
-    let reg = /^localhost+/;
-    service.defaults.baseURL = reg.test(host) ? protocol + '//127.0.0.1' : protocol + '//www.hhdxdx.cn';
-}
+
+// 判断开发环境
+console.log(process.env.NODE_ENV);
+
+// 设置post请求头
+instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 // 请求拦截器
-service.interceptors.request.use(
+instance.interceptors.request.use(
     config => {
         config.headers['Authorization'] = 'Bearer ' + store.getters.token;
         return config;
@@ -32,7 +31,7 @@ service.interceptors.request.use(
 
 
 // 响应拦截器
-service.interceptors.response.use(
+instance.interceptors.response.use(
     response => {
         switch(response.status){
             case 200:
@@ -104,7 +103,7 @@ service.interceptors.response.use(
                     router.push('/403');
                     break
                 case 404:
-                    route.push('/404');
+                    router.push('/404');
                     break
                 case 429:
                     console.log('429');
@@ -121,4 +120,4 @@ service.interceptors.response.use(
     }
 );
 
-export default service;
+export default instance;
