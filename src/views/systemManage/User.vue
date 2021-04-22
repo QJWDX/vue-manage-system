@@ -64,6 +64,8 @@
                         <el-table-column prop="username" label="用户名"></el-table-column>
                         <el-table-column prop="phone" label="联系方式"></el-table-column>
                         <el-table-column prop="email" label="邮箱"></el-table-column>
+                        <el-table-column prop="roles" label="所属角色" :formatter="formatRole">
+                        </el-table-column>
                         <el-table-column prop="sex" label="性别">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.sex === 0">女</span>
@@ -511,6 +513,15 @@ export default {
                 address: '',
                 description: ''
             };
+        },
+        formatRole(row){
+            let role = '';
+            if(row.roles){
+                row.roles.forEach(function (item) {
+                    role += item.display_name+"|";
+                })
+            }
+            return role.substring(0, role.length-2);
         }
     }
 };
