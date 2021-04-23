@@ -9,16 +9,16 @@
             <div class="tab-content">
                 <el-form :inline="true" :model="search" label-position="left" size="small">
                     <el-form-item label="账户姓名">
-                        <el-input v-model="search.name" placeholder="请输入账户姓名"></el-input>
+                        <el-input v-model="search.name" placeholder="请输入账户姓名" class="s_input"></el-input>
                     </el-form-item>
-                    <el-form-item label="用户名">
-                        <el-input v-model="search.username" placeholder="请输入用户名"></el-input>
+                    <el-form-item label="账户名">
+                        <el-input v-model="search.username" placeholder="请输入账户名" class="s_input"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号">
-                        <el-input v-model="search.phone" placeholder="请输入手机号"></el-input>
+                        <el-input v-model="search.phone" placeholder="请输入手机号" class="s_input"></el-input>
                     </el-form-item>
                     <el-form-item label="状态">
-                        <el-select v-model="search.status" placeholder="状态">
+                        <el-select v-model="search.status" placeholder="状态" class="s_input">
                             <el-option label="全部" value="-1"></el-option>
                             <el-option label="启用" value="1"></el-option>
                             <el-option label="禁用" value="0"></el-option>
@@ -26,7 +26,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="性别">
-                        <el-select v-model="search.sex" placeholder="性别">
+                        <el-select v-model="search.sex" placeholder="性别" class="s_input">
                             <el-option label="全部" value="-1"></el-option>
                             <el-option label="男" value="1"></el-option>
                             <el-option label="女" value="0"></el-option>
@@ -59,19 +59,18 @@
                         element-loading-text="拼命加载中..."
                     >
                         <el-table-column type="selection" width="55" align="center"></el-table-column>
-                        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+<!--                        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>-->
                         <el-table-column prop="name" label="账户姓名"></el-table-column>
-                        <el-table-column prop="username" label="用户名"></el-table-column>
+                        <el-table-column prop="username" label="账户名"></el-table-column>
+                         <el-table-column prop="roles" label="所属角色" :formatter="formatRole"></el-table-column>
                         <el-table-column prop="phone" label="联系方式"></el-table-column>
-                        <el-table-column prop="email" label="邮箱"></el-table-column>
-                        <el-table-column prop="roles" label="所属角色" :formatter="formatRole">
-                        </el-table-column>
-                        <el-table-column prop="sex" label="性别">
-                            <template slot-scope="scope">
-                                <span v-if="scope.row.sex === 0">女</span>
-                                <span v-else-if="scope.row.sex === 1">男</span>
-                            </template>
-                        </el-table-column>
+<!--                        <el-table-column prop="email" label="邮箱"></el-table-column>-->
+<!--                        <el-table-column prop="sex" label="性别">-->
+<!--                            <template slot-scope="scope">-->
+<!--                                <span v-if="scope.row.sex === 0">女</span>-->
+<!--                                <span v-else-if="scope.row.sex === 1">男</span>-->
+<!--                            </template>-->
+<!--                        </el-table-column>-->
                         <el-table-column prop="created_at" label="注册时间"></el-table-column>
                         <el-table-column prop="status" label="状态">
                                 <template slot-scope="scope">
@@ -110,7 +109,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                    <div class="pagination">
                         <el-pagination
                             background
                             layout="total, prev, pager, next, jumper"
@@ -518,10 +517,10 @@ export default {
             let role = '';
             if(row.roles){
                 row.roles.forEach(function (item) {
-                    role += item.display_name+"|";
+                    role += item.display_name + "|";
                 })
             }
-            return role.substring(0, role.length-2);
+            return role.substring(0, role.length-1);
         }
     }
 };

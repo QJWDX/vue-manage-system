@@ -1,15 +1,9 @@
 <template>
-    <div class="container">
-        <div class="tabs">
-            <ul>
-                <li class="active">{{this.$route.meta.title}}</li>
-            </ul>
-        </div>
-        <div class="tabs_content">
-            <div class="tab-content">
+    <div class="tabs_content">
+        <div class="tab-content">
             <el-form :inline="true" :model="search">
                 <el-form-item label="菜单名">
-                    <el-input v-model="search.name" placeholder="请输入菜单名"></el-input>
+                    <el-input v-model="search.name" placeholder="请输入菜单名" class="s_input"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -17,23 +11,21 @@
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                </el-form-item>
             </el-form>
-            <!-- <div class="my-btn-group">
-            </div> -->
+            <div class="my-btn-group">
+                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+            </div>
             <div class="my-style-table">
                 <el-table
-                    :data="tableData"
-                    border
-                    ref="multipleTable"
-                    header-cell-class-name="table-header"
-                    :cell-style="cellStyle"
-                    :header-cell-style="rowClass"
-                    @selection-change="handleSelectionChange"
-                    v-loading="loadingtable" 
-                    element-loading-text="拼命加载中..."
+                        :data="tableData"
+                        border
+                        ref="multipleTable"
+                        header-cell-class-name="table-header"
+                        :cell-style="cellStyle"
+                        :header-cell-style="rowClass"
+                        @selection-change="handleSelectionChange"
+                        v-loading="loadingtable"
+                        element-loading-text="拼命加载中..."
                 >
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
@@ -52,44 +44,44 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="is_show" label="状态">
-                        <template slot-scope="scope">   
+                        <template slot-scope="scope">
                             <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
                         </template>
                     </el-table-column>
                     <el-table-column prop="is_default" label="默认路由">
-                            <template slot-scope="scope">
-                                <el-switch v-model="scope.row.is_default" :active-value="1" :inactive-value="0" disabled></el-switch>
+                        <template slot-scope="scope">
+                            <el-switch v-model="scope.row.is_default" :active-value="1" :inactive-value="0" disabled></el-switch>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" width="220" align="center">
                         <template slot-scope="scope">
                             <el-button
-                                type="text"
-                                icon="el-icon-edit"
-                                @click="handlePermission(scope.$index, scope.row)"
+                                    type="text"
+                                    icon="el-icon-edit"
+                                    @click="handlePermission(scope.$index, scope.row)"
                             >权限设置</el-button>
                             <el-button
-                                type="text"
-                                icon="el-icon-edit"
-                                @click="handleEdit(scope.$index, scope.row)"
+                                    type="text"
+                                    icon="el-icon-edit"
+                                    @click="handleEdit(scope.$index, scope.row)"
                             >编辑</el-button>
                             <el-button
-                                type="text"
-                                icon="el-icon-delete"
-                                class="red"
-                                @click="handleDel(scope.$index, scope.row)"
+                                    type="text"
+                                    icon="el-icon-delete"
+                                    class="red"
+                                    @click="handleDel(scope.$index, scope.row)"
                             >删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                <div class="pagination">
                     <el-pagination
-                        background
-                        layout="total, prev, pager, next, jumper"
-                        :current-page="pagination.page"
-                        :page-size="pagination.perPage"
-                        :total="pagination.pageTotal"
-                        @current-change="handlePageChange"
+                            background
+                            layout="total, prev, pager, next, jumper, sizes"
+                            :current-page="pagination.page"
+                            :page-size="pagination.perPage"
+                            :total="pagination.pageTotal"
+                            @current-change="handlePageChange"
                     ></el-pagination>
                 </div>
             </div>
@@ -97,22 +89,22 @@
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                     <el-form-item label="菜单名称" prop="name">
-                        <el-input v-model="form.name" size="large"></el-input>
+                        <el-input v-model="form.name"></el-input>
                     </el-form-item>
                     <el-form-item label="上级菜单">
-                        <el-select v-model="form.parent_id" placeholder="请选择父级菜单" style="width: 100%;" @change="change()" size="large">
-                        <el-option label="一级菜单" value="0" ></el-option>
-                        <el-option v-for="(item, index) in menus" :key="index" :label="item" :value="index" ></el-option>
+                        <el-select v-model="form.parent_id" placeholder="请选择父级菜单" style="width: 100%" @change="change()">
+                            <el-option label="一级菜单" value="0" ></el-option>
+                            <el-option v-for="(item, index) in menus" :key="index" :label="item" :value="index" ></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="菜单路由" prop="path">
-                        <el-input v-model="form.path" size="large"></el-input>
+                        <el-input v-model="form.path"></el-input>
                     </el-form-item>
                     <el-form-item label="组件地址" prop="component">
-                        <el-input v-model="form.component" size="large"></el-input>
+                        <el-input v-model="form.component"></el-input>
                     </el-form-item>
                     <el-form-item label="菜单图标">
-                        <el-input v-model="form.icon" size="large"></el-input>
+                        <el-input v-model="form.icon"></el-input>
                     </el-form-item>
                     <el-form-item label="是否展示">
                         <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
@@ -124,9 +116,9 @@
                         <el-switch v-model="form.is_default" :active-value="1" :inactive-value="0"></el-switch>
                     </el-form-item>
                     <el-form-item label="排序字段" prop="sort">
-                        <el-input v-model="form.sort" type="number" min="0" max="9999" size="large"></el-input>
+                        <el-input v-model="form.sort" type="number" min="0" max="9999"></el-input>
                     </el-form-item>
-            </el-form>
+                </el-form>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="callOf('form')">取 消</el-button>
                     <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -142,7 +134,6 @@
             </el-dialog>
         </div>
     </div>
-</div>
 </template>
 <script>
 export default {

@@ -9,10 +9,10 @@
             <div class="tab-content">
                 <el-form :inline="true" :model="search">
                 <el-form-item label="文件名">
-                    <el-input v-model="search.title" placeholder="请输入文件名"></el-input>
+                    <el-input v-model="search.title" placeholder="请输入文件名" class="s_input"></el-input>
                 </el-form-item>
                 <el-form-item label="文件类型">
-                    <el-select v-model="search.type" style="width:100px;">
+                    <el-select v-model="search.type" class="s_input">
                         <el-option label="全部" value=""></el-option>
                         <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                     </el-select>
@@ -68,7 +68,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                <div class="pagination">
                     <el-pagination
                         background
                         layout="total, prev, pager, next, jumper"
@@ -82,23 +82,23 @@
             <!-- 文件上传 -->
             <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" @close="callOf('form')">
                 <el-form ref="form" :model="form" label-width="100px">
+                    <el-form-item label="选择文件">
+                        <el-upload :on-change="fileChange" action="#" :on-remove="removeFile" :http-request="httpRequest">
+                            <el-button type='warning'>点击上传</el-button>
+                        </el-upload>
+                    </el-form-item>
                     <el-form-item label="文件名称" prop="title">
-                        <el-input v-model="form.title" size="large" placeholder="自定义文件名称，非必填"></el-input>
+                        <el-input v-model="form.title" placeholder="自定义文件名称，非必填"></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型" prop="type">
-                            <el-select v-model="form.type" @change="handTypeChange" style="width:100%" size="large">
+                            <el-select v-model="form.type" @change="handTypeChange" style="width:100%">
                             <el-option :label="item" :value="key" v-for="(item, key) in types" :key="key"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="存储位置" prop="folder">
-                            <el-select v-model="form.folder" style="width:100%" size="large">
+                            <el-select v-model="form.folder" style="width:100%">
                             <el-option :label="item" :value="item" v-for="(item, key) in folders" :key="key"></el-option>
                         </el-select>
-                    </el-form-item>
-                    <el-form-item label="选择文件">
-                        <el-upload :on-change="fileChange" action="#" :on-remove="removeFile" :http-request="httpRequest">
-                            <el-button type='warning' size="large">点击上传</el-button>
-                        </el-upload>
                     </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">

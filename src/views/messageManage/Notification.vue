@@ -20,14 +20,14 @@
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="消息状态">
-                            <el-select v-model="search.read_at">
+                            <el-select v-model="search.read_at" class="s_input">
                                 <el-option label="全部" value="0"></el-option>
                                 <el-option label="已读" value="1"></el-option>
                                     <el-option label="未读" value="2"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="消息类型">
-                            <el-select v-model="search.type">
+                            <el-select v-model="search.type" class="s_input">
                                 <el-option label="全部" value=""></el-option>
                                 <el-option :label="item.name" :value="item.type" v-for="(item, index) in types" :key="index"></el-option>
                             </el-select>
@@ -77,7 +77,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                    <div class="pagination">
                         <el-pagination
                             background
                             layout="total, prev, pager, next, jumper"

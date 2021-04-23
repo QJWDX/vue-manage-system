@@ -8,8 +8,8 @@
         <div class="tabs_content">
             <div class="tab-content">
             <el-form :inline="true" :model="search">
-                <el-form-item label="用户名">
-                    <el-input v-model="search.username" placeholder="请输入用户名"></el-input>
+                <el-form-item label="账户名">
+                    <el-input v-model="search.username" placeholder="请输入账户名" class="s_input"></el-input>
                 </el-form-item>
                 <el-form-item label="时间区间">
                     <el-date-picker
@@ -38,7 +38,7 @@
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column label="ID" align="center" width="120" prop="id">
                     </el-table-column>
-                    <el-table-column label="用户名" align="center" :show-overflow-tooltip="true">
+                    <el-table-column label="账户名" align="center" :show-overflow-tooltip="true">
                         <template slot-scope="scope">
                             <span>{{scope.row.user.username}}</span>
                         </template>
@@ -57,7 +57,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
+                <div class="pagination">
                     <el-pagination
                         background
                         layout="total, prev, pager, next, jumper"

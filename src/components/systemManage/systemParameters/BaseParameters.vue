@@ -3,16 +3,16 @@
         <div class="system-box">
             <el-form ref="form" :model="form" :rules="rules" label-width="120px" style="width:40%">
                 <el-form-item label="系统名称" prop="system_name">
-                    <el-input v-model="form.system_name" size="large"></el-input>
+                    <el-input v-model="form.system_name"></el-input>
                 </el-form-item>
                 <el-form-item label="系统版本" prop="system_version">
-                    <el-input v-model="form.system_version" size="large"></el-input>
+                    <el-input v-model="form.system_version"></el-input>
                 </el-form-item>
                 <el-form-item label="系统地址" prop="system_url">
-                    <el-input v-model="form.system_url" size="large"></el-input>
+                    <el-input v-model="form.system_url"></el-input>
                 </el-form-item>
                 <el-form-item label="系统备案" prop="system_icp">
-                    <el-input v-model="form.system_icp" size="large"></el-input>
+                    <el-input v-model="form.system_icp"></el-input>
                 </el-form-item>
                 <el-form-item label="系统logo">
                         <el-upload
@@ -39,10 +39,10 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="版权所有" prop="system_copyright">
-                    <el-input v-model="form.system_copyright" size="large"></el-input>
+                    <el-input v-model="form.system_copyright"></el-input>
                 </el-form-item>
                 <el-form-item label="技术支持" prop="technical_support">
-                    <el-input v-model="form.technical_support" size="large"></el-input>
+                    <el-input v-model="form.technical_support"></el-input>
                 </el-form-item>
                 <el-form-item label="系统备注">
                     <el-input type="textarea" rows="5" v-model="form.system_remark"></el-input>
@@ -56,7 +56,7 @@
 </template>
 <script>
 export default {
-    name: 'baseform',
+    name: 'baseParameters',
     data() {
         return {
             uploadUrl:"/api/system/systemConfig/upload",

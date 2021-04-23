@@ -1,42 +1,36 @@
 <template>
-    <div class="container">
-        <div class="tabs">
-            <ul>
-                <li class="active">{{this.$route.meta.title}}</li>
-            </ul>
-        </div>
-        <div class="tabs_content">
-            <div class="tab-content">
-                <el-form :inline="true" :model="search">
-                    <el-form-item label="接口名称">
-                        <el-input v-model="search.name" placeholder="请输入接口名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="接口路由">
-                        <el-input v-model="search.path" placeholder="请输入接口路由"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请求方式">
-                        <el-select v-model="search.method" placeholder="请选择">
-                            <el-option label="全部" value="0"></el-option>
-                            <el-option label="GET" value="GET"></el-option>
-                            <el-option label="POST" value="POST"></el-option>
-                            <el-option label="PUT" value="PUT"></el-option>
-                            <el-option label="PATCH" value="PATCH"></el-option>
-                            <el-option label="DELETE" value="DELETE"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
-                    </el-form-item>
-                </el-form>
-                <div class="my-btn-group">
-                    <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
-                    <!-- <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button> -->
-                </div>
-                <div class="my-style-table">
-                    <el-table
+    <div class="tabs_content">
+        <div class="tab-content">
+            <el-form :inline="true" :model="search">
+                <el-form-item label="接口名称">
+                    <el-input v-model="search.name" placeholder="请输入接口名称" class="s_input"></el-input>
+                </el-form-item>
+                <el-form-item label="接口路由">
+                    <el-input v-model="search.path" placeholder="请输入接口路由" class="s_input"></el-input>
+                </el-form-item>
+                <el-form-item label="请求方式">
+                    <el-select v-model="search.method" placeholder="请选择" class="s_input">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="GET" value="GET"></el-option>
+                        <el-option label="POST" value="POST"></el-option>
+                        <el-option label="PUT" value="PUT"></el-option>
+                        <el-option label="PATCH" value="PATCH"></el-option>
+                        <el-option label="DELETE" value="DELETE"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-refresh" @click="reload"></el-button>
+                </el-form-item>
+            </el-form>
+            <div class="my-btn-group">
+                <el-button type="primary" icon="el-icon-plus" @click="handAdd">新增</el-button>
+                <!-- <el-button type="danger" icon="el-icon-delete" @click="handleAllDel">删除</el-button> -->
+            </div>
+            <div class="my-style-table">
+                <el-table
                         :data="tableData"
                         border
                         ref="multipleTable"
@@ -46,78 +40,77 @@
                         @selection-change="handleSelectionChange"
                         v-loading="loadingtable"
                         element-loading-text="拼命加载中..."
-                    >
-                        <el-table-column type="selection" width="55" align="center"></el-table-column>
-                        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                        <el-table-column prop="display_name" label="接口名称"></el-table-column>
-                        <el-table-column prop="name" label="权限名称"></el-table-column>
-                        <el-table-column prop="path" label="请求路由"></el-table-column>
-                        <el-table-column prop="method" label="请求方式"></el-table-column>
-                        <el-table-column prop="is_show" label="状态">
-                            <template slot-scope="scope">   
-                                <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="操作" width="220" align="center">
-                            <template slot-scope="scope">
-                                <el-button
+                >
+                    <el-table-column type="selection" width="55" align="center"></el-table-column>
+                    <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                    <el-table-column prop="display_name" label="接口名称"></el-table-column>
+                    <el-table-column prop="name" label="权限名称"></el-table-column>
+                    <el-table-column prop="path" label="请求路由"></el-table-column>
+                    <el-table-column prop="method" label="请求方式"></el-table-column>
+                    <el-table-column prop="is_show" label="状态">
+                        <template slot-scope="scope">
+                            <el-switch v-model="scope.row.is_show" :active-value="1" :inactive-value="0" disabled></el-switch>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" width="220" align="center">
+                        <template slot-scope="scope">
+                            <el-button
                                     type="text"
                                     icon="el-icon-edit"
                                     @click="handleEdit(scope.$index, scope.row)"
-                                >编辑</el-button>
-                                <el-button
+                            >编辑</el-button>
+                            <el-button
                                     type="text"
                                     icon="el-icon-delete"
                                     class="red"
                                     @click="handleDel(scope.$index, scope.row)"
-                                >删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <div class="pagination" v-show="pagination.pageTotal > pagination.perPage">
-                        <el-pagination
+                            >删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination">
+                    <el-pagination
                             background
                             layout="total, prev, pager, next, jumper"
                             :current-page="pagination.page"
                             :page-size="pagination.perPage"
                             :total="pagination.pageTotal"
                             @current-change="handlePageChange"
-                        ></el-pagination>
-                    </div>
+                    ></el-pagination>
                 </div>
-            <!-- 新增编辑弹出框 -->
-            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
-                <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                    <el-form-item label="接口名称" prop="display_name">
-                        <el-input v-model="form.display_name" size="large"></el-input>
-                    </el-form-item>
-                    <el-form-item label="权限名称" prop="name">
-                        <el-input v-model="form.name" size="large"></el-input>
-                    </el-form-item>
-                    <el-form-item label="接口路由" prop="path">
-                        <el-input v-model="form.path" size="large"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请求方式" prop="method">
-                        <el-select v-model="form.method" placeholder="请求方式" size="large">
-                            <el-option label="GET" value="GET"></el-option>
-                            <el-option label="POST" value="POST"></el-option>
-                            <el-option label="PUT" value="PUT"></el-option>
-                            <el-option label="PATCH" value="PATCH"></el-option>
-                            <el-option label="DELETE" value="DELETE"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="权限状态">
-                        <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
-                    </el-form-item>
+            </div>
+        </div>
+        <!-- 新增编辑弹出框 -->
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" @close="callOf('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+                <el-form-item label="接口名称" prop="display_name">
+                    <el-input v-model="form.display_name"></el-input>
+                </el-form-item>
+                <el-form-item label="权限名称" prop="name">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="接口路由" prop="path">
+                    <el-input v-model="form.path"></el-input>
+                </el-form-item>
+                <el-form-item label="请求方式" prop="method">
+                    <el-select v-model="form.method" placeholder="请求方式" style="width: 100%">
+                        <el-option label="GET" value="GET"></el-option>
+                        <el-option label="POST" value="POST"></el-option>
+                        <el-option label="PUT" value="PUT"></el-option>
+                        <el-option label="PATCH" value="PATCH"></el-option>
+                        <el-option label="DELETE" value="DELETE"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="权限状态">
+                    <el-switch v-model="form.is_show" :active-value="1" :inactive-value="0"></el-switch>
+                </el-form-item>
             </el-form>
-                <span slot="footer" class="dialog-footer">
+            <span slot="footer" class="dialog-footer">
                     <el-button @click="callOf('form')">取 消</el-button>
                     <el-button type="primary" @click="submitForm">确 定</el-button>
                 </span>
-            </el-dialog>
-        </div>
+        </el-dialog>
     </div>
-</div>
 </template>
 <script>
 export default {
